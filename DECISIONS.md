@@ -291,3 +291,55 @@ Supabase's built-in sender only delivers to members of the Supabase team and a f
 It is fine for testing; a custom SMTP provider must be configured before students are invited
 (README, cloud setup step 5), and it is also what unlocks editing the email templates. The provider and
 sender domain are the owner's choice.
+
+## Phase 4 — Resource cards
+
+### D39. URL normalization
+
+The stored link is what the database's unique constraint compares, so the app normalizes it once, in the
+shared Zod schema (`src/lib/url-normalize.ts`): a bare domain gets `https://`, the host is lower-cased
+(IDNs become punycode), the fragment and tracking parameters (`utm_*`, `fbclid`, `gclid`, `yclid`,
+`igshid`, YouTube's `si`/`feature`, …) are removed, other parameters keep their exact text and order, and
+YouTube links get one form (`https://www.youtube.com/watch?v=…`). The path is kept as written: some sites
+serve `/kurs` and `/kurs/` differently, and a link must keep working. Links with credentials, IP
+addresses or intranet hosts (`localhost`, `*.local`, …) are refused; resources are public web pages. The
+form replaces the field with the normalized link when it loses focus, so the author sees what is saved.
+
+### D40. Duplicate detection
+
+The unique constraint on the normalized URL is the authority. Before saving, and when the link field loses
+focus, the server also looks for the same page spelled differently (with or without `www.`, `http` or
+`https`, with or without a trailing slash; links over 500 characters are matched exactly to keep the
+request small). This lookup uses the secret key because the existing card may be pending or hidden; the
+author only gets its slug when they may open it (published, or their own), otherwise a note that the link
+is waiting for review. That reveals that a link is in the queue, nothing else; accepted.
+
+### D41. Favicons
+
+Favicons come from DuckDuckGo's icon service (`https://icons.duckduckgo.com/ip3/<domain>.ico`): no key, no
+tracking cookies, and the shared site never sees our visitors. Images load lazily without a referrer and
+fall back to a globe icon. The CSP allows only that origin. If it ever becomes a problem, a small cached
+proxy route can replace it without touching the components (`src/lib/favicon.ts`).
+
+### D42. Slugs
+
+Generated from the title on creation: Uzbek Cyrillic is transliterated (`ш` → `sh`, `ў` → `o`, `қ` → `q`,
+…), every apostrophe form is dropped (`oʻ` → `o`), at most 80 characters cut at a word boundary. Slugs never
+change afterwards, so shared links keep working when the title is edited. A taken slug gets a random
+4-character suffix (up to four attempts against the unique constraint).
+
+### D43. Who sees and changes a card
+
+The database decides the status (D17): trusted authors and staff publish at once, everyone else waits in
+the queue; the form tells new members so. Only the author edits content; staff moderate from the admin
+panel (Phase 7). Editing text keeps the status; a new link sends a non-trusted author's card back to
+review. Editing a hidden or rejected card does not republish it. Delete is permanent (likes, ratings and
+comments go with it) and needs a confirmation. A card that is not public is a streamed 404 with `noindex`
+for everyone else (D34). The daily limits (3 new cards for new members, 10 for trusted) come with the
+other rate limits in Phase 7.
+
+### D44. Content rules
+
+One Zod schema validates in the browser and again in the Server Action: title 3–120 characters and not
+ALL CAPS (10+ letters, none lower-case; short acronyms like "IELTS" are fine), at most 2 emoji in the title
+and 5 in each text, a summary of at least 40 characters besides any links. Messages are translation keys.

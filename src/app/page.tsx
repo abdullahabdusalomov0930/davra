@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 
 import { EmptyState } from "@/components/layout/empty-state";
 import { Button } from "@/components/ui/button";
+import { routes } from "@/lib/routes";
 import { siteConfig } from "@/lib/site-config";
 
 export default async function HomePage() {
@@ -25,7 +26,7 @@ export default async function HomePage() {
             <Link href="/qidiruv">{t("ctaBrowse")}</Link>
           </Button>
           <Button asChild size="lg" variant="outline">
-            <Link href="/yangi-resurs">{t("ctaShare")}</Link>
+            <Link href={routes.newResource}>{t("ctaShare")}</Link>
           </Button>
         </div>
       </section>
@@ -52,7 +53,7 @@ export default async function HomePage() {
         <EmptyState
           title={t("emptyTitle")}
           description={t("emptyText")}
-          action={{ href: "/yangi-resurs", label: t("emptyCta") }}
+          action={{ href: routes.newResource, label: t("emptyCta") }}
         />
       </section>
     </div>

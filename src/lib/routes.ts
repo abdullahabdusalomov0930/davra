@@ -11,16 +11,24 @@ export const routes = {
   rules: "/qoidalar",
   terms: "/shartlar",
   profile: (username: string) => `/u/${encodeURIComponent(username)}`,
+  newResource: "/yangi-resurs",
+  resource: (slug: string) => `/resurs/${encodeURIComponent(slug)}`,
+  editResource: (slug: string) => `/resurs/${encodeURIComponent(slug)}/tahrirlash`,
+  topic: (slug: string) => `/mavzu/${encodeURIComponent(slug)}`,
 } as const;
 
 /**
  * Pages that need a signed-in user. The proxy redirects guests before rendering starts (a real 307,
  * no loading skeleton); each page still calls requireViewer() itself.
  */
-const protectedPrefixes = [routes.settings] as const;
+const protectedPrefixes = [routes.settings, routes.newResource] as const;
+const protectedPatterns = [/^\/resurs\/[^/]+\/tahrirlash\/?$/] as const;
 
 export function isProtectedPath(pathname: string): boolean {
-  return protectedPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+  return (
+    protectedPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)) ||
+    protectedPatterns.some((pattern) => pattern.test(pathname))
+  );
 }
 
 /** Pages that make no sense once signed in; the proxy sends signed-in users on to `?next=`. */

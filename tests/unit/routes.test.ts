@@ -8,6 +8,13 @@ describe("isProtectedPath", () => {
     expect(isProtectedPath("/sozlamalar/xavfsizlik")).toBe(true);
   });
 
+  it("protects creating and editing resources, but not reading them", () => {
+    expect(isProtectedPath("/yangi-resurs")).toBe(true);
+    expect(isProtectedPath("/resurs/python-asoslari/tahrirlash")).toBe(true);
+    expect(isProtectedPath("/resurs/python-asoslari")).toBe(false);
+    expect(isProtectedPath("/resurs/tahrirlash")).toBe(false);
+  });
+
   it("leaves public pages and look-alike paths alone", () => {
     expect(isProtectedPath("/")).toBe(false);
     expect(isProtectedPath("/kirish")).toBe(false);
@@ -19,6 +26,11 @@ describe("isProtectedPath", () => {
 describe("routes.profile", () => {
   it("builds profile URLs", () => {
     expect(routes.profile("nodira_01")).toBe("/u/nodira_01");
+  });
+
+  it("builds resource URLs", () => {
+    expect(routes.resource("python-asoslari")).toBe("/resurs/python-asoslari");
+    expect(routes.editResource("python-asoslari")).toBe("/resurs/python-asoslari/tahrirlash");
   });
 });
 
