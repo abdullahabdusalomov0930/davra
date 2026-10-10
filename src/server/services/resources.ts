@@ -14,13 +14,13 @@ export type ResourceStatus = Database["public"]["Enums"]["resource_status"];
 
 /** Columns a resource card needs, with the topic and the author embedded. */
 export const CARD_COLUMNS = `
-  id, slug, title, url, domain, type, language, price, level, summary, status, link_status,
+  id, slug, author_id, title, url, domain, type, language, price, level, summary, status, link_status,
   likes_count, saves_count, comments_count, ratings_count, ratings_sum, published_at, created_at,
   topic:topics (slug, name_uz),
   author:profiles!resources_author_id_fkey (username, display_name, avatar_url)
 ` as const;
 
-const DETAIL_COLUMNS = `${CARD_COLUMNS}, author_id, topic_id, for_whom, author_review, updated_at` as const;
+const DETAIL_COLUMNS = `${CARD_COLUMNS}, topic_id, for_whom, author_review, updated_at` as const;
 
 /** A resource the current visitor may see (RLS: published, or their own, or staff), or null. */
 export const getResourceBySlug = cache(async (slug: string) => {

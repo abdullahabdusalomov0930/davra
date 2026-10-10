@@ -560,6 +560,7 @@ export type Database = {
         Args: {
           after_cursor?: Json;
           alt_search_text?: string;
+          following_only?: boolean;
           page_size?: number;
           resource_language?: Database["public"]["Enums"]["resource_language"];
           resource_level?: Database["public"]["Enums"]["resource_level"];

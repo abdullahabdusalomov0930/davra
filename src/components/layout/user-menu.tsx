@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOutIcon, SettingsIcon, UserIcon } from "lucide-react";
+import { BookmarkIcon, LogOutIcon, RssIcon, SettingsIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -41,6 +41,18 @@ export function UserMenu({ user }: { user: HeaderUser }) {
           <Link href={routes.profile(user.username)}>
             <UserIcon aria-hidden />
             {t("profile")}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={routes.saved}>
+            <BookmarkIcon aria-hidden />
+            {t("saved")}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={routes.following}>
+            <RssIcon aria-hidden />
+            {t("following")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

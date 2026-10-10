@@ -6,17 +6,17 @@ import { type MouseEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { type FeedQuery, SEARCH_PARAMS } from "@/lib/validators";
-import { loadMoreResourcesAction } from "@/server/actions/feed";
+import { SEARCH_PARAMS } from "@/lib/validators";
+import type { MoreResources } from "@/server/actions/feed";
 
 import type { CardEntry } from "./card-entries";
 
 type ResourceListProps = {
-  /** The first page, rendered on the server (see toCardEntries). */
+  /** The first page, rendered on the server (see renderCardEntries). */
   initialCards: CardEntry[];
   initialCursor: string | null;
-  /** The request that produced the first page; "load more" repeats it from the cursor. */
-  query: FeedQuery;
+  /** A Server Action bound to this list's query, e.g. `loadMoreResourcesAction.bind(null, query)`. */
+  loadMore: (cursor: string) => Promise<MoreResources>;
   /**
    * This page's URL without a cursor. "Yana koʻrsatish" links to it with the cursor added, so the
    * button also works without JavaScript and crawlers can follow it.
@@ -25,7 +25,7 @@ type ResourceListProps = {
 };
 
 /** A grid of resource cards with "Yana koʻrsatish" that appends the next page in place. */
-export function ResourceList({ initialCards, initialCursor, query, baseHref }: ResourceListProps) {
+export function ResourceList({ initialCards, initialCursor, loadMore, baseHref }: ResourceListProps) {
   const t = useTranslations("Feed");
   const [cards, setCards] = useState(initialCards);
   const [cursor, setCursor] = useState(initialCursor);
@@ -35,13 +35,13 @@ export function ResourceList({ initialCards, initialCursor, query, baseHref }: R
     ? `${baseHref}${baseHref.includes("?") ? "&" : "?"}${SEARCH_PARAMS.cursor}=${encodeURIComponent(cursor)}`
     : undefined;
 
-  function loadMore(event: MouseEvent<HTMLAnchorElement>) {
+  function onLoadMore(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     if (!cursor || pending) return;
 
     startTransition(async () => {
       try {
-        const page = await loadMoreResourcesAction(query, cursor);
+        const page = await loadMore(cursor);
         setCards((current) => {
           // Scores can shift between requests; never show a card twice.
           const seen = new Set(current.map((entry) => entry.id));
@@ -67,7 +67,7 @@ export function ResourceList({ initialCards, initialCursor, query, baseHref }: R
       {moreHref && (
         <div className="flex justify-center">
           <Button asChild variant="outline" size="lg">
-            <a href={moreHref} onClick={loadMore} aria-disabled={pending}>
+            <a href={moreHref} onClick={onLoadMore} aria-disabled={pending}>
               {pending && <Loader2Icon className="animate-spin" aria-hidden />}
               {pending ? t("loadingMore") : t("loadMore")}
             </a>

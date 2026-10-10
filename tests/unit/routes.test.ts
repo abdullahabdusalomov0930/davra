@@ -15,6 +15,11 @@ describe("isProtectedPath", () => {
     expect(isProtectedPath("/resurs/tahrirlash")).toBe(false);
   });
 
+  it("protects the personal pages", () => {
+    expect(isProtectedPath("/saqlanganlar")).toBe(true);
+    expect(isProtectedPath("/obunalarim")).toBe(true);
+  });
+
   it("leaves public pages and look-alike paths alone", () => {
     expect(isProtectedPath("/")).toBe(false);
     expect(isProtectedPath("/kirish")).toBe(false);
@@ -26,6 +31,10 @@ describe("isProtectedPath", () => {
 describe("routes.profile", () => {
   it("builds profile URLs", () => {
     expect(routes.profile("nodira_01")).toBe("/u/nodira_01");
+  });
+
+  it("builds sign-in links that return to a page", () => {
+    expect(routes.signInTo("/resurs/python-asoslari")).toBe("/kirish?next=%2Fresurs%2Fpython-asoslari");
   });
 
   it("builds resource URLs", () => {

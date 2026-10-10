@@ -5,6 +5,26 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 6 — Likes, saves, ratings, comments, follows
+
+#### Added
+
+- Like and save on every card and on the resource page, applied at once and rolled back with a message
+  if the server refuses. Guests are sent to sign in (and back); authors see the count only.
+- `/saqlanganlar`: saved resources, most recently saved first, with a topic filter and "load more".
+- Ratings: 1–5 stars with an optional review (500 characters), edit and delete (with confirmation),
+  the average on cards and pages, and written reviews on the resource page. Ratings from accounts
+  younger than 24 hours are shown but not counted yet, and the form says so.
+- Comments: flat, oldest first, 500 characters, deletable by their author with confirmation; hidden
+  comments stay visible to their author with a note.
+- Follow people (profile and resource pages) and topics (topic pages).
+- **Obunalarim** (`/obunalarim`, also a home tab for members): the newest resources from followed people
+  and topics, with the followed topics and people listed above.
+- Account menu: Saqlanganlar and Obunalarim.
+- Migration `20261010180000_following_feed.sql`: `search_resources(following_only)`.
+- Tests: 8 pgTAP checks for the following feed (193 in total), unit tests for the rating and comment
+  validators (113 in total).
+
 ### Phase 5 — Feed, topics, search
 
 #### Added

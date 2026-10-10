@@ -1,6 +1,8 @@
 /** App paths used in more than one place. Email templates link to `confirmEmail` and `newPassword`. */
 export const routes = {
   home: "/",
+  /** The home feed's "Yangi" tab. */
+  newest: "/?tartib=yangi",
   signIn: "/kirish",
   signUp: "/royxatdan-otish",
   confirmEmail: "/email-tasdiqlash",
@@ -17,13 +19,17 @@ export const routes = {
   topic: (slug: string) => `/mavzu/${encodeURIComponent(slug)}`,
   topics: "/mavzular",
   search: "/qidiruv",
+  saved: "/saqlanganlar",
+  following: "/obunalarim",
+  /** Sign-in that returns to `path` afterwards (for actions guests cannot take). */
+  signInTo: (path: string) => `/kirish?next=${encodeURIComponent(path)}`,
 } as const;
 
 /**
  * Pages that need a signed-in user. The proxy redirects guests before rendering starts (a real 307,
  * no loading skeleton); each page still calls requireViewer() itself.
  */
-const protectedPrefixes = [routes.settings, routes.newResource] as const;
+const protectedPrefixes = [routes.settings, routes.newResource, routes.saved, routes.following] as const;
 const protectedPatterns = [/^\/resurs\/[^/]+\/tahrirlash\/?$/] as const;
 
 export function isProtectedPath(pathname: string): boolean {

@@ -36,6 +36,7 @@ export async function findResources(
     sort_by: query.sort,
     after_cursor: decodeCursor(cursor) ?? undefined,
     page_size: pageSize + 1,
+    following_only: query.following,
   });
   if (error) throw error;
 

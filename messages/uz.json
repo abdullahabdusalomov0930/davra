@@ -19,7 +19,9 @@
     "profile": "Profilim",
     "settings": "Sozlamalar",
     "signOut": "Chiqish",
-    "share": "Resurs qoʻshish"
+    "share": "Resurs qoʻshish",
+    "saved": "Saqlanganlar",
+    "following": "Obunalarim"
   },
   "Theme": {
     "toggle": "Rang rejimini almashtirish",
@@ -102,7 +104,11 @@
     "summaryOnlyUrl": "Faqat havola emas, oʻz soʻzlaringiz bilan kamida 40 ta belgi yozing.",
     "forWhomTooShort": "Kamida 10 ta belgi: kimlarga foydali ekanini yozing.",
     "forWhomTooLong": "200 ta belgidan oshmasin.",
-    "authorReviewTooLong": "600 ta belgidan oshmasin."
+    "authorReviewTooLong": "600 ta belgidan oshmasin.",
+    "ratingRequired": "Yulduzchalardan birini tanlang.",
+    "reviewTooLong": "Sharh 500 ta belgidan oshmasin.",
+    "commentRequired": "Izoh matnini yozing.",
+    "commentTooLong": "Izoh 500 ta belgidan oshmasin."
   },
   "AuthErrors": {
     "invalidCredentials": "Email yoki parol notoʻgʻri.",
@@ -336,7 +342,8 @@
     "loadMore": "Yana koʻrsatish",
     "loadingMore": "Yuklanmoqda…",
     "loadFailed": "Yuklab boʻlmadi. Qayta urinib koʻring.",
-    "listLabel": "Resurslar"
+    "listLabel": "Resurslar",
+    "following": "Obunalarim"
   },
   "Topics": {
     "title": "Mavzular",
@@ -378,5 +385,83 @@
     "emptyTitle": "Hech narsa topilmadi",
     "emptyText": "Boshqa soʻz bilan qidirib koʻring yoki filtrlarni olib tashlang.",
     "emptyCta": "Filtrlarni tozalash"
+  },
+  "Interactions": {
+    "like": "Yoqdi",
+    "likeLabel": "Yoqtirish",
+    "likes": "{count, plural, other {# ta yoqtirish}}",
+    "save": "Saqlash",
+    "saved": "Saqlangan",
+    "saveLabel": "Saqlab qoʻyish",
+    "signInToLike": "Yoqtirish uchun hisobingizga kiring",
+    "signInToSave": "Saqlash uchun hisobingizga kiring",
+    "ownResource": "Bu sizning resursingiz",
+    "follow": "Obuna boʻlish",
+    "followingState": "Obunadasiz",
+    "signInToFollow": "Obuna boʻlish uchun hisobingizga kiring"
+  },
+  "Ratings": {
+    "title": "Baholar va sharhlar",
+    "yourRating": "Sizning bahoingiz",
+    "starsLabel": "Baho",
+    "star": "{count, plural, other {# yulduz}}",
+    "starsOf": "5 dan {count}",
+    "reviewLabel": "Qisqa sharh",
+    "reviewPlaceholder": "Resurs nimasi bilan foydali boʻldi? Kamchiliklari bormi?",
+    "submit": "Bahoni saqlash",
+    "delete": "Bahoni oʻchirish",
+    "saved": "Bahoingiz saqlandi",
+    "deleted": "Bahoingiz oʻchirildi",
+    "notCounted": "Yangi hisoblarning bahosi birinchi 24 soatda oʻrtacha bahoga qoʻshilmaydi. Keyinroq bahoingizni yangilasangiz, u hisobga olinadi.",
+    "signIn": "Baho berish uchun hisobingizga kiring.",
+    "own": "Oʻz resursingizga baho bera olmaysiz.",
+    "notPublished": "Resurs eʼlon qilingach, unga baho berish va izoh yozish mumkin boʻladi.",
+    "empty": "Hali yozma sharh yoʻq.",
+    "edited": "tahrirlangan",
+    "deleteTitle": "Bahoingizni oʻchirasizmi?",
+    "deleteText": "Baho va sharhingiz oʻchiriladi. Keyin yana baho berishingiz mumkin.",
+    "deleteConfirm": "Ha, oʻchirish",
+    "cancel": "Bekor qilish"
+  },
+  "Comments": {
+    "title": "Izohlar",
+    "count": "{count, plural, =0 {} other {#}}",
+    "label": "Izohingiz",
+    "placeholder": "Savol bering yoki tajribangiz bilan boʻlishing…",
+    "submit": "Yuborish",
+    "added": "Izohingiz qoʻshildi",
+    "deleted": "Izoh oʻchirildi",
+    "delete": "Oʻchirish",
+    "deleteLabel": "Izohni oʻchirish",
+    "deleteTitle": "Izohni oʻchirasizmi?",
+    "deleteText": "Bu amalni ortga qaytarib boʻlmaydi.",
+    "deleteConfirm": "Ha, oʻchirish",
+    "cancel": "Bekor qilish",
+    "hidden": "Moderator yashirgan — faqat siz koʻrasiz",
+    "empty": "Hali izoh yoʻq. Birinchi boʻlib yozing.",
+    "signIn": "Izoh yozish uchun hisobingizga kiring.",
+    "signInCta": "Kirish"
+  },
+  "Following": {
+    "title": "Obunalarim",
+    "subtitle": "Siz obuna boʻlgan mavzular va odamlarning yangi resurslari.",
+    "topics": "Mavzular",
+    "people": "Odamlar",
+    "emptyTitle": "Hali hech narsaga obuna boʻlmagansiz",
+    "emptyText": "Mavzu yoki muallif sahifasida „Obuna boʻlish“ tugmasini bosing — ularning yangi resurslari shu yerda chiqadi.",
+    "emptyCta": "Mavzularni koʻrish",
+    "noResourcesTitle": "Obunalaringizda hali resurs yoʻq",
+    "noResourcesText": "Yangi resurslar qoʻshilishi bilan shu yerda paydo boʻladi."
+  },
+  "Saved": {
+    "title": "Saqlanganlar",
+    "subtitle": "Keyinroq qaytish uchun saqlagan resurslaringiz. Ularni faqat siz koʻrasiz.",
+    "topic": "Mavzu",
+    "allTopics": "Barcha mavzular",
+    "apply": "Koʻrsatish",
+    "emptyTitle": "Hali hech narsa saqlamagansiz",
+    "emptyText": "Resurs kartasidagi saqlash belgisini bosing — u shu yerda paydo boʻladi.",
+    "emptyCta": "Resurslarni koʻrish",
+    "emptyTopicTitle": "Bu mavzuda saqlangan resurs yoʻq"
   }
 }

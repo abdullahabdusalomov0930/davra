@@ -8,12 +8,15 @@ import { routes } from "@/lib/routes";
 import type { ResourceCardData } from "@/server/services/resources";
 
 import { RatingSummary } from "./rating-summary";
+import { ResourceActions, type ResourceViewer } from "./resource-actions";
 import { RESOURCE_TYPE_ICONS } from "./resource-meta";
 import { ResourceTags } from "./resource-tags";
 import { SiteFavicon } from "./site-favicon";
 
 type ResourceCardProps = {
   resource: ResourceCardData;
+  /** The visitor's relation to the card, for the like and save buttons. */
+  viewer: ResourceViewer;
   /** Hide the author row, e.g. on the author's own profile. */
   hideAuthor?: boolean;
 };
@@ -22,7 +25,7 @@ type ResourceCardProps = {
  * A resource in a list. The whole card links to the resource page; the topic and author links sit
  * above that link so they stay clickable on their own.
  */
-export function ResourceCard({ resource, hideAuthor = false }: ResourceCardProps) {
+export function ResourceCard({ resource, viewer, hideAuthor = false }: ResourceCardProps) {
   const t = useTranslations("Resource");
   const tType = useTranslations("ResourceType");
   const tStatus = useTranslations("ResourceStatus");
@@ -52,6 +55,10 @@ export function ResourceCard({ resource, hideAuthor = false }: ResourceCardProps
             <span className="truncate">{resource.domain}</span>
             <span aria-hidden>·</span>
             <span className="shrink-0">{tType(resource.type)}</span>
+            <span aria-hidden>·</span>
+            <time className="shrink-0" dateTime={date.toISOString()} title={t("date", uzDateParts(format, date))}>
+              {format.relativeTime(date, now)}
+            </time>
           </p>
         </div>
         {resource.status !== "published" && (
@@ -88,11 +95,14 @@ export function ResourceCard({ resource, hideAuthor = false }: ResourceCardProps
             <span className="truncate">{resource.author.display_name}</span>
           </Link>
         )}
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2">
           <RatingSummary sum={resource.ratings_sum} count={resource.ratings_count} />
-          <time dateTime={date.toISOString()} title={t("date", uzDateParts(format, date))}>
-            {format.relativeTime(date, now)}
-          </time>
+          <ResourceActions
+            resourceId={resource.id}
+            likes={resource.likes_count}
+            viewer={viewer}
+            signInHref={routes.signInTo(routes.resource(resource.slug))}
+          />
         </div>
       </div>
     </article>

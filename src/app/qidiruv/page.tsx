@@ -3,12 +3,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { toCardEntries } from "@/components/feed/card-entries";
+import { renderCardEntries } from "@/components/feed/card-entries";
 import { ResourceList } from "@/components/feed/resource-list";
 import { SearchFilters } from "@/components/search/search-filters";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { defaultSearchSort, type FeedQuery, parseSearchParams, toSearchQueryString } from "@/lib/validators";
+import { loadMoreResourcesAction } from "@/server/actions/feed";
 import { findResources } from "@/server/services/feed";
 import { getTopics } from "@/server/services/topics";
 
@@ -62,9 +63,9 @@ export default async function SearchPage({ searchParams }: PageProps<"/qidiruv">
         {page.items.length > 0 ? (
           <ResourceList
             key={baseHref}
-            initialCards={toCardEntries(page.items)}
+            initialCards={await renderCardEntries(page.items)}
             initialCursor={page.nextCursor}
-            query={query}
+            loadMore={loadMoreResourcesAction.bind(null, query)}
             baseHref={baseHref}
           />
         ) : (
