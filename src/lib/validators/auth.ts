@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { message } from "./messages";
 import { displayNameSchema, usernameSchema } from "./profile";

@@ -556,3 +556,29 @@ The logo (lucide "book-open" on the primary colour) is defined once in `src/lib/
 renders the favicon, SVG icon, Apple touch icon and manifest icons from it, and the share images use the
 same mark. Brand colours are repeated there as hex because images and the manifest cannot read CSS
 variables.
+
+### D62. Page loading and performance
+
+The root `loading.tsx` streamed every page as a skeleton first and swapped in the content when its data
+arrived. On a phone that cost more than it gave: the swap moved the footer (layout shift 0.17), the
+largest paint waited for the swap, missing pages could only answer 200 with `noindex` (D34), and
+`generateMetadata` was streamed into `<body>` for ordinary browsers. Server responses are fast (one or two
+queries), so pages now render completely before the first byte; the topic page's skeleton went too, and
+only search keeps one (it changes on every filter). Client-side navigation keeps the old page until the
+new one is ready. Only the Latin subset of Inter is preloaded; the others are declared with their
+`unicode-range` and load when a page needs them. Zod is configured `jitless` in `src/lib/zod.ts`, because
+its `eval` probe trips the CSP in browsers. Result on mobile Lighthouse: Performance 88–96, CLS 0.
+
+### D63. Tests and demo data
+
+Four layers: unit tests (Vitest) for pure code; pgTAP for everything the database enforces (RLS, triggers,
+limits, ranking), because that is where the security model lives; Playwright end-to-end tests for the flows
+in the acceptance criteria; and axe-core inside Playwright for WCAG 2.1 AA on every page, in light and dark
+mode. The end-to-end run starts from `db:reset` + `db:seed` so it is repeatable; it therefore only runs
+against the local stack.
+
+Demo data comes from a CSV file through the same importer admins use, so the importer is exercised by
+every seed. The importer writes with the secret key (it runs on an admin's machine, not in the app), but
+only in a moderator's or admin's name, validates every row with the form's schema before writing
+anything, and skips existing links, so re-running a file is safe. The seed script refuses non-local
+databases because its accounts share a published password.

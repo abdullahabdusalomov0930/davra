@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 // Trimmed, because a stray space pasted into a hosting dashboard would otherwise reach the Supabase client.
 const httpUrl = z

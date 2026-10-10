@@ -1,6 +1,6 @@
 import "server-only";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 /** Server-only secrets. Never import this module from client components. */
 const serverEnvSchema = z.object({

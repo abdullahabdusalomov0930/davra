@@ -1,6 +1,6 @@
 "use server";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import type { ActionResult } from "@/lib/action-result";
 import { type CommentInput, commentSchema, type RatingInput, ratingSchema } from "@/lib/validators";

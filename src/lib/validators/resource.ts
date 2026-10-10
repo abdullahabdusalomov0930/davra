@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { normalizeUrl } from "@/lib/url-normalize";
 import { Constants } from "@/types/database";

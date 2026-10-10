@@ -1,6 +1,6 @@
 "use server";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { type CardEntry, renderCardEntries } from "@/components/feed/card-entries";
 import { decodeCursor } from "@/lib/feed-cursor";

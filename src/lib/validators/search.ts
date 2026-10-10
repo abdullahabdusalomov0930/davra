@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { RESOURCE_LANGUAGES, RESOURCE_LEVELS, RESOURCE_PRICES, RESOURCE_TYPES } from "./resource";
 
