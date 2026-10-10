@@ -1,12 +1,12 @@
-# Resurs
+# Davra
 
 A focused network where Uzbek students share and discover useful learning resources, each as a
 structured card with a short review in Uzbek. Web MVP built with Next.js and Supabase.
 
-> The product name is a placeholder; change it in `src/lib/site-config.ts`.
+> The product name lives in `src/lib/site-config.ts`.
 
 Project status: see [CHANGELOG.md](CHANGELOG.md). Design choices: [DECISIONS.md](DECISIONS.md).
-Full product brief: [claude-code-prompt.md](claude-code-prompt.md).
+Full product brief: [claude-code-prompt.md](claude-code-prompt.md) (written under the working name "Resurs").
 
 ## Requirements
 

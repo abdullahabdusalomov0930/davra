@@ -78,3 +78,9 @@ ESLint 10 is out, but `eslint-plugin-react`, `-jsx-a11y` and `-import` (used by
 
 `radix-nova` style. Generated components are edited when they contain hard-coded English
 (e.g. `Sheet` now requires a translated `closeLabel`).
+
+### D13. Product name: Davra
+
+The owner chose **Davra** (matches the GitHub repo name) instead of the working name "Resurs".
+Changed in `src/lib/site-config.ts`, `package.json` and the local Supabase `project_id`.
+The brief (`claude-code-prompt.md`) still says "Resurs"; treat that as the old working name.

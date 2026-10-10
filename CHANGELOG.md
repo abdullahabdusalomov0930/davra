@@ -19,3 +19,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Local Supabase config (`supabase/config.toml`) with email confirmation enabled.
 - Tooling: ESLint (+ Prettier), Prettier with the Tailwind plugin, Vitest with first unit tests (CSP, env).
 - `.env.example`, `DECISIONS.md`, `README.md`.
+
+#### Changed
+
+- Product renamed from the working name "Resurs" to **Davra**.

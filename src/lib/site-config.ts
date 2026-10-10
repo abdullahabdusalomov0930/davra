@@ -3,6 +3,6 @@
  * Renaming the product only requires changing `name` here.
  */
 export const siteConfig = {
-  name: "Resurs",
+  name: "Davra",
   timeZone: "Asia/Tashkent",
 } as const;
