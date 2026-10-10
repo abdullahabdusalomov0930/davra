@@ -13,8 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** The moderation panel: staff only (others get a 404); every page and action is also guarded by RLS. */
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
-  await requireStaff(routes.admin);
+  const staff = await requireStaff(routes.admin);
   const [t, counts] = await Promise.all([getTranslations("Admin"), getModerationCounts()]);
+  const isAdmin = staff.role === "admin";
 
   const items = [
     { href: routes.admin, label: t("nav.overview") },
@@ -22,9 +23,19 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     { href: routes.adminComments, label: t("nav.comments"), count: counts.pendingComments },
     { href: routes.adminReports, label: t("nav.reports"), count: counts.reports + counts.removals },
     { href: routes.adminLinks, label: t("nav.links"), count: counts.brokenLinks },
+    { href: routes.adminAppeals, label: t("nav.appeals"), count: counts.appeals },
+    { href: routes.adminRequests, label: t("nav.requests"), count: counts.requests },
+    ...(isAdmin ? [{ href: routes.adminSevere, label: t("nav.severe"), count: counts.severe }] : []),
     { href: routes.adminUsers, label: t("nav.users") },
     { href: routes.adminTopics, label: t("nav.topics") },
     { href: routes.adminDomains, label: t("nav.domains") },
+    { href: routes.adminAudit, label: t("nav.audit") },
+    ...(isAdmin
+      ? [
+          { href: routes.adminSettings, label: t("nav.settings") },
+          { href: routes.adminSecurity, label: t("nav.security") },
+        ]
+      : []),
   ];
 
   return (

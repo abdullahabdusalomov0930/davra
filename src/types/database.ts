@@ -3,6 +3,91 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          key: string;
+          updated_at: string;
+          updated_by: string | null;
+          value: NonNullable<Json>;
+        };
+        ComputedFields: never;
+        Insert: {
+          key: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          value: NonNullable<Json>;
+        };
+        Update: {
+          key?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          value?: NonNullable<Json>;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "app_settings_updated_by_fkey";
+            columns: ["updated_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      appeals: {
+        Row: {
+          created_at: string;
+          handled_at: string | null;
+          handled_by: string | null;
+          id: string;
+          message: string;
+          response: string | null;
+          status: string;
+          target_id: string;
+          target_type: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          handled_at?: string | null;
+          handled_by?: string | null;
+          id?: string;
+          message: string;
+          response?: string | null;
+          status?: string;
+          target_id: string;
+          target_type: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          handled_at?: string | null;
+          handled_by?: string | null;
+          id?: string;
+          message?: string;
+          response?: string | null;
+          status?: string;
+          target_id?: string;
+          target_type?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "appeals_handled_by_fkey";
+            columns: ["handled_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "appeals_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           action: string;
@@ -10,6 +95,7 @@ export type Database = {
           created_at: string;
           details: NonNullable<Json>;
           id: string;
+          reason: string | null;
           target_id: string;
           target_type: string;
         };
@@ -20,6 +106,7 @@ export type Database = {
           created_at?: string;
           details?: NonNullable<Json>;
           id?: string;
+          reason?: string | null;
           target_id: string;
           target_type: string;
         };
@@ -29,6 +116,7 @@ export type Database = {
           created_at?: string;
           details?: NonNullable<Json>;
           id?: string;
+          reason?: string | null;
           target_id?: string;
           target_type?: string;
         };
@@ -42,30 +130,91 @@ export type Database = {
           },
         ];
       };
-      blocked_domains: {
+      auth_events: {
         Row: {
           created_at: string;
-          created_by: string | null;
+          email_hash: string | null;
+          id: string;
+          ip_hash: string | null;
+          kind: string;
+          user_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          email_hash?: string | null;
+          id?: string;
+          ip_hash?: string | null;
+          kind: string;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          email_hash?: string | null;
+          id?: string;
+          ip_hash?: string | null;
+          kind?: string;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
+      blocked_domains: {
+        Row: {
+          added_by: string | null;
+          category: string;
+          created_at: string;
           domain: string;
           reason: string | null;
         };
         ComputedFields: never;
         Insert: {
+          added_by?: string | null;
+          category?: string;
           created_at?: string;
-          created_by?: string | null;
           domain: string;
           reason?: string | null;
         };
         Update: {
+          added_by?: string | null;
+          category?: string;
           created_at?: string;
-          created_by?: string | null;
           domain?: string;
           reason?: string | null;
         };
         Relationships: [
           {
             foreignKeyName: "blocked_domains_created_by_fkey";
-            columns: ["created_by"];
+            columns: ["added_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      blocked_terms: {
+        Row: {
+          added_by: string | null;
+          category: string;
+          created_at: string;
+          term: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          added_by?: string | null;
+          category: string;
+          created_at?: string;
+          term: string;
+        };
+        Update: {
+          added_by?: string | null;
+          category?: string;
+          created_at?: string;
+          term?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "blocked_terms_added_by_fkey";
+            columns: ["added_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["id"];
@@ -78,6 +227,7 @@ export type Database = {
           body: string;
           created_at: string;
           id: string;
+          moderation_state: string | null;
           resource_id: string;
           status: Database["public"]["Enums"]["comment_status"];
         };
@@ -87,6 +237,7 @@ export type Database = {
           body: string;
           created_at?: string;
           id?: string;
+          moderation_state?: string | null;
           resource_id: string;
           status?: Database["public"]["Enums"]["comment_status"];
         };
@@ -95,6 +246,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           id?: string;
+          moderation_state?: string | null;
           resource_id?: string;
           status?: Database["public"]["Enums"]["comment_status"];
         };
@@ -225,8 +377,110 @@ export type Database = {
           },
         ];
       };
+      notifications: {
+        Row: {
+          created_at: string;
+          id: string;
+          kind: string;
+          message: string | null;
+          read_at: string | null;
+          rule: string | null;
+          target_id: string | null;
+          target_type: string | null;
+          until: string | null;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          kind: string;
+          message?: string | null;
+          read_at?: string | null;
+          rule?: string | null;
+          target_id?: string | null;
+          target_type?: string | null;
+          until?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          kind?: string;
+          message?: string | null;
+          read_at?: string | null;
+          rule?: string | null;
+          target_id?: string | null;
+          target_type?: string | null;
+          until?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      pending_actions: {
+        Row: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          id: string;
+          kind: string;
+          reason: string;
+          requested_by: string | null;
+          status: string;
+          target_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          kind: string;
+          reason: string;
+          requested_by?: string | null;
+          status?: string;
+          target_id: string;
+        };
+        Update: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          kind?: string;
+          reason?: string;
+          requested_by?: string | null;
+          status?: string;
+          target_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "pending_actions_decided_by_fkey";
+            columns: ["decided_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "pending_actions_requested_by_fkey";
+            columns: ["requested_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
+          ban_reason: string | null;
+          banned_until: string | null;
           bio: string | null;
           created_at: string;
           display_name: string;
@@ -234,12 +488,16 @@ export type Database = {
           id: string;
           is_banned: boolean;
           role: Database["public"]["Enums"]["user_role"];
+          trust_level: number;
+          trust_level_manual: boolean;
           university: string | null;
           updated_at: string;
           username: string;
         };
         ComputedFields: never;
         Insert: {
+          ban_reason?: string | null;
+          banned_until?: string | null;
           bio?: string | null;
           created_at?: string;
           display_name: string;
@@ -247,11 +505,15 @@ export type Database = {
           id: string;
           is_banned?: boolean;
           role?: Database["public"]["Enums"]["user_role"];
+          trust_level?: number;
+          trust_level_manual?: boolean;
           university?: string | null;
           updated_at?: string;
           username: string;
         };
         Update: {
+          ban_reason?: string | null;
+          banned_until?: string | null;
           bio?: string | null;
           created_at?: string;
           display_name?: string;
@@ -259,6 +521,8 @@ export type Database = {
           id?: string;
           is_banned?: boolean;
           role?: Database["public"]["Enums"]["user_role"];
+          trust_level?: number;
+          trust_level_manual?: boolean;
           university?: string | null;
           updated_at?: string;
           username?: string;
@@ -272,7 +536,7 @@ export type Database = {
           handled_at: string | null;
           handled_by: string | null;
           id: string;
-          ip_hash: string;
+          ip_hash: string | null;
           requester_email: string;
           requester_name: string;
           resource_url: string;
@@ -285,7 +549,7 @@ export type Database = {
           handled_at?: string | null;
           handled_by?: string | null;
           id?: string;
-          ip_hash: string;
+          ip_hash?: string | null;
           requester_email: string;
           requester_name: string;
           resource_url: string;
@@ -297,7 +561,7 @@ export type Database = {
           handled_at?: string | null;
           handled_by?: string | null;
           id?: string;
-          ip_hash?: string;
+          ip_hash?: string | null;
           requester_email?: string;
           requester_name?: string;
           resource_url?: string;
@@ -326,6 +590,7 @@ export type Database = {
           target_id: string;
           target_owner_id: string | null;
           target_type: Database["public"]["Enums"]["report_target"];
+          weight: number;
         };
         ComputedFields: never;
         Insert: {
@@ -340,6 +605,7 @@ export type Database = {
           target_id: string;
           target_owner_id?: string | null;
           target_type: Database["public"]["Enums"]["report_target"];
+          weight?: number;
         };
         Update: {
           created_at?: string;
@@ -353,6 +619,7 @@ export type Database = {
           target_id?: string;
           target_owner_id?: string | null;
           target_type?: Database["public"]["Enums"]["report_target"];
+          weight?: number;
         };
         Relationships: [
           {
@@ -508,6 +775,7 @@ export type Database = {
           likes_count: number;
           link_check_failures: number;
           link_status: Database["public"]["Enums"]["link_status"];
+          moderation_state: string | null;
           popularity_score: number;
           price: Database["public"]["Enums"]["resource_price"];
           published_at: string | null;
@@ -523,6 +791,7 @@ export type Database = {
           title: string;
           topic_id: string;
           type: Database["public"]["Enums"]["resource_type"];
+          unvetted_domain: boolean;
           updated_at: string;
           url: string;
         };
@@ -542,6 +811,7 @@ export type Database = {
           likes_count?: number;
           link_check_failures?: number;
           link_status?: Database["public"]["Enums"]["link_status"];
+          moderation_state?: string | null;
           popularity_score?: number;
           price: Database["public"]["Enums"]["resource_price"];
           published_at?: string | null;
@@ -557,6 +827,7 @@ export type Database = {
           title: string;
           topic_id: string;
           type: Database["public"]["Enums"]["resource_type"];
+          unvetted_domain?: boolean;
           updated_at?: string;
           url: string;
         };
@@ -575,6 +846,7 @@ export type Database = {
           likes_count?: number;
           link_check_failures?: number;
           link_status?: Database["public"]["Enums"]["link_status"];
+          moderation_state?: string | null;
           popularity_score?: number;
           price?: Database["public"]["Enums"]["resource_price"];
           published_at?: string | null;
@@ -590,6 +862,7 @@ export type Database = {
           title?: string;
           topic_id?: string;
           type?: Database["public"]["Enums"]["resource_type"];
+          unvetted_domain?: boolean;
           updated_at?: string;
           url?: string;
         };
@@ -606,6 +879,60 @@ export type Database = {
             columns: ["topic_id"];
             isOneToOne: false;
             referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      severe_incidents: {
+        Row: {
+          author_id: string | null;
+          content_created_at: string | null;
+          first_reported_at: string;
+          handled_at: string | null;
+          handled_by: string | null;
+          id: string;
+          notes: string | null;
+          reports: NonNullable<Json>;
+          snapshot: NonNullable<Json>;
+          status: string;
+          target_id: string;
+          target_type: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          author_id?: string | null;
+          content_created_at?: string | null;
+          first_reported_at?: string;
+          handled_at?: string | null;
+          handled_by?: string | null;
+          id?: string;
+          notes?: string | null;
+          reports?: NonNullable<Json>;
+          snapshot: NonNullable<Json>;
+          status?: string;
+          target_id: string;
+          target_type: string;
+        };
+        Update: {
+          author_id?: string | null;
+          content_created_at?: string | null;
+          first_reported_at?: string;
+          handled_at?: string | null;
+          handled_by?: string | null;
+          id?: string;
+          notes?: string | null;
+          reports?: NonNullable<Json>;
+          snapshot?: NonNullable<Json>;
+          status?: string;
+          target_id?: string;
+          target_type?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "severe_incidents_handled_by_fkey";
+            columns: ["handled_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];
@@ -649,6 +976,45 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      author_records: {
+        Args: { user_ids: string[] };
+        Returns: {
+          confirmed_reports: number;
+          hidden: number;
+          published: number;
+          rejected: number;
+          user_id: string;
+        }[];
+      };
+      ban_details: {
+        Args: { user_id: string };
+        Returns: {
+          ban_reason: string;
+          banned_until: string;
+          is_banned: boolean;
+        }[];
+      };
+      decide_pending_action: { Args: { action_id: string; approve: boolean; note?: string }; Returns: undefined };
+      delete_content: { Args: { reason: string; target_id: string; target_type: string }; Returns: undefined };
+      handle_appeal: { Args: { accept: boolean; appeal_id: string; response: string }; Returns: undefined };
+      handle_removal_request: {
+        Args: { new_status: Database["public"]["Enums"]["report_status"]; reason: string; request_id: string };
+        Returns: undefined;
+      };
+      handle_reports: {
+        Args: {
+          decision: string;
+          reason: string;
+          rule?: string;
+          target_id: string;
+          target_type: Database["public"]["Enums"]["report_target"];
+        };
+        Returns: undefined;
+      };
+      hit_rate_limit: {
+        Args: { bucket: string; key_hash: string; max_hits: number; window_seconds: number };
+        Returns: boolean;
+      };
       issue_safety_ticket: {
         Args: {
           content_hash: string;
@@ -660,11 +1026,31 @@ export type Database = {
         };
         Returns: undefined;
       };
+      moderate_comment: {
+        Args: {
+          comment_id: string;
+          new_status: Database["public"]["Enums"]["comment_status"];
+          reason: string;
+          rule?: string;
+        };
+        Returns: undefined;
+      };
+      moderate_resource: {
+        Args: {
+          new_status: Database["public"]["Enums"]["resource_status"];
+          reason: string;
+          resource_id: string;
+          rule?: string;
+        };
+        Returns: undefined;
+      };
       my_trust_level: { Args: Record<PropertyKey, never>; Returns: number };
       record_link_check: {
         Args: { checked_url: string; outcome: string; resource_id: string };
         Returns: Database["public"]["Enums"]["link_status"];
       };
+      record_reputation: { Args: { reputation: string; resource_id: string }; Returns: undefined };
+      request_action: { Args: { kind: string; reason: string; target_id: string }; Returns: undefined };
       search_resources: {
         Args: {
           after_cursor?: Json;
@@ -684,6 +1070,22 @@ export type Database = {
           next_cursor: Json;
         }[];
       };
+      set_trust_level: { Args: { level: number; reason: string; user_id: string }; Returns: undefined };
+      set_user_ban: { Args: { ban_days: number; reason: string; rule?: string; user_id: string }; Returns: undefined };
+      set_user_role: {
+        Args: { new_role: Database["public"]["Enums"]["user_role"]; reason: string; user_id: string };
+        Returns: undefined;
+      };
+      suspicious_auth_activity: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          failed_sign_ins: number;
+          ip_hash: string;
+          last_seen: string;
+          sign_ups: number;
+        }[];
+      };
+      warn_user: { Args: { reason: string; rule?: string; user_id: string }; Returns: undefined };
       weekly_top_resources: {
         Args: { max_count?: number };
         Returns: {
@@ -698,7 +1100,17 @@ export type Database = {
     Enums: {
       comment_status: "pending" | "published" | "hidden";
       link_status: "ok" | "broken" | "unknown";
-      report_reason: "spam" | "wrong_info" | "inappropriate" | "copyright" | "other";
+      report_reason:
+        | "severe"
+        | "illegal"
+        | "pirated"
+        | "scam_phishing"
+        | "spam"
+        | "harassment"
+        | "wrong_info"
+        | "inappropriate"
+        | "copyright"
+        | "other";
       report_status: "open" | "resolved" | "dismissed";
       report_target: "resource" | "comment" | "user" | "broken_link";
       resource_language: "uz" | "ru" | "en" | "other";
@@ -816,7 +1228,18 @@ export const Constants = {
     Enums: {
       comment_status: ["pending", "published", "hidden"],
       link_status: ["ok", "broken", "unknown"],
-      report_reason: ["spam", "wrong_info", "inappropriate", "copyright", "other"],
+      report_reason: [
+        "severe",
+        "illegal",
+        "pirated",
+        "scam_phishing",
+        "spam",
+        "harassment",
+        "wrong_info",
+        "inappropriate",
+        "copyright",
+        "other",
+      ],
       report_status: ["open", "resolved", "dismissed"],
       report_target: ["resource", "comment", "user", "broken_link"],
       resource_language: ["uz", "ru", "en", "other"],

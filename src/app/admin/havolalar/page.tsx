@@ -4,6 +4,7 @@ import { getFormatter, getNow, getTranslations } from "next-intl/server";
 
 import { ActionButton } from "@/components/admin/action-button";
 import { AdminEmpty } from "@/components/admin/admin-empty";
+import { ModerationButton } from "@/components/admin/moderation-button";
 import { RecheckLinkButton } from "@/components/admin/recheck-link-button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -131,14 +132,17 @@ async function LinkRow({ resource, reports }: { resource: LinkQueueResource; rep
             {t("links.markOk")}
           </ActionButton>
         )}
-        <ActionButton
+        <ModerationButton
           action={moderateResourceAction.bind(null, resource.id, "hidden")}
           variant="ghost"
-          confirm={{ title: t("resources.hideTitle"), description: t("resources.hideText") }}
+          title={t("resources.hideTitle")}
+          description={t("resources.hideText")}
+          withRule
+          defaultRule="unsafe_link"
         >
           <EyeOffIcon aria-hidden />
           {t("links.hide")}
-        </ActionButton>
+        </ModerationButton>
       </div>
     </li>
   );

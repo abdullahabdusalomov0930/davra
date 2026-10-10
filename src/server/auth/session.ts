@@ -5,7 +5,12 @@ import { cache } from "react";
 
 import { createClient } from "@/lib/supabase/server";
 
-export type Viewer = { id: string; email: string | null };
+export type Viewer = {
+  id: string;
+  email: string | null;
+  /** When the user last proved who they are (password, e-mail link), in seconds since 1970. */
+  authenticatedAt: number | null;
+};
 
 /**
  * The signed-in user for this request, read from the verified session JWT (`getClaims`), or null.
@@ -16,10 +21,18 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
   const { data, error } = await supabase.auth.getClaims();
   const claims = data?.claims;
   if (error || !claims?.sub) return null;
-  return { id: claims.sub, email: typeof claims.email === "string" ? claims.email : null };
+  // `amr` lists how and when the session was authenticated; refreshing the token does not change it.
+  const methods = Array.isArray(claims.amr) ? (claims.amr as { timestamp?: unknown }[]) : [];
+  const times = methods.map((method) => method.timestamp).filter((time): time is number => typeof time === "number");
+  return {
+    id: claims.sub,
+    email: typeof claims.email === "string" ? claims.email : null,
+    authenticatedAt: times.length > 0 ? Math.max(...times) : null,
+  };
 });
 
-const VIEWER_PROFILE_COLUMNS = "id, username, display_name, bio, university, field_of_study, role, is_banned" as const;
+const VIEWER_PROFILE_COLUMNS =
+  "id, username, display_name, bio, university, field_of_study, role, is_banned, banned_until, trust_level" as const;
 
 /** The signed-in user's profile, or null when signed out. */
 export const getViewerProfile = cache(async () => {
@@ -60,4 +73,12 @@ export async function requireStaff(returnTo: string): Promise<ViewerProfile> {
   const profile = await getStaffProfile();
   if (!profile) notFound();
   return profile;
+}
+
+const RECENT_SIGN_IN_SECONDS = 15 * 60;
+
+/** The viewer signed in (or confirmed an e-mail link) in the last 15 minutes. */
+export async function hasRecentSignIn(): Promise<boolean> {
+  const viewer = await getViewer();
+  return Boolean(viewer?.authenticatedAt && Date.now() / 1000 - viewer.authenticatedAt < RECENT_SIGN_IN_SECONDS);
 }

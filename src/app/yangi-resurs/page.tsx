@@ -33,13 +33,20 @@ export default async function NewResourcePage() {
         </Alert>
       ) : (
         <>
-          {profile.role === "user" && (
+          {profile.trust_level === 0 ? (
             <Alert>
               <InfoIcon aria-hidden />
-              <AlertDescription>{t("reviewNotice")}</AlertDescription>
+              <AlertDescription>{t("newMemberNotice")}</AlertDescription>
             </Alert>
+          ) : (
+            profile.role === "user" && (
+              <Alert>
+                <InfoIcon aria-hidden />
+                <AlertDescription>{t("reviewNotice")}</AlertDescription>
+              </Alert>
+            )
           )}
-          <ResourceForm topics={topics} />
+          <ResourceForm topics={topics} withCaptcha={profile.trust_level === 0} />
         </>
       )}
     </div>

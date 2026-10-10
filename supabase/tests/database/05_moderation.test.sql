@@ -2,6 +2,8 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(34);
+-- Staff actions need a reason (audit log, D71); these tests make them directly.
+select set_config('davra.reason', 'pgTAP', true);
 
 -- These tests are not about the content safety check (11_content_safety.test.sql is). The app server
 -- checks every text before it is written and issues a single-use ticket for it; these triggers stand

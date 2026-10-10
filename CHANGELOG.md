@@ -5,6 +5,57 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Security addendum X2–X5 — Trust, reports, moderation, link and app security
+
+#### Added
+
+- Trust levels 0–3 on every profile, kept current automatically; admins can set them by hand.
+- Reports with new reasons (severe, illegal, piracy, scam, harassment), weighted by the reporter's
+  trust and track record; content is hidden automatically at weight 3 (2 for illegal content or
+  scams) and goes to the top of the queue.
+- Severe content: hidden at the first report, a frozen copy kept as evidence for admins
+  (/admin/jiddiy), no deletion before the evidence is marked preserved.
+- In-app notifications (/bildirishnomalar) for hidden, rejected or restored content, bans, warnings
+  and appeal decisions; one appeal per decision; the ban notice on every page for banned users.
+- Moderator tools: every action asks for a reason (shown to the user, kept in the audit log),
+  temporary bans (1, 7, 30 days), warnings, trust levels, permanent bans and deletions confirmed by an
+  admin (/admin/sorovlar), appeals (/admin/etirozlar), audit log (/admin/jurnal), settings and extra
+  words for the word filter (/admin/sozlamalar). Queue items show the final link, its reputation and
+  the author's trust level and history.
+- "Siz tashqi saytga oʻtyapsiz" page before links to domains new to Davra; the weekly link check also
+  re-checks link reputation and hides newly flagged links.
+- Account data: JSON export and account deletion in /sozlamalar.
+- Optional Cloudflare Turnstile on sign-up and new members' cards; optional fresh sign-in for admin
+  actions (REQUIRE_RECENT_LOGIN_FOR_ADMIN).
+- Rate limits by IP and e-mail for sign-in, sign-up, password reset and confirmation e-mails, 60
+  searches a minute per address, new links per address; suspicious sign-in activity for admins
+  (/admin/xavfsizlik).
+- CI (lint, types, format, tests, audit, build, gitleaks), Dependabot, `pnpm secrets:scan` with a
+  pre-commit hook (`pnpm hooks:install`), `pnpm security:smoke` for security headers.
+- SECURITY.md, docs/MODERATION_GUIDE.md, docs/INCIDENT_RESPONSE.md, a pre-launch security checklist
+  in the README.
+
+#### Changed
+
+- Sign-in, sign-up and password reset run on the server; session cookies are HttpOnly; the browser no
+  longer talks to Supabase (CSP connect-src 'self').
+- Passwords need at least 10 characters and may not be common or contain your username.
+- One published card now makes a member level 1 (cards publish at once if the check allows them).
+- /qoidalar lists what is not allowed, with examples and a link target for every rule; the privacy
+  policy describes the new data (auth events, hashed IPs kept 30 days, export and deletion).
+- Server inputs reject unknown fields.
+
+#### Owner to do
+
+- Supabase Dashboard → Authentication → Providers → Email: minimum password length 10.
+- Optional: Turnstile keys and REQUIRE_RECENT_LOGIN_FOR_ADMIN on Vercel; GitHub → Settings → Code
+  security: enable Dependabot alerts and private vulnerability reporting.
+- Work through the security checklist in the README before launch.
+
+#### Results
+
+- Tests: 285 unit, 319 pgTAP, 45 end-to-end; security smoke 16/16 against a production build.
+
 ### Security addendum X1 — Content safety core
 
 #### Added

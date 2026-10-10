@@ -1,16 +1,16 @@
-import { CheckIcon, EyeOffIcon, ExternalLinkIcon, RotateCcwIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getNow, getTranslations } from "next-intl/server";
 
-import { ActionButton } from "@/components/admin/action-button";
 import { AdminEmpty } from "@/components/admin/admin-empty";
 import { HoldReasons } from "@/components/admin/hold-reasons";
+import { AuthorInfo, LinkInfo } from "@/components/admin/queue-meta";
+import { ResourceModeration } from "@/components/admin/resource-moderation";
 import { ListTabs } from "@/components/feed/list-tabs";
 import { Badge } from "@/components/ui/badge";
 import { firstParam } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
-import { moderateResourceAction } from "@/server/actions/moderation";
-import { listHoldReasons, listResourcesByStatus } from "@/server/services/admin";
+import { getStaffProfile } from "@/server/auth/session";
+import { listAuthorRecords, listHoldReasons, listResourcesByStatus } from "@/server/services/admin";
 
 const STATUSES = ["pending", "hidden", "rejected"] as const;
 /** Accounts younger than this are flagged in the queue. */
@@ -24,20 +24,23 @@ export async function generateMetadata() {
 export default async function AdminResourcesPage({ searchParams }: PageProps<"/admin/resurslar">) {
   const requested = firstParam((await searchParams).holat);
   const status = STATUSES.find((value) => value === requested) ?? "pending";
-  const [t, tType, format, now, resources] = await Promise.all([
+  const [t, tType, format, now, resources, staff] = await Promise.all([
     getTranslations("Admin"),
     getTranslations("ResourceType"),
     getFormatter(),
     getNow(),
     listResourcesByStatus(status),
+    getStaffProfile(),
   ]);
-  const reasons =
+  const [reasons, records] = await Promise.all([
     status === "pending"
-      ? await listHoldReasons(
+      ? listHoldReasons(
           "resource",
           resources.map((resource) => resource.id),
         )
-      : new Map<string, string[]>();
+      : new Map<string, string[]>(),
+    listAuthorRecords(resources.map((resource) => resource.author.id)),
+  ]);
 
   return (
     <div className="grid gap-5">
@@ -68,66 +71,34 @@ export default async function AdminResourcesPage({ searchParams }: PageProps<"/a
                       <Badge>{resource.topic.name_uz}</Badge>
                       <span>{tType(resource.type)}</span>
                       <span aria-hidden>·</span>
-                      <a
-                        href={resource.url}
-                        target="_blank"
-                        rel="noopener noreferrer ugc nofollow"
-                        className="inline-flex items-center gap-1 hover:text-foreground"
-                      >
-                        {resource.domain}
-                        <ExternalLinkIcon className="size-3" aria-hidden />
-                        <span className="sr-only">{t("openLink")}</span>
-                      </a>
+                      <LinkInfo
+                        url={resource.url}
+                        domain={resource.domain}
+                        finalUrl={resource.final_url}
+                        reputation={resource.reputation_status}
+                        open={resource.moderation_state !== "severe"}
+                      />
                     </p>
                   </div>
                   <p className="text-right text-xs text-muted-foreground">
-                    <Link href={routes.profile(resource.author.username)} className="font-medium hover:underline">
-                      {resource.author.display_name}
-                    </Link>
-                    {newAuthor && (
-                      <Badge variant="outline" className="ml-1.5">
-                        {t("resources.newAuthor")}
-                      </Badge>
-                    )}
-                    <br />
                     <time dateTime={created.toISOString()}>{format.relativeTime(created, now)}</time>
                   </p>
                 </div>
+                <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                  <AuthorInfo author={resource.author} record={records.get(resource.author.id)} />
+                  {newAuthor && <Badge variant="outline">{t("resources.newAuthor")}</Badge>}
+                  {resource.moderation_state && (
+                    <Badge variant="destructive">{t(`state.${resource.moderation_state as "severe"}`)}</Badge>
+                  )}
+                </p>
                 <p className="line-clamp-3 text-sm text-muted-foreground">{resource.summary}</p>
                 <HoldReasons reasons={reasons.get(resource.id)} />
-                <div className="flex flex-wrap gap-2">
-                  {status === "pending" ? (
-                    <>
-                      <ActionButton
-                        action={moderateResourceAction.bind(null, resource.id, "published")}
-                        variant="default"
-                      >
-                        <CheckIcon aria-hidden />
-                        {t("resources.approve")}
-                      </ActionButton>
-                      <ActionButton
-                        action={moderateResourceAction.bind(null, resource.id, "rejected")}
-                        confirm={{ title: t("resources.rejectTitle"), description: t("resources.rejectText") }}
-                      >
-                        <XIcon aria-hidden />
-                        {t("resources.reject")}
-                      </ActionButton>
-                      <ActionButton
-                        action={moderateResourceAction.bind(null, resource.id, "hidden")}
-                        variant="ghost"
-                        confirm={{ title: t("resources.hideTitle"), description: t("resources.hideText") }}
-                      >
-                        <EyeOffIcon aria-hidden />
-                        {t("resources.hide")}
-                      </ActionButton>
-                    </>
-                  ) : (
-                    <ActionButton action={moderateResourceAction.bind(null, resource.id, "published")}>
-                      <RotateCcwIcon aria-hidden />
-                      {t("resources.restore")}
-                    </ActionButton>
-                  )}
-                </div>
+                <ResourceModeration
+                  resourceId={resource.id}
+                  status={resource.status}
+                  domain={resource.domain}
+                  isAdmin={staff?.role === "admin"}
+                />
               </li>
             );
           })}

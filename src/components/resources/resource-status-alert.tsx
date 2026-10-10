@@ -1,6 +1,7 @@
 import { ClockIcon, EyeOffIcon, LinkIcon, OctagonXIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { routes } from "@/lib/routes";
@@ -15,9 +16,12 @@ type Enums = Database["public"]["Enums"];
 export function ResourceStatusAlert({
   status,
   linkStatus,
+  appeal,
 }: {
   status: Enums["resource_status"];
   linkStatus: Enums["link_status"];
+  /** The author's "Eʼtiroz bildirish" button for a hidden or rejected card. */
+  appeal?: ReactNode;
 }) {
   const t = useTranslations("Resource");
 
@@ -41,6 +45,7 @@ export function ResourceStatusAlert({
           <Link href={routes.rules} className="font-medium underline underline-offset-4">
             {t("rulesLink")}
           </Link>
+          {appeal && <div className="mt-2">{appeal}</div>}
         </AlertDescription>
       </Alert>
     );

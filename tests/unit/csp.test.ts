@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { buildCsp } from "@/lib/security/csp";
 
-const base = { nonce: "abc123", supabaseUrl: "https://xyz.supabase.co/some/path" };
+const base = { nonce: "abc123" };
 
 function directive(csp: string, name: string) {
   return csp
@@ -25,10 +25,16 @@ describe("buildCsp", () => {
     expect(csp).not.toContain("upgrade-insecure-requests");
   });
 
-  it("allows the Supabase origin (not the full URL) for API calls only", () => {
+  it("lets the browser talk to the site only (authentication runs on the server)", () => {
     const csp = buildCsp({ ...base, isDev: false });
-    expect(directive(csp, "connect-src")).toBe("connect-src 'self' https://xyz.supabase.co");
-    expect(csp).not.toContain("/some/path");
+    expect(directive(csp, "connect-src")).toBe("connect-src 'self'");
+    expect(directive(csp, "frame-src")).toBe("frame-src 'none'");
+  });
+
+  it("allows Cloudflare Turnstile's frame only when it is configured", () => {
+    expect(directive(buildCsp({ ...base, isDev: false, turnstile: true }), "frame-src")).toBe(
+      "frame-src https://challenges.cloudflare.com",
+    );
   });
 
   it("loads images only from the site itself (no user uploads, no third-party icons)", () => {

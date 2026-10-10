@@ -236,6 +236,8 @@ branching feature. Migrations are never edited after they reach `main` (CLAUDE.m
 
 ### D32. Auth requests go from the browser to Supabase
 
+> Superseded by D74: authentication now runs on the server.
+
 Sign-up, sign-in, resend, password-reset and recovery requests use the browser Supabase client.
 Supabase Auth rate-limits by IP; from Server Actions every student would share the server's few IPs,
 so one busy class could lock everyone out. Nothing secret is involved (publishable key, user's own
@@ -655,3 +657,116 @@ Russian "хуй" reads "xuy" (Uzbek "temper"), "stavka" alone is an interest rat
 "tez pul" is a money transfer. A rejection tells the author which field to change, not which rule
 matched. A card whose title and summary share 80 % of their words with one the same author shared in
 the last 24 hours is refused as a repeat.
+
+### D67. Trust levels
+
+`profiles.trust_level` (security addendum layer 2) replaces the computed "trusted author" of D18.
+Level 0: account younger than 3 days, no published card yet, or a confirmed violation (a report on
+their content that staff resolved) in the last 14 days. Level 1: at least one published card. Level
+2: three or more. Level 3: moderators and admins; banned users count as 0. Level 1 publishes cards at
+once when the safety check allows them (the addendum's rule; before, three published cards were
+needed); level 2 also gets the higher card limit (10 a day) and more weight in reports. Triggers keep
+the level current when a card's status, a report's status, a role or a ban changes, and an hourly job
+covers account age and the end of the 14-day window. An admin can set a level by hand; it then stays
+until they give the user back to the automatic rules. Demotion on a confirmed violation is to 0, for
+14 days.
+
+### D68. Reports, weights and automatic hiding
+
+New reasons: severe, illegal, pirated, scam_phishing, harassment (plus the old ones). Each report is
+weighed when it is filed: staff 3, level 2 1.5, level 1 1, level 0 0.5, an account younger than a day
+0.25; a reporter whose reports in the last 90 days were mostly dismissed counts half (60 %, at least 3
+handled) or a quarter (80 %, at least 5). When the open reports about a published card or comment
+reach weight 3 (2 if any is about illegal content or a scam), it is hidden at once with
+`moderation_state = 'auto_hidden'`, its author is notified with the reason most reports gave, and it
+goes to the top of the queue. Both thresholds are settings (`app_settings`, /admin/sozlamalar).
+Moderators decide all open reports about an item together: take down (hide and resolve), resolve, or
+dismiss, which gives an automatically hidden item back. One open report per person and item, 20
+reports a day, and severe reports have their own limit of 3 a day, because each hides content at once.
+
+### D69. Severe content
+
+A report with the reason "severe" (child safety, terrorism or violent extremism, credible threats)
+hides the card or comment immediately (even a pending one) and stores a frozen JSON copy of it, with
+the author's id, the timestamps and every severe report, in `severe_incidents`, which only admins can
+read. The author is told only that the item was hidden. Content with an open incident cannot be
+deleted until an admin marks the incident "preserved" (the copy exists from the first report, the
+marking makes the decision explicit). The admin page never links to or loads the reported link: it
+shows the domain and a copyable address. Dismissing a severe report is for admins only. What the law
+requires next (reporting to authorities) is left to the owner and a lawyer (docs/INCIDENT_RESPONSE.md).
+The severe-report limit (D68) is the safeguard against using the button to hide content at will.
+
+### D70. Notifications and appeals
+
+Authors learn about decisions in the app, not by e-mail: `notifications` (written by triggers and the
+moderation functions) for hidden, rejected or restored content, bans and their end, warnings and
+appeal decisions, with the rule (a link to its section of /qoidalar) and the moderator's reason. Each
+decision can be appealed once: a hidden or rejected card, a hidden comment, or a ban (banned users can
+appeal although they can write nothing else). Accepting an appeal restores the item or lifts the ban.
+Content hidden because its author was banned is covered by the ban notice and returns with the unban.
+
+### D71. Every moderation action has a reason
+
+Moderators act through database functions (`moderate_resource`, `set_user_ban`, `handle_reports`,
+…) that run with their own rights (SECURITY INVOKER, so RLS and the guards apply as before) and set the
+reason for the transaction. The audit trigger refuses a staff change to someone else's content or
+account without a reason (`reason_required`), so the rule holds for direct API calls too, and writes
+the reason to `audit_log.reason`. The same text reaches the affected user in the notification, so the
+dialog says so. Technical changes are exempt: link status, closing broken-link reports, topics,
+blocklists (which have their own reason field) and settings. Automatic hiding is logged with no actor
+("Tizim"). Bans now have an end (1, 7 or 30 days; `banned_until`, lifted every 10 minutes) or are
+permanent; a ban hides the user's published cards and comments (`moderation_state = 'author_banned'`)
+and lifting it brings them back. The ban reason is not a public column: the user and staff read it
+through `ban_details()`.
+
+### D72. Two-step severe actions
+
+Permanent bans and deleting content are admin powers in the database (a moderator's attempt fails).
+In the panel a moderator's "delete" or "permanent ban" becomes a request (`pending_actions`) that an
+admin confirms or turns down on /admin/sorovlar; the confirmation runs with the admin's rights and is
+audited with both names. Deletion of someone else's content is logged with what was deleted.
+
+### D73. Link safety for readers
+
+Outbound links open in a new tab with `rel="noopener noreferrer nofollow ugc"`, the real domain is
+shown on every card, and nothing from a linked site is embedded or fetched for display. A link opens
+the "Siz tashqi saytga oʻtyapsiz" page (/tashqi/<slug>) first when its domain was new to Davra when a
+member below trust level 2 shared it (`resources.unvetted_domain`) and its reputation is not "safe";
+admins can switch this off or extend it to every link not known to be safe. The weekly link check
+also asks the reputation service again about every link it checks (and where it leads) and hides a
+newly flagged one with `moderation_state = 'reputation_flagged'`; the author is told.
+
+### D74. Authentication on the server
+
+The addendum asks for HttpOnly session cookies and rate limits per IP and per e-mail address, which a
+browser-side sign-in (D32) cannot give. Sign-in, sign-up, password reset, resending the confirmation,
+confirming the address and setting a new password are now Server Actions; the browser no longer talks
+to Supabase at all (the CSP's connect-src is 'self'), and the session cookies are HttpOnly, SameSite=Lax
+and Secure in production. Passwords need 10 characters, may not be one of a built-in list of common
+passwords or a simple run, and may not contain the username or the e-mail name (set the same minimum
+in the Supabase dashboard). Sign-up names pass the text policy. Every attempt is rate limited through
+`src/server/rate-limit.ts` (Postgres sliding window keyed by HMAC hashes of the IP or e-mail; another
+store can implement the same interface); the same module limits text searches (60 a minute per
+address) and new links per address. Cloudflare Turnstile is optional (both keys set) on sign-up and on
+level-0 members' cards. With REQUIRE_RECENT_LOGIN_FOR_ADMIN=true, admins must have signed in within 15
+minutes (the session's `amr` time) before admin actions. Server inputs use strict Zod objects, so
+unknown fields are refused.
+
+### D75. Auth events and IP retention
+
+`auth_events` records sign-ins, failures, sign-ups, reset requests, password changes, limits hit,
+failed bot checks and deleted accounts with hashed e-mail and IP, for admins only; /admin/xavfsizlik
+lists addresses with 10+ failures or 3+ new accounts in a day. Events and the IP hashes of removal
+requests are deleted after 30 days, rate-limit hits after 8. The HMAC key is the Supabase secret key,
+so rotating it also unlinks old hashes. Server errors are logged as one JSON line without query
+strings, cookies or bodies (`src/instrumentation.ts`, where a tracker such as Sentry can be added).
+
+### D76. Account deletion and export
+
+/sozlamalar offers a JSON copy of everything the user wrote or chose (read through RLS, so only their
+own rows) and deletion of the account after the username and password are typed again. Deleting the
+auth user cascades to the profile and with it the user's cards (and their comments and ratings),
+comments, ratings, likes, saves, follows, appeals and notifications. Reports they filed stay without a
+name, the audit log keeps actions without the actor, and severe-incident evidence is kept (no foreign
+key), as the privacy policy says. Removing everything rather than anonymizing cards is the simpler and
+more private choice for an MVP; cards others found useful are lost with the account.

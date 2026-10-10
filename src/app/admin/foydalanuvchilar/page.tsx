@@ -1,18 +1,33 @@
-import { SearchIcon, ShieldCheckIcon, UserCheckIcon, UserXIcon } from "lucide-react";
+import {
+  BellRingIcon,
+  GaugeIcon,
+  SearchIcon,
+  ShieldCheckIcon,
+  UserCheckIcon,
+  UserCogIcon,
+  UserXIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 
-import { ActionButton } from "@/components/admin/action-button";
 import { AdminEmpty } from "@/components/admin/admin-empty";
-import { RoleSelect } from "@/components/admin/role-select";
+import { ModerationButton } from "@/components/admin/moderation-button";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { firstParam } from "@/lib/auth-links";
-import { uzDateParts } from "@/lib/dates";
+import { uzDateParts, uzDateTimeParts } from "@/lib/dates";
 import { routes } from "@/lib/routes";
-import { setUserBanAction } from "@/server/actions/moderation";
+import { BAN_LENGTHS } from "@/lib/validators";
+import {
+  banUserAction,
+  setTrustLevelAction,
+  setUserRoleAction,
+  unbanUserAction,
+  warnUserAction,
+} from "@/server/actions/moderation";
+import { Constants } from "@/types/database";
 import { getViewerProfile } from "@/server/auth/session";
 import { listUsers } from "@/server/services/admin";
 
@@ -73,30 +88,95 @@ export default async function AdminUsersPage({ searchParams }: PageProps<"/admin
                         {tRole(user.role)}
                       </Badge>
                     )}
-                    {user.is_banned && <Badge variant="destructive">{t("users.banned")}</Badge>}
+                    {user.is_banned && (
+                      <Badge variant="destructive">
+                        {user.banned_until
+                          ? t("users.banUntil", {
+                              date: tResource("dateTime", uzDateTimeParts(format, user.banned_until)),
+                            })
+                          : t("users.banPermanent")}
+                      </Badge>
+                    )}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {t("users.joined")}: {tResource("date", uzDateParts(format, user.created_at))}
+                    {t("users.joined")}: {tResource("date", uzDateParts(format, user.created_at))} · {t("trust.label")}:{" "}
+                    {t(`trust.${user.trust_level as 0}`)}
+                    {user.trust_level_manual && ` (${t("trust.manual")})`}
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  {isAdmin && !self && <RoleSelect userId={user.id} role={user.role} label={t("users.role")} />}
-                  {canBan &&
-                    (user.is_banned ? (
-                      <ActionButton action={setUserBanAction.bind(null, user.id, false)}>
-                        <UserCheckIcon aria-hidden />
-                        {t("users.unban")}
-                      </ActionButton>
-                    ) : (
-                      <ActionButton
-                        action={setUserBanAction.bind(null, user.id, true)}
-                        variant="destructive"
-                        confirm={{ title: t("users.banTitle"), description: t("users.banText") }}
-                      >
-                        <UserXIcon aria-hidden />
-                        {t("users.ban")}
-                      </ActionButton>
-                    ))}
+                  {canBan && !user.is_banned && (
+                    <ModerationButton
+                      action={banUserAction.bind(null, user.id)}
+                      variant="destructive"
+                      title={t("users.banTitle")}
+                      description={t("users.banText")}
+                      withRule
+                      choices={{
+                        label: t("moderation.choiceLabel"),
+                        options: BAN_LENGTHS.map((value) => ({ value, label: t(`users.banLengths.${value}`) })),
+                        hint: isAdmin ? undefined : t("users.banHint"),
+                      }}
+                    >
+                      <UserXIcon aria-hidden />
+                      {t("users.ban")}
+                    </ModerationButton>
+                  )}
+                  {canBan && user.is_banned && (
+                    <ModerationButton
+                      action={unbanUserAction.bind(null, user.id)}
+                      title={t("users.unbanTitle")}
+                      description={t("users.unbanText")}
+                      defaultReason={t("moderation.unbanReason")}
+                    >
+                      <UserCheckIcon aria-hidden />
+                      {t("users.unban")}
+                    </ModerationButton>
+                  )}
+                  {!self && (
+                    <ModerationButton
+                      action={warnUserAction.bind(null, user.id)}
+                      variant="ghost"
+                      title={t("users.warnTitle")}
+                      description={t("users.warnText")}
+                      withRule
+                    >
+                      <BellRingIcon aria-hidden />
+                      {t("users.warn")}
+                    </ModerationButton>
+                  )}
+                  {isAdmin && !self && (
+                    <ModerationButton
+                      action={setTrustLevelAction.bind(null, user.id)}
+                      variant="ghost"
+                      title={t("trust.title")}
+                      description={t("trust.text")}
+                      choices={{
+                        label: t("trust.label"),
+                        options: (["auto", "0", "1", "2", "3"] as const).map((value) => ({
+                          value,
+                          label: t(`trust.${value}`),
+                        })),
+                      }}
+                    >
+                      <GaugeIcon aria-hidden />
+                      {t("trust.label")}
+                    </ModerationButton>
+                  )}
+                  {isAdmin && !self && (
+                    <ModerationButton
+                      action={setUserRoleAction.bind(null, user.id)}
+                      variant="ghost"
+                      title={t("users.roleTitle")}
+                      choices={{
+                        label: t("users.role"),
+                        options: Constants.public.Enums.user_role.map((value) => ({ value, label: tRole(value) })),
+                      }}
+                    >
+                      <UserCogIcon aria-hidden />
+                      {t("users.role")}
+                    </ModerationButton>
+                  )}
                 </div>
               </li>
             );

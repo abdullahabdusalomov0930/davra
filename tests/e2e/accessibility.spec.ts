@@ -40,6 +40,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       "/saqlanganlar",
       "/obunalarim",
       "/sozlamalar",
+      "/bildirishnomalar",
       "/resurs/leetcode-masalalari",
     ]) {
       await page.goto(path);
@@ -58,6 +59,13 @@ test("moderation panel", async ({ page }) => {
     "/admin/foydalanuvchilar",
     "/admin/mavzular",
     "/admin/domenlar",
+    "/admin/izohlar",
+    "/admin/etirozlar",
+    "/admin/sorovlar",
+    "/admin/jiddiy",
+    "/admin/jurnal",
+    "/admin/sozlamalar",
+    "/admin/xavfsizlik",
   ]) {
     await page.goto(path);
     await expectNoAxeViolations(page);

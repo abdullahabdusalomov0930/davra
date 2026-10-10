@@ -13,6 +13,8 @@ export const publicEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().trim().min(1),
   /** Shown on the legal pages for questions and data requests; optional until there is one. */
   NEXT_PUBLIC_CONTACT_EMAIL: z.string().trim().pipe(z.email()).optional(),
+  // Cloudflare Turnstile site key (public); optional, see src/server/auth/turnstile.ts.
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().trim().min(1).optional(),
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;
@@ -24,6 +26,7 @@ export function readPublicEnv() {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL || undefined,
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || undefined,
   };
 }
 

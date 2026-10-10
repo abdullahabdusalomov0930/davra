@@ -2,13 +2,15 @@ import { ClockIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getNow, getTranslations } from "next-intl/server";
 
-import { ActionButton } from "@/components/admin/action-button";
+import { ModerationButton } from "@/components/admin/moderation-button";
+import { AppealButton } from "@/components/notifications/appeal-button";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { ReportButton } from "@/components/reports/report-button";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { moderateCommentAction } from "@/server/actions/moderation";
 import { listComments } from "@/server/services/interactions";
+import { listAppealedTargets } from "@/server/services/notifications";
 
 import { CommentForm } from "./comment-form";
 import { DeleteCommentButton } from "./delete-comment-button";
@@ -19,18 +21,28 @@ type CommentsSectionProps = {
   viewerId: string | null;
   /** Staff can hide and show comments. */
   isStaff?: boolean;
+  /** Banned users read but do not write. */
+  viewerBanned?: boolean;
 };
 
 /** Flat comments, oldest first, with the form at the end. */
-export async function CommentsSection({ resource, viewerId, isStaff = false }: CommentsSectionProps) {
-  const [t, tAdmin, tRatings, format, now, comments] = await Promise.all([
+export async function CommentsSection({
+  resource,
+  viewerId,
+  isStaff = false,
+  viewerBanned = false,
+}: CommentsSectionProps) {
+  const [t, tAdmin, tRatings, tBanned, format, now, comments] = await Promise.all([
     getTranslations("Comments"),
     getTranslations("Admin"),
     getTranslations("Ratings"),
+    getTranslations("Banned"),
     getFormatter(),
     getNow(),
     listComments(resource.id),
   ]);
+  const ownHidden = comments.some((comment) => comment.author_id === viewerId && comment.status === "hidden");
+  const appealed = ownHidden ? await listAppealedTargets() : new Set<string>();
 
   return (
     <section
@@ -69,6 +81,11 @@ export async function CommentsSection({ resource, viewerId, isStaff = false }: C
                         {t("hidden")}
                       </span>
                     )}
+                    {comment.status === "hidden" &&
+                      comment.author_id === viewerId &&
+                      !appealed.has(`comment:${comment.id}`) && (
+                        <AppealButton targetType="comment" targetId={comment.id} />
+                      )}
                     {comment.status === "pending" && (
                       <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                         <ClockIcon className="size-3.5" aria-hidden />
@@ -80,7 +97,7 @@ export async function CommentsSection({ resource, viewerId, isStaff = false }: C
                 </div>
                 <div className="flex shrink-0 items-start gap-1">
                   {isStaff && (
-                    <ActionButton
+                    <ModerationButton
                       action={moderateCommentAction.bind(
                         null,
                         comment.id,
@@ -88,13 +105,22 @@ export async function CommentsSection({ resource, viewerId, isStaff = false }: C
                       )}
                       variant="ghost"
                       className="h-7 text-xs text-muted-foreground"
+                      title={
+                        comment.status === "published"
+                          ? tAdmin("comments.hideTitle")
+                          : comment.status === "pending"
+                            ? tAdmin("comments.publishTitle")
+                            : tAdmin("comments.showTitle")
+                      }
+                      defaultReason={comment.status === "published" ? "" : tAdmin("moderation.approveReason")}
+                      withRule={comment.status === "published"}
                     >
                       {comment.status === "hidden"
                         ? tAdmin("comments.show")
                         : comment.status === "pending"
                           ? tAdmin("comments.approve")
                           : tAdmin("comments.hide")}
-                    </ActionButton>
+                    </ModerationButton>
                   )}
                   {comment.author_id === viewerId ? (
                     <DeleteCommentButton commentId={comment.id} />
@@ -118,6 +144,8 @@ export async function CommentsSection({ resource, viewerId, isStaff = false }: C
       <div className="border-t pt-6">
         {resource.status !== "published" ? (
           <p className="text-sm text-muted-foreground">{tRatings("notPublished")}</p>
+        ) : viewerId && viewerBanned ? (
+          <p className="text-sm text-muted-foreground">{tBanned("text")}</p>
         ) : viewerId ? (
           <CommentForm resourceId={resource.id} />
         ) : (

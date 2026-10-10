@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
   const csp = buildCsp({
     nonce,
     isDev: process.env.NODE_ENV === "development",
-    supabaseUrl: getPublicEnv().NEXT_PUBLIC_SUPABASE_URL,
+    turnstile: Boolean(getPublicEnv().NEXT_PUBLIC_TURNSTILE_SITE_KEY),
   });
 
   // Next.js reads the nonce from the request's CSP header and applies it to its own scripts.

@@ -12,13 +12,14 @@ import { Stars } from "./stars";
 
 type RatingsSectionProps = {
   resource: { id: string; slug: string; status: string; ratings_sum: number; ratings_count: number };
-  viewer: { kind: "guest" } | { kind: "author" } | { kind: "member"; id: string };
+  viewer: { kind: "guest" } | { kind: "author" } | { kind: "banned" } | { kind: "member"; id: string };
 };
 
 /** Average rating, the visitor's own rating form, and the written reviews. */
 export async function RatingsSection({ resource, viewer }: RatingsSectionProps) {
-  const [t, format, now, reviews, current] = await Promise.all([
+  const [t, tBanned, format, now, reviews, current] = await Promise.all([
     getTranslations("Ratings"),
+    getTranslations("Banned"),
     getFormatter(),
     getNow(),
     listReviews(resource.id),
@@ -39,6 +40,8 @@ export async function RatingsSection({ resource, viewer }: RatingsSectionProps) 
     );
   } else if (viewer.kind === "author") {
     action = <p className="text-sm text-muted-foreground">{t("own")}</p>;
+  } else if (viewer.kind === "banned") {
+    action = <p className="text-sm text-muted-foreground">{tBanned("text")}</p>;
   } else {
     action = (
       <RatingForm

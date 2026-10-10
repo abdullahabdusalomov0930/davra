@@ -14,10 +14,10 @@ import { SubmitButton } from "@/components/forms/submit-button";
 import { useErrorMessage } from "@/components/forms/use-error-message";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
-import { type AuthErrorKey, authErrorKey } from "@/lib/auth-errors";
+import type { AuthErrorKey } from "@/lib/auth-errors";
 import { routes } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/client";
 import { type SignInInput, signInSchema } from "@/lib/validators";
+import { signInAction } from "@/server/actions/auth";
 
 import { ResendConfirmation } from "./resend-confirmation";
 
@@ -41,9 +41,9 @@ export function SignInForm({ next }: { next: string }) {
     setFormError(null);
     setUnconfirmedEmail(null);
 
-    const { error } = await createClient().auth.signInWithPassword(values);
-    if (error) {
-      const key = authErrorKey(error);
+    const result = await signInAction(values).catch(() => ({ ok: false as const, error: "network" as const }));
+    if (!result.ok) {
+      const key = result.error ?? "unknown";
       setFormError(key);
       if (key === "emailNotConfirmed") setUnconfirmedEmail(values.email);
       form.setFocus("password");

@@ -15,12 +15,11 @@ import { SubmitButton } from "@/components/forms/submit-button";
 import { useErrorMessage } from "@/components/forms/use-error-message";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { type AuthErrorKey, authErrorKey } from "@/lib/auth-errors";
+import type { AuthErrorKey } from "@/lib/auth-errors";
+import type { RecoveryLink } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/client";
 import { type NewPasswordInput, newPasswordFormSchema } from "@/lib/validators";
-
-export type RecoveryLink = { tokenHash: string } | { code: string } | null;
+import { updatePasswordAction } from "@/server/actions/auth";
 
 /**
  * The recovery token is used only when the new password is submitted (not on page load), so mail
@@ -32,7 +31,6 @@ export function NewPasswordForm({ link }: { link: RecoveryLink }) {
   const tError = useTranslations("AuthErrors");
   const errorMessage = useErrorMessage();
   const router = useRouter();
-  const [verified, setVerified] = useState(false);
   const [formError, setFormError] = useState<AuthErrorKey | null>(null);
   const [redirecting, setRedirecting] = useState(false);
 
@@ -57,23 +55,14 @@ export function NewPasswordForm({ link }: { link: RecoveryLink }) {
 
   const onSubmit = form.handleSubmit(async ({ password }) => {
     setFormError(null);
-    const supabase = createClient();
-
-    if (!verified) {
-      const { error } =
-        "code" in link
-          ? await supabase.auth.exchangeCodeForSession(link.code)
-          : await supabase.auth.verifyOtp({ token_hash: link.tokenHash, type: "recovery" });
-      if (error) {
-        setFormError("linkInvalid");
-        return;
-      }
-      setVerified(true);
-    }
-
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) {
-      setFormError(authErrorKey(error));
+    const result = await updatePasswordAction(link, { password }).catch(() => ({
+      ok: false as const,
+      error: "network" as const,
+      fieldErrors: undefined,
+    }));
+    if (!result.ok) {
+      if (result.fieldErrors?.password) form.setError("password", { message: result.fieldErrors.password });
+      if (result.error) setFormError(result.error);
       form.setFocus("password");
       return;
     }

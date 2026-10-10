@@ -2,7 +2,7 @@ import { CheckIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getNow, getTranslations } from "next-intl/server";
 
-import { ActionButton } from "@/components/admin/action-button";
+import { ModerationButton } from "@/components/admin/moderation-button";
 import { AdminEmpty } from "@/components/admin/admin-empty";
 import { HoldReasons } from "@/components/admin/hold-reasons";
 import { Badge } from "@/components/ui/badge";
@@ -66,14 +66,24 @@ export default async function AdminCommentsPage() {
             <p className="text-sm break-words whitespace-pre-line">{comment.body}</p>
             <HoldReasons reasons={reasons.get(comment.id)} />
             <div className="flex flex-wrap gap-2">
-              <ActionButton action={moderateCommentAction.bind(null, comment.id, "published")} variant="default">
+              <ModerationButton
+                action={moderateCommentAction.bind(null, comment.id, "published")}
+                variant="default"
+                title={t("comments.publishTitle")}
+                defaultReason={t("moderation.approveReason")}
+              >
                 <CheckIcon aria-hidden />
                 {t("comments.approve")}
-              </ActionButton>
-              <ActionButton action={moderateCommentAction.bind(null, comment.id, "hidden")} variant="ghost">
+              </ModerationButton>
+              <ModerationButton
+                action={moderateCommentAction.bind(null, comment.id, "hidden")}
+                variant="ghost"
+                title={t("comments.hideTitle")}
+                withRule
+              >
                 <EyeOffIcon aria-hidden />
                 {t("comments.hide")}
-              </ActionButton>
+              </ModerationButton>
             </div>
           </li>
         );

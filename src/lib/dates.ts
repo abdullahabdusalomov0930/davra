@@ -14,3 +14,12 @@ export function uzDateParts(format: Formatter, value: Date | string) {
     day: format.dateTime(date, { day: "numeric" }),
   };
 }
+
+/** uzDateParts plus the time of day, for "Resource.dateTime" ("2026-yil 10-oktabr, 14:05"). */
+export function uzDateTimeParts(format: Formatter, value: Date | string) {
+  const date = typeof value === "string" ? new Date(value) : value;
+  return {
+    ...uzDateParts(format, date),
+    time: format.dateTime(date, { hour: "2-digit", minute: "2-digit", hour12: false }),
+  };
+}

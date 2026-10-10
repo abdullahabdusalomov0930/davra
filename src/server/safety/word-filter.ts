@@ -191,4 +191,6 @@ export function createWordFilter(...lists: WordLists[]): WordFilter {
 }
 
 // Each file's "_note" is for whoever edits the lists.
-export const wordFilter = createWordFilter(...[uz, ru, en].map(({ _note, ...lists }) => lists));
+export const BUILT_IN_LISTS: WordLists[] = [uz, ru, en].map(({ _note, ...lists }) => lists);
+
+export const wordFilter = createWordFilter(...BUILT_IN_LISTS);

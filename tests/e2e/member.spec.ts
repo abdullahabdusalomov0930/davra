@@ -73,6 +73,30 @@ test("profile texts are checked when saved", async ({ page }) => {
   await expect(page.getByText("Profil saqlandi.")).toBeVisible();
 });
 
+test("text that looks like HTML is shown as plain text", async ({ page }) => {
+  const dialogs: string[] = [];
+  page.on("dialog", async (dialog) => {
+    dialogs.push(dialog.message());
+    await dialog.dismiss();
+  });
+  const payload = `<img src=x onerror="alert('xss')"> <script>alert('xss')</script> ${Date.now()}`;
+
+  await signIn(page, accounts.member, "/resurs/pro-git-kitobi");
+  await page.getByLabel("Izohingiz").fill(payload);
+  await page.getByRole("button", { name: "Yuborish" }).click();
+  await expect(page.getByText(payload)).toBeVisible();
+
+  await page.goto("/sozlamalar");
+  const bio = `<b onmouseover="alert('xss')">Salom</b> ${Date.now()}`;
+  await page.getByLabel("Oʻzingiz haqingizda").fill(bio);
+  await page.getByRole("button", { name: "Saqlash" }).click();
+  await expect(page.getByText("Profil saqlandi.")).toBeVisible();
+  await page.goto("/u/nodira");
+  await expect(page.getByText(bio)).toBeVisible();
+  await expect(page.locator("main img[src='x'], main b[onmouseover]")).toHaveCount(0);
+  expect(dialogs).toEqual([]);
+});
+
 test("like, save, rate and comment on someone else's card", async ({ page }) => {
   await signIn(page, accounts.member, "/resurs/y-combinator-kutubxonasi");
 

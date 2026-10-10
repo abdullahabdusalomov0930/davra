@@ -10,7 +10,8 @@ import { APP_NAME } from "@/lib/config";
 
 export type LegalDocument = "rules" | "terms" | "privacy";
 
-type Section = { title: string; paragraphs?: string[]; items?: string[] };
+/** `id`: an anchor other pages link to, e.g. /qoidalar#spam from a notification. */
+type Section = { id?: string; title: string; paragraphs?: string[]; items?: string[] };
 
 /** The text lives in messages/uz.json (Legal.*) as plain strings; `{appName}` is the only placeholder. */
 function fill(text: string) {
@@ -63,7 +64,7 @@ export async function LegalPage({
       </header>
 
       {sections.map((section) => (
-        <section key={section.title} className="grid gap-3">
+        <section key={section.title} id={section.id} className="grid scroll-mt-20 gap-3">
           <h2 className="text-xl font-semibold tracking-tight">{fill(section.title)}</h2>
           {section.paragraphs?.map((paragraph) => (
             <p key={paragraph} className="leading-relaxed text-pretty">

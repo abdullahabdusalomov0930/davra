@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 import { ChoiceChips } from "@/components/forms/choice-chips";
 import { Field } from "@/components/forms/field";
+import { Turnstile } from "@/components/forms/turnstile";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { useErrorMessage } from "@/components/forms/use-error-message";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -44,6 +45,8 @@ type ResourceFormProps = {
   topics: readonly Topic[];
   /** The card being edited; without it the form creates a new one. */
   resource?: { id: string; slug: string; status: ResourceStatus; values: ResourceInput };
+  /** New members prove they are not a bot (Cloudflare Turnstile, when configured). */
+  withCaptcha?: boolean;
 };
 
 /** A link that is already shared: the existing card's slug when the author may open it. */
@@ -60,7 +63,8 @@ function FormSection({ id, title, children }: { id: string; title: string; child
   );
 }
 
-export function ResourceForm({ topics, resource }: ResourceFormProps) {
+export function ResourceForm({ topics, resource, withCaptcha = false }: ResourceFormProps) {
+  const [captcha, setCaptcha] = useState<string | null>(null);
   const t = useTranslations("ResourceForm");
   const tForm = useTranslations("Form");
   const tAction = useTranslations("ActionErrors");
@@ -109,7 +113,7 @@ export function ResourceForm({ topics, resource }: ResourceFormProps) {
   const onSubmit = form.handleSubmit(async () => {
     const values = form.getValues();
     const result = await callAction(() =>
-      resource ? updateResourceAction(resource.id, values) : createResourceAction(values),
+      resource ? updateResourceAction(resource.id, values) : createResourceAction(values, captcha),
     );
 
     if (!result.ok) {
@@ -301,6 +305,7 @@ export function ResourceForm({ topics, resource }: ResourceFormProps) {
         <Button asChild variant="ghost" size="lg">
           <Link href={resource ? routes.resource(resource.slug) : routes.home}>{t("cancel")}</Link>
         </Button>
+        {withCaptcha && <Turnstile onToken={setCaptcha} />}
         <SubmitButton pending={isSubmitting} disabled={Boolean(resource) && !isDirty}>
           {resource ? t("submitEdit") : t("submitCreate")}
         </SubmitButton>
