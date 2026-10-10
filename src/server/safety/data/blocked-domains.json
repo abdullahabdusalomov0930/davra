@@ -1,0 +1,71 @@
+{
+  "_note": "Starter lists, to be extended by the owner. Each category has an action: reject (the link cannot be shared) or review (the card waits for a moderator). A rule also covers subdomains. Domains that only some moderator decided against belong in the admin-editable blocked_domains table instead.",
+  "categories": {
+    "adult": {
+      "action": "reject",
+      "domains": [
+        "chaturbate.com",
+        "onlyfans.com",
+        "pornhub.com",
+        "redtube.com",
+        "stripchat.com",
+        "xhamster.com",
+        "xnxx.com",
+        "xvideos.com",
+        "youporn.com"
+      ]
+    },
+    "gambling": {
+      "action": "reject",
+      "domains": [
+        "1xbet.com",
+        "1win.com",
+        "bet365.com",
+        "betwinner.com",
+        "linebet.com",
+        "melbet.com",
+        "mostbet.com",
+        "parimatch.com",
+        "pin-up.casino",
+        "pokerstars.com"
+      ]
+    },
+    "piracy": {
+      "action": "reject",
+      "domains": [
+        "1337x.to",
+        "annas-archive.org",
+        "libgen.is",
+        "libgen.li",
+        "libgen.rs",
+        "nnmclub.to",
+        "rutor.info",
+        "rutracker.org",
+        "sci-hub.ru",
+        "sci-hub.se",
+        "thepiratebay.org",
+        "z-lib.org",
+        "z-library.sk"
+      ]
+    },
+    "file_hosting_piracy": {
+      "action": "reject",
+      "domains": ["1fichier.com", "katfile.com", "nitroflare.com", "rapidgator.net", "turbobit.net", "uploaded.net"]
+    },
+    "file_hosting": {
+      "action": "review",
+      "domains": [
+        "4shared.com",
+        "disk.yandex.ru",
+        "drive.google.com",
+        "dropbox.com",
+        "files.fm",
+        "gofile.io",
+        "mediafire.com",
+        "mega.nz",
+        "pixeldrain.com",
+        "yadi.sk"
+      ]
+    }
+  }
+}

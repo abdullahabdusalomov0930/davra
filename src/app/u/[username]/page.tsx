@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { uzDateParts } from "@/lib/dates";
 import { metaDescription, openGraphBase } from "@/lib/seo";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 import { profilePageData } from "@/lib/structured-data";
 import { getViewer } from "@/server/auth/session";
 import { isFollowing } from "@/server/services/follows";
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps<"/u/[username]">): 
   return {
     title: `${profile.display_name} (@${profile.username})`,
     description: metaDescription(
-      profile.bio ?? t("metaDescription", { name: profile.display_name, appName: siteConfig.name }),
+      profile.bio ?? t("metaDescription", { name: profile.display_name, appName: APP_NAME }),
     ),
     alternates: { canonical: path },
     openGraph: { ...openGraphBase, type: "profile", url: path, username: profile.username },
@@ -73,12 +73,11 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
           username: profile.username,
           displayName: profile.display_name,
           bio: profile.bio,
-          avatarUrl: profile.avatar_url,
         })}
       />
       <article className="rounded-2xl border bg-card p-6 text-card-foreground sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-          <UserAvatar name={profile.display_name} src={profile.avatar_url} className="size-24 text-3xl" />
+          <UserAvatar name={profile.display_name} seed={profile.username} className="size-24 text-3xl" />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-2xl font-semibold tracking-tight break-words">{profile.display_name}</h1>

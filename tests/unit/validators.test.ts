@@ -70,7 +70,7 @@ describe("profileSchema", () => {
   });
 
   it("limits the bio to 300 characters", () => {
-    expect(firstError(profileSchema.safeParse({ ...valid, bio: "x".repeat(301) }))).toBe("bioTooLong");
+    expect(firstError(profileSchema.safeParse({ ...valid, bio: "xy".repeat(151) }))).toBe("bioTooLong");
   });
 });
 

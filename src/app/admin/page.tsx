@@ -1,4 +1,4 @@
-import { ClockIcon, FlagIcon, LinkIcon, ShieldAlertIcon } from "lucide-react";
+import { ClockIcon, FlagIcon, LinkIcon, MessageSquareIcon, ShieldAlertIcon } from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getNow, getTranslations } from "next-intl/server";
 
@@ -41,6 +41,12 @@ export default async function AdminOverviewPage() {
 
   const cards = [
     { href: routes.adminResources, label: t("counts.pending"), value: counts.pending, icon: ClockIcon },
+    {
+      href: routes.adminComments,
+      label: t("counts.pendingComments"),
+      value: counts.pendingComments,
+      icon: MessageSquareIcon,
+    },
     { href: routes.adminReports, label: t("counts.reports"), value: counts.reports, icon: FlagIcon },
     {
       href: `${routes.adminReports}?tur=olib-tashlash`,
@@ -53,7 +59,7 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="grid gap-8">
-      <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {cards.map(({ href, label, value, icon: Icon }) => (
           <li key={href}>
             <Link

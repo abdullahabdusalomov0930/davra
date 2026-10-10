@@ -25,12 +25,14 @@ describe("buildCsp", () => {
     expect(csp).not.toContain("upgrade-insecure-requests");
   });
 
-  it("allows the Supabase origin (not the full URL) for API calls and images, plus favicons", () => {
+  it("allows the Supabase origin (not the full URL) for API calls only", () => {
     const csp = buildCsp({ ...base, isDev: false });
     expect(directive(csp, "connect-src")).toBe("connect-src 'self' https://xyz.supabase.co");
-    expect(directive(csp, "img-src")).toContain("https://xyz.supabase.co");
-    expect(directive(csp, "img-src")).toContain("https://icons.duckduckgo.com");
     expect(csp).not.toContain("/some/path");
+  });
+
+  it("loads images only from the site itself (no user uploads, no third-party icons)", () => {
+    expect(directive(buildCsp({ ...base, isDev: false }), "img-src")).toBe("img-src 'self' data:");
   });
 
   it("blocks plugins, framing and foreign base URIs", () => {

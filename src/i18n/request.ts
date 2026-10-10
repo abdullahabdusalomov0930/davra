@@ -1,6 +1,6 @@
 import { getRequestConfig } from "next-intl/server";
 
-import { siteConfig } from "@/lib/site-config";
+import { TIME_ZONE } from "@/lib/config";
 
 import { defaultLocale } from "./config";
 
@@ -11,7 +11,7 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    timeZone: siteConfig.timeZone,
+    timeZone: TIME_ZONE,
     // One "now" per request, shared with client components, so relative dates ("3 kun oldin")
     // render the same on the server and during hydration.
     now: new Date(),

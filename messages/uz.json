@@ -95,7 +95,11 @@
     "urlCredentials": "Havolada login yoki parol boʻlmasin.",
     "urlNotPublic": "Faqat ochiq veb-saytlarga havola qoʻshing (IP manzil yoki ichki tarmoq emas).",
     "urlTooLong": "Havola juda uzun.",
-    "urlBlocked": "Bu sayt havolalari qabul qilinmaydi (masalan, qisqartirilgan havolalar). Toʻliq manzilni kiriting.",
+    "urlBlocked": "Bu sayt havolalari qabul qilinmaydi.",
+    "urlPort": "Havolada maxsus port boʻlmasin (masalan, :8080). Oddiy veb-sahifa manzilini kiriting.",
+    "urlShortener": "Qisqartirilgan havolalar qabul qilinmaydi: ular aslida qayerga olib borishini yashiradi. Toʻliq manzilni kiriting.",
+    "urlLookalike": "Bu manzil boshqa saytga oʻxshatib yozilganga oʻxshaydi (turli alifbo harflari aralashgan). Toʻgʻri manzilni kiriting.",
+    "urlUnsafe": "Bu havola xavfli deb belgilangan (firibgarlik yoki zararli dastur), shuning uchun qabul qilinmaydi.",
     "urlDuplicate": "Bu havola allaqachon qoʻshilgan.",
     "titleTooShort": "Sarlavha kamida 3 ta belgidan iborat boʻlsin.",
     "titleTooLong": "Sarlavha 120 ta belgidan oshmasin.",
@@ -123,7 +127,12 @@
     "topicNameLength": "Nomi 2–60 ta belgi boʻlsin.",
     "topicDescriptionTooLong": "Tavsif 300 ta belgidan oshmasin.",
     "domainFormat": "Domen nomini kiriting, masalan: bit.ly",
-    "domainReasonTooLong": "Sabab 200 ta belgidan oshmasin."
+    "domainReasonTooLong": "Sabab 200 ta belgidan oshmasin.",
+    "textNotAllowed": "Matnda platforma qoidalariga zid soʻz yoki iboralar bor. Uni oʻzgartirib, qayta urinib koʻring.",
+    "textContact": "Telefon raqamlari va Telegram yoki WhatsApp guruhlariga taklif havolalarini qoʻshmang.",
+    "textTooManyLinks": "Havolalar soni cheklangan: sarlavha va qisqa maydonlarda havola boʻlmasin, matnda koʻpi bilan bitta.",
+    "textOnlyLink": "Faqat havola emas, oʻz soʻzlaringiz bilan ham yozing.",
+    "textDuplicate": "Siz yaqinda juda oʻxshash resurs qoʻshgansiz. Bir resursni qayta-qayta joylamang."
   },
   "AuthErrors": {
     "invalidCredentials": "Email yoki parol notoʻgʻri.",
@@ -141,9 +150,6 @@
     "unauthorized": "Avval hisobingizga kiring.",
     "forbidden": "Bu amalni bajarishga ruxsatingiz yoʻq.",
     "invalidInput": "Maydonlarni tekshiring.",
-    "avatarType": "Faqat JPEG, PNG yoki WebP rasm yuklang.",
-    "avatarTooLarge": "Rasm hajmi juda katta.",
-    "uploadFailed": "Rasmni yuklab boʻlmadi. Qayta urinib koʻring.",
     "unknown": "Kutilmagan xatolik yuz berdi. Qayta urinib koʻring.",
     "notFound": "Resurs topilmadi yoki uni oʻzgartirishga ruxsatingiz yoʻq.",
     "rateLimitedResources": "Bugungi limitga yetdingiz: yangi aʼzolar kuniga 3 ta, ishonchli aʼzolar 10 ta resurs ulasha oladi. Ertaga yana urinib koʻring.",
@@ -221,14 +227,6 @@
     "subtitle": "Profilingiz boshqa foydalanuvchilarga shunday koʻrinadi.",
     "welcomeTitle": "Xush kelibsiz!",
     "welcomeText": "Emailingiz tasdiqlandi. Profilingizni toʻldiring, shunda boshqa talabalar sizni taniydi.",
-    "avatarTitle": "Profil rasmi",
-    "avatarHint": "JPEG, PNG yoki WebP. Rasm 256×256 oʻlchamga keltiriladi.",
-    "avatarUpload": "Rasm yuklash",
-    "avatarChange": "Rasmni almashtirish",
-    "avatarRemove": "Olib tashlash",
-    "avatarUpdated": "Profil rasmi yangilandi.",
-    "avatarRemoved": "Profil rasmi olib tashlandi.",
-    "avatarUnreadable": "Rasmni ochib boʻlmadi. Boshqa fayl tanlang.",
     "profileTitle": "Profil maʼlumotlari",
     "bioLabel": "Oʻzingiz haqingizda",
     "bioPlaceholder": "Nimani oʻrganyapsiz, nimalarga qiziqasiz?",
@@ -456,6 +454,7 @@
     "placeholder": "Savol bering yoki tajribangiz bilan boʻlishing…",
     "submit": "Yuborish",
     "added": "Izohingiz qoʻshildi",
+    "addedPending": "Izohingiz moderator tekshiruvidan keyin hammaga koʻrinadi",
     "deleted": "Izoh oʻchirildi",
     "delete": "Oʻchirish",
     "deleteLabel": "Izohni oʻchirish",
@@ -464,6 +463,7 @@
     "deleteConfirm": "Ha, oʻchirish",
     "cancel": "Bekor qilish",
     "hidden": "Moderator yashirgan — faqat siz koʻrasiz",
+    "pending": "Moderator tekshiruvida — hozircha faqat siz koʻrasiz",
     "empty": "Hali izoh yoʻq. Birinchi boʻlib yozing.",
     "signIn": "Izoh yozish uchun hisobingizga kiring.",
     "signInCta": "Kirish"
@@ -699,7 +699,7 @@
           "title": "Qanday maʼlumotlarni yigʻamiz",
           "items": [
             "Hisob: email manzil, foydalanuvchi nomi, koʻrsatiladigan ism va parol. Parol faqat xeshlangan holda autentifikatsiya xizmatida saqlanadi — biz uni koʻra olmaymiz.",
-            "Profil (ixtiyoriy): rasm, oʻzingiz haqingizda qisqacha, universitet va yoʻnalish.",
+            "Profil (ixtiyoriy): oʻzingiz haqingizda qisqacha, universitet va yoʻnalish. Profil rasmi yuklanmaydi: ismingizning bosh harflari koʻrsatiladi.",
             "Faoliyat: siz qoʻshgan resurslar, baholar, sharhlar, izohlar, yoqtirishlar, saqlanganlar, obunalar va shikoyatlar.",
             "Kontentni olib tashlash soʻrovlari: yuboruvchining ismi, emaili va soʻrov matni. Suiisteʼmolning oldini olish uchun IP manzilning oʻzi emas, undan hisoblangan qaytarib boʻlmaydigan kalitli xesh saqlanadi.",
             "Texnik maʼlumotlar: xavfsizlik va xatolarni tuzatish uchun hosting provayderi soʻrovlar jurnalini (vaqt, sahifa, IP manzil) qisqa muddat saqlaydi."
@@ -708,7 +708,7 @@
         {
           "title": "Nimalar hammaga koʻrinadi",
           "paragraphs": [
-            "Profil sahifangiz (ism, foydalanuvchi nomi, rasm, bio, universitet, yoʻnalish), eʼlon qilingan resurslaringiz, baholaringiz, sharhlaringiz va izohlaringiz hammaga koʻrinadi. Email manzilingiz, saqlanganlaringiz, obunalaringiz va shikoyatlaringiz boshqa foydalanuvchilarga koʻrsatilmaydi; shikoyatlarni faqat moderatorlar koʻradi."
+            "Profil sahifangiz (ism, foydalanuvchi nomi, bio, universitet, yoʻnalish), eʼlon qilingan resurslaringiz, baholaringiz, sharhlaringiz va izohlaringiz hammaga koʻrinadi. Email manzilingiz, saqlanganlaringiz, obunalaringiz va shikoyatlaringiz boshqa foydalanuvchilarga koʻrsatilmaydi; shikoyatlarni faqat moderatorlar koʻradi."
           ]
         },
         {
@@ -730,10 +730,10 @@
         {
           "title": "Uchinchi tomon xizmatlari",
           "items": [
-            "Supabase — maʼlumotlar bazasi, autentifikatsiya va rasmlarni saqlash (serverlar Yevropa Ittifoqida, Frankfurtda).",
+            "Supabase — maʼlumotlar bazasi va autentifikatsiya (serverlar Yevropa Ittifoqida, Frankfurtda).",
             "Vercel — sayt hostingi.",
             "Email yuborish xizmati — tasdiqlash va parolni tiklash xatlari uchun.",
-            "DuckDuckGo — resurs kartalaridagi sayt belgilarini (favicon) koʻrsatish uchun brauzeringiz icons.duckduckgo.com manzilidan rasm yuklaydi."
+            "Google Safe Browsing — yangi qoʻshilgan havolalar firibgarlik va zararli dasturlar roʻyxatida yoʻqligini tekshirish uchun (yoqilgan boʻlsa). Unga faqat havolaning oʻzi yuboriladi, siz haqingizda maʼlumot yuborilmaydi."
           ]
         },
         {
@@ -763,6 +763,7 @@
     "nav": {
       "overview": "Umumiy",
       "resources": "Resurslar",
+      "comments": "Izohlar",
       "reports": "Shikoyatlar",
       "links": "Havolalar",
       "users": "Foydalanuvchilar",
@@ -771,6 +772,7 @@
     },
     "counts": {
       "pending": "Tekshiruvdagi resurslar",
+      "pendingComments": "Tekshiruvdagi izohlar",
       "reports": "Ochiq shikoyatlar",
       "removals": "Olib tashlash soʻrovlari",
       "brokenLinks": "Ishlamayotgan havolalar"
@@ -903,7 +905,34 @@
       "hide": "Yashirish",
       "show": "Qayta koʻrsatish",
       "hideLabel": "Izohni yashirish",
-      "showLabel": "Izohni qayta koʻrsatish"
+      "showLabel": "Izohni qayta koʻrsatish",
+      "approve": "Eʼlon qilish",
+      "on": "Resurs:"
+    },
+    "holdReasons": {
+      "title": "Avtomatik tekshiruv:",
+      "finalUrl": "yakuniy manzil",
+      "reasons": {
+        "trust_new": "Yangi aʼzo",
+        "trust_new_link": "Yangi aʼzo havola qoʻshgan",
+        "text_profanity": "Soʻkinish",
+        "text_hate": "Nafrat",
+        "text_sexual": "Shahvoniy mazmun",
+        "text_drugs_weapons": "Giyohvand yoki qurol savdosi",
+        "text_scam": "Firibgarlik",
+        "text_gambling": "Qimor yoki stavka",
+        "text_contact": "Telefon yoki guruh havolasi",
+        "url_category": "Sayt toifasi",
+        "url_redirect_chain": "Koʻp yoʻnaltirish"
+      },
+      "fields": {
+        "title": "sarlavha",
+        "summary": "tavsif",
+        "forWhom": "kimlar uchun",
+        "authorReview": "muallif fikri",
+        "body": "izoh matni",
+        "url": "havola"
+      }
     }
   }
 }

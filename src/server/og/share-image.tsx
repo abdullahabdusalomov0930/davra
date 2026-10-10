@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 
 import { getPublicEnv } from "@/lib/env";
 import { brandColors, logoSvg } from "@/lib/brand";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 
 import { loadShareImageFonts, SHARE_IMAGE_FONT_FAMILY } from "./fonts";
 
@@ -55,7 +55,7 @@ function ShareImage({ eyebrow, title, subtitle, details = [], rating }: ShareIma
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- Satori draws <img>, not next/image */}
         <img src={logo} width={64} height={64} alt="" />
-        <span style={{ fontSize: 40, fontWeight: 700 }}>{siteConfig.name}</span>
+        <span style={{ fontSize: 40, fontWeight: 700 }}>{APP_NAME}</span>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>

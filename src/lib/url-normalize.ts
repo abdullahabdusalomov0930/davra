@@ -1,4 +1,4 @@
-export type UrlErrorKey = "urlInvalid" | "urlCredentials" | "urlNotPublic" | "urlTooLong";
+export type UrlErrorKey = "urlInvalid" | "urlCredentials" | "urlNotPublic" | "urlTooLong" | "urlPort";
 export type NormalizedUrl = { ok: true; url: string } | { ok: false; error: UrlErrorKey };
 
 export const URL_MAX_LENGTH = 2048;
@@ -20,7 +20,11 @@ const TRACKING_PARAMS = new Set([
   "mkt_tok",
   "ref_src",
   "ref_url",
+  "ref",
 ]);
+
+/** Where `ref` names a branch or tag rather than a referrer, so it stays. */
+const KEEP_REF_HOSTS = new Set(["github.com", "gitlab.com", "bitbucket.org", "codeberg.org"]);
 
 /** Share-tracking parameters that are safe to drop only on these hosts (elsewhere they may mean something). */
 const HOST_TRACKING_PARAMS: Record<string, readonly string[]> = {
@@ -32,6 +36,7 @@ const YOUTUBE_HOSTS = new Set(["youtube.com", "m.youtube.com", "www.youtube.com"
 
 function isTracking(key: string, host: string): boolean {
   const name = key.toLowerCase();
+  if (name === "ref" && KEEP_REF_HOSTS.has(host.replace(/^www\./, ""))) return false;
   return name.startsWith("utm_") || TRACKING_PARAMS.has(name) || (HOST_TRACKING_PARAMS[host]?.includes(name) ?? false);
 }
 
@@ -60,8 +65,8 @@ function stripTracking(search: string, host: string): string {
  * constraint on the result). Lower-case host and punycode (by the URL parser), no fragment, no
  * tracking parameters, and one canonical form for YouTube links. The path is kept as written: some
  * sites serve "/kurs" and "/kurs/" differently, so `urlTwins` catches those duplicates. Accepts a bare
- * domain ("khanacademy.org" → https://khanacademy.org/). Rejects credentials, IP addresses and
- * intranet hosts: resources must be public web pages.
+ * domain ("khanacademy.org" → https://khanacademy.org/). Rejects credentials, IP addresses, intranet
+ * hosts and non-standard ports: resources must be public web pages.
  */
 export function normalizeUrl(input: string): NormalizedUrl {
   let raw = input.trim();
@@ -85,6 +90,8 @@ export function normalizeUrl(input: string): NormalizedUrl {
   if (!/\.([a-z]{2,63}|xn--[a-z0-9-]+)$/.test(host) || /\.(local|localhost|internal|lan)$/.test(host)) {
     return { ok: false, error: "urlNotPublic" };
   }
+  // Web pages live on the standard ports; ":8080" and the like point at test servers and admin panels.
+  if (url.port && !["80", "443"].includes(url.port)) return { ok: false, error: "urlPort" };
 
   url.hash = "";
 

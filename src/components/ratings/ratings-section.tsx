@@ -76,7 +76,7 @@ export async function RatingsSection({ resource, viewer }: RatingsSectionProps) 
               <li key={review.user_id} className="flex gap-3">
                 <UserAvatar
                   name={review.author.display_name}
-                  src={review.author.avatar_url}
+                  seed={review.author.username}
                   className="size-9 text-xs"
                 />
                 <div className="min-w-0 flex-1">

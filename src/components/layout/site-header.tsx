@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 import { getViewerProfile } from "@/server/auth/session";
 
 import { MobileNav } from "./mobile-nav";
@@ -17,7 +17,6 @@ export async function SiteHeader() {
   const user: HeaderUser | null = profile && {
     username: profile.username,
     displayName: profile.display_name,
-    avatarUrl: profile.avatar_url,
     isStaff: !profile.is_banned && profile.role !== "user",
   };
 
@@ -27,12 +26,12 @@ export async function SiteHeader() {
         <Link
           href="/"
           className="mr-2 flex items-center gap-2 font-semibold tracking-tight"
-          aria-label={t("homeLabel", { appName: siteConfig.name })}
+          aria-label={t("homeLabel", { appName: APP_NAME })}
         >
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <BookOpenIcon className="size-4" aria-hidden />
           </span>
-          <span className="text-lg">{siteConfig.name}</span>
+          <span className="text-lg">{APP_NAME}</span>
         </Link>
 
         <nav aria-label={t("mainNav")} className="hidden items-center gap-1 md:flex">

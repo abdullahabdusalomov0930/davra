@@ -183,9 +183,50 @@ export type Database = {
           },
         ];
       };
+      moderation_events: {
+        Row: {
+          created_at: string;
+          decision: string;
+          excerpt: string | null;
+          id: string;
+          reasons: string[];
+          target_id: string | null;
+          target_type: string;
+          user_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          decision: string;
+          excerpt?: string | null;
+          id?: string;
+          reasons: string[];
+          target_id?: string | null;
+          target_type: string;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          decision?: string;
+          excerpt?: string | null;
+          id?: string;
+          reasons?: string[];
+          target_id?: string | null;
+          target_type?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "moderation_events_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
-          avatar_url: string | null;
           bio: string | null;
           created_at: string;
           display_name: string;
@@ -199,7 +240,6 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
-          avatar_url?: string | null;
           bio?: string | null;
           created_at?: string;
           display_name: string;
@@ -212,7 +252,6 @@ export type Database = {
           username: string;
         };
         Update: {
-          avatar_url?: string | null;
           bio?: string | null;
           created_at?: string;
           display_name?: string;
@@ -460,6 +499,7 @@ export type Database = {
           comments_count: number;
           created_at: string;
           domain: string;
+          final_url: string | null;
           for_whom: string;
           id: string;
           language: Database["public"]["Enums"]["resource_language"];
@@ -474,6 +514,7 @@ export type Database = {
           rating_score: number;
           ratings_count: number;
           ratings_sum: number;
+          reputation_status: string;
           saves_count: number;
           search_vector: unknown;
           slug: string;
@@ -492,6 +533,7 @@ export type Database = {
           comments_count?: number;
           created_at?: string;
           domain?: never;
+          final_url?: string | null;
           for_whom: string;
           id?: string;
           language: Database["public"]["Enums"]["resource_language"];
@@ -506,6 +548,7 @@ export type Database = {
           rating_score?: never;
           ratings_count?: number;
           ratings_sum?: number;
+          reputation_status?: string;
           saves_count?: number;
           search_vector?: never;
           slug: string;
@@ -523,6 +566,7 @@ export type Database = {
           comments_count?: number;
           created_at?: string;
           domain?: never;
+          final_url?: string | null;
           for_whom?: string;
           id?: string;
           language?: Database["public"]["Enums"]["resource_language"];
@@ -537,6 +581,7 @@ export type Database = {
           rating_score?: never;
           ratings_count?: number;
           ratings_sum?: number;
+          reputation_status?: string;
           saves_count?: number;
           search_vector?: never;
           slug?: string;
@@ -604,6 +649,18 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      issue_safety_ticket: {
+        Args: {
+          content_hash: string;
+          decision: string;
+          final_url?: string;
+          for_user: string;
+          kind: string;
+          reputation?: string;
+        };
+        Returns: undefined;
+      };
+      my_trust_level: { Args: Record<PropertyKey, never>; Returns: number };
       record_link_check: {
         Args: { checked_url: string; outcome: string; resource_id: string };
         Returns: Database["public"]["Enums"]["link_status"];
@@ -639,7 +696,7 @@ export type Database = {
       };
     };
     Enums: {
-      comment_status: "published" | "hidden";
+      comment_status: "pending" | "published" | "hidden";
       link_status: "ok" | "broken" | "unknown";
       report_reason: "spam" | "wrong_info" | "inappropriate" | "copyright" | "other";
       report_status: "open" | "resolved" | "dismissed";
@@ -757,7 +814,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      comment_status: ["published", "hidden"],
+      comment_status: ["pending", "published", "hidden"],
       link_status: ["ok", "broken", "unknown"],
       report_reason: ["spam", "wrong_info", "inappropriate", "copyright", "other"],
       report_status: ["open", "resolved", "dismissed"],

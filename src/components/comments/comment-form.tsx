@@ -37,7 +37,7 @@ export function CommentForm({ resourceId }: { resourceId: string }) {
       return;
     }
     form.reset({ body: "" });
-    toast.success(t("added"));
+    toast.success(t(result.pending ? "addedPending" : "added"));
     router.refresh();
   });
 

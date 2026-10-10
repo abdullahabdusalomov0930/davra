@@ -7,6 +7,7 @@ import { slugify, withSuffix } from "@/lib/slugify";
 import { createClient } from "@/lib/supabase/server";
 import { urlTwins } from "@/lib/url-normalize";
 import type { ResourceData, ResourceInput } from "@/lib/validators";
+import { screenSubmission } from "@/server/safety/screen";
 import { createAdminClient } from "@/server/supabase/admin";
 
 import { type DbError, rateLimitError } from "./db-errors";
@@ -19,7 +20,7 @@ export const CARD_COLUMNS = `
   id, slug, author_id, title, url, domain, type, language, price, level, summary, status, link_status,
   likes_count, saves_count, comments_count, ratings_count, ratings_sum, published_at, created_at,
   topic:topics (slug, name_uz),
-  author:profiles!resources_author_id_fkey (username, display_name, avatar_url)
+  author:profiles!resources_author_id_fkey (username, display_name)
 ` as const;
 
 const DETAIL_COLUMNS = `${CARD_COLUMNS}, topic_id, for_whom, author_review, updated_at` as const;
@@ -109,6 +110,18 @@ async function mapWriteError(error: DbError, url: string, viewerId: string, excl
   return null;
 }
 
+/** What the safety check (D64) looks at. */
+function toSubmission(data: ResourceData) {
+  return {
+    kind: "resource",
+    url: data.url,
+    title: data.title,
+    summary: data.summary,
+    forWhom: data.forWhom,
+    authorReview: data.authorReview,
+  } as const;
+}
+
 function toRow(data: ResourceData) {
   return {
     url: data.url,
@@ -125,12 +138,15 @@ function toRow(data: ResourceData) {
 }
 
 /**
- * Creates a card as the signed-in user. The database decides the status (pending until the author
- * is trusted) and rejects blocked domains and duplicates. A taken slug gets a short suffix.
+ * Creates a card as the signed-in user, after the safety check. The database decides the status
+ * (pending until the author is trusted, or when the check held it) and rejects blocked domains and
+ * duplicates. A taken slug gets a short suffix.
  */
 export async function createResource(viewerId: string, data: ResourceData): Promise<ResourceResult> {
   const duplicate = await duplicateError(data.url, viewerId);
   if (duplicate) return duplicate;
+  const screening = await screenSubmission(viewerId, toSubmission(data));
+  if (!screening.ok) return { ok: false, error: "invalidInput", fieldErrors: screening.fieldErrors };
 
   const supabase = await createClient();
   const base = slugify(data.title);
@@ -140,10 +156,13 @@ export async function createResource(viewerId: string, data: ResourceData): Prom
     const { data: row, error } = await supabase
       .from("resources")
       .insert({ ...toRow(data), slug })
-      .select("slug, status")
+      .select("id, slug, status")
       .single();
 
-    if (!error) return { ok: true, slug: row.slug, status: row.status };
+    if (!error) {
+      await screening.recordHeld(row.id);
+      return { ok: true, slug: row.slug, status: row.status };
+    }
     if (error.code === "23505" && error.message.includes("resources_slug_key")) continue;
 
     const mapped = await mapWriteError(error, data.url, viewerId);
@@ -154,10 +173,15 @@ export async function createResource(viewerId: string, data: ResourceData): Prom
   return { ok: false, error: "unknown" };
 }
 
-/** Updates the author's own card. A new URL sends it back to the queue unless the author is trusted. */
+/**
+ * Updates the author's own card, after the safety check. A new URL sends it back to the queue unless
+ * the author is trusted; so does a changed text the check holds.
+ */
 export async function updateResource(viewerId: string, id: string, data: ResourceData): Promise<ResourceResult> {
   const duplicate = await duplicateError(data.url, viewerId, id);
   if (duplicate) return duplicate;
+  const screening = await screenSubmission(viewerId, toSubmission(data), { editing: id });
+  if (!screening.ok) return { ok: false, error: "invalidInput", fieldErrors: screening.fieldErrors };
 
   const supabase = await createClient();
   const { data: row, error } = await supabase
@@ -165,7 +189,7 @@ export async function updateResource(viewerId: string, id: string, data: Resourc
     .update(toRow(data))
     .eq("id", id)
     .eq("author_id", viewerId)
-    .select("slug, status")
+    .select("id, slug, status")
     .maybeSingle();
 
   if (error) {
@@ -176,6 +200,7 @@ export async function updateResource(viewerId: string, id: string, data: Resourc
   }
   // No row: not the author's card, or the author is banned (RLS).
   if (!row) return { ok: false, error: "forbidden" };
+  if (row.status === "pending") await screening.recordHeld(row.id);
   return { ok: true, slug: row.slug, status: row.status };
 }
 

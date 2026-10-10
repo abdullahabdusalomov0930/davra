@@ -18,7 +18,7 @@ import {
 import { routes } from "@/lib/routes";
 import { signOutAction } from "@/server/actions/auth";
 
-export type HeaderUser = { username: string; displayName: string; avatarUrl: string | null; isStaff: boolean };
+export type HeaderUser = { username: string; displayName: string; isStaff: boolean };
 
 export function UserMenu({ user }: { user: HeaderUser }) {
   const t = useTranslations("Nav");
@@ -28,7 +28,7 @@ export function UserMenu({ user }: { user: HeaderUser }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded-full" aria-label={t("userMenu")}>
-          <UserAvatar name={user.displayName} src={user.avatarUrl} className="size-8 text-xs" />
+          <UserAvatar name={user.displayName} seed={user.username} className="size-8 text-xs" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

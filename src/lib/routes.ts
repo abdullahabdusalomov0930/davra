@@ -28,6 +28,7 @@ export const routes = {
   removalRequest: "/removal-request",
   admin: "/admin",
   adminResources: "/admin/resurslar",
+  adminComments: "/admin/izohlar",
   adminReports: "/admin/shikoyatlar",
   adminLinks: "/admin/havolalar",
   adminUsers: "/admin/foydalanuvchilar",

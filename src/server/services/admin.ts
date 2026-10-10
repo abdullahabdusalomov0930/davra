@@ -33,8 +33,9 @@ async function countLinkQueue(supabase: Client) {
 /** Numbers for the /admin overview. */
 export async function getModerationCounts() {
   const supabase = await createClient();
-  const [pending, reports, removals, brokenLinks] = await Promise.all([
+  const [pending, pendingComments, reports, removals, brokenLinks] = await Promise.all([
     count(supabase.from("resources").select("id", { count: "exact", head: true }).eq("status", "pending")),
+    count(supabase.from("comments").select("id", { count: "exact", head: true }).eq("status", "pending")),
     count(
       supabase
         .from("reports")
@@ -45,13 +46,13 @@ export async function getModerationCounts() {
     count(supabase.from("removal_requests").select("id", { count: "exact", head: true }).eq("status", "open")),
     countLinkQueue(supabase),
   ]);
-  return { pending, reports, removals, brokenLinks };
+  return { pending, pendingComments, reports, removals, brokenLinks };
 }
 
 const QUEUE_COLUMNS = `
   id, slug, title, url, domain, type, summary, status, link_status, created_at, updated_at,
   topic:topics (slug, name_uz),
-  author:profiles!resources_author_id_fkey (username, display_name, avatar_url, created_at)
+  author:profiles!resources_author_id_fkey (username, display_name, created_at)
 ` as const;
 
 /** Resources in one moderation status, oldest first (the queue order). */
@@ -68,6 +69,42 @@ export async function listResourcesByStatus(status: Enums["resource_status"]) {
 }
 
 export type QueueResource = Awaited<ReturnType<typeof listResourcesByStatus>>[number];
+
+/** Comments the safety check held, oldest first. */
+export async function listPendingComments() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("comments")
+    .select(
+      `id, body, created_at,
+       resource:resources (slug, title),
+       author:profiles!comments_author_id_fkey (username, display_name, created_at)`,
+    )
+    .eq("status", "pending")
+    .order("created_at", { ascending: true })
+    .limit(PAGE);
+  if (error) throw error;
+  return data;
+}
+
+/** Why the safety check held these resources or comments (internal reason codes, latest check). */
+export async function listHoldReasons(targetType: "resource" | "comment", ids: readonly string[]) {
+  const reasons = new Map<string, string[]>();
+  if (ids.length === 0) return reasons;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("moderation_events")
+    .select("target_id, reasons")
+    .eq("target_type", targetType)
+    .eq("decision", "needs_review")
+    .in("target_id", ids)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  for (const event of data) {
+    if (event.target_id && !reasons.has(event.target_id)) reasons.set(event.target_id, event.reasons);
+  }
+  return reasons;
+}
 
 const LINK_COLUMNS = "id, slug, title, url, link_status, link_check_failures, last_link_check_at" as const;
 
@@ -195,7 +232,7 @@ export async function listUsers(search?: string) {
   const supabase = await createClient();
   let query = supabase
     .from("profiles")
-    .select("id, username, display_name, avatar_url, role, is_banned, created_at")
+    .select("id, username, display_name, role, is_banned, created_at")
     .order("created_at", { ascending: false })
     .limit(PAGE);
   // Characters with a meaning in PostgREST filters are dropped; the term is quoted.

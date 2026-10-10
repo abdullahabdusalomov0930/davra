@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { accounts, signIn } from "./helpers";
+import { accounts, randomWords, signIn } from "./helpers";
 
 async function fillResourceForm(page: Page, { url, title }: { url: string; title: string }) {
   await page.getByLabel("Havola (URL)").fill(url);
@@ -16,7 +16,7 @@ async function fillResourceForm(page: Page, { url, title }: { url: string; title
   }
   await page
     .getByLabel("Nimani oʻrgatadi?")
-    .fill("Avtomatik testlar uchun yaratilgan resurs: matni yetarlicha uzun va mazmunli.");
+    .fill(`Avtomatik testlar uchun yaratilgan resurs: matni yetarlicha uzun va mazmunli. ${randomWords()}`);
   await page.getByLabel("Kimga foydali?").fill("Testlarni tekshirish uchun");
 }
 
@@ -38,6 +38,39 @@ test("a duplicate link points at the existing card", async ({ page }) => {
     "href",
     "/resurs/cs50-kompyuter-fanlariga-kirish",
   );
+});
+
+test("shortened and blocked links are refused", async ({ page }) => {
+  await signIn(page, accounts.member, "/yangi-resurs");
+  await fillResourceForm(page, { url: "https://bit.ly/3abcDEF", title: `Qisqa havola ${Date.now()}` });
+  await page.getByRole("button", { name: "Ulashish" }).click();
+  await expect(page.getByText("Qisqartirilgan havolalar qabul qilinmaydi", { exact: false })).toBeVisible();
+
+  await page.getByLabel("Havola (URL)").fill("https://www.pornhub.com/view");
+  await page.getByRole("button", { name: "Ulashish" }).click();
+  await expect(page.getByText("Bu sayt havolalari qabul qilinmaydi.")).toBeVisible();
+});
+
+test("texts against the rules are refused", async ({ page }) => {
+  await signIn(page, accounts.member, "/yangi-resurs");
+  await fillResourceForm(page, { url: `https://example.com/e2e/scam/${Date.now()}`, title: `Daromad ${Date.now()}` });
+  await page
+    .getByLabel("Nimani oʻrgatadi?")
+    .fill("Uydan turib pul ishlang: kuniga yuz dollar, hech qanday bilim kerak emas!");
+  await page.getByRole("button", { name: "Ulashish" }).click();
+  await expect(page.getByText("Matnda platforma qoidalariga zid", { exact: false })).toBeVisible();
+});
+
+test("profile texts are checked when saved", async ({ page }) => {
+  await signIn(page, accounts.member, "/sozlamalar");
+  const bio = page.getByLabel("Oʻzingiz haqingizda");
+  await bio.fill("Menga yozing: +998 90 123 45 67");
+  await page.getByRole("button", { name: "Saqlash" }).click();
+  await expect(page.getByText("Telefon raqamlari va Telegram", { exact: false })).toBeVisible();
+
+  await bio.fill(`Maʼlumotlar tahlili va Python bilan qiziqaman (${Date.now()}).`);
+  await page.getByRole("button", { name: "Saqlash" }).click();
+  await expect(page.getByText("Profil saqlandi.")).toBeVisible();
 });
 
 test("like, save, rate and comment on someone else's card", async ({ page }) => {

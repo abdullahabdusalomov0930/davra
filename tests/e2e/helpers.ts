@@ -35,3 +35,16 @@ export async function expectNoAxeViolations(page: Page) {
   );
   expect(summary).toEqual([]);
 }
+
+/**
+ * A few made-up words for card texts: the safety check refuses a card that nearly repeats one the
+ * same member shared in the last 24 hours, and the tests run more often than that.
+ */
+export function randomWords() {
+  return Array.from({ length: 4 }, () =>
+    Math.random()
+      .toString(36)
+      .replace(/[^a-z]/g, "")
+      .slice(0, 6),
+  ).join(" ");
+}

@@ -3,7 +3,7 @@
 A focused network where Uzbek students share and discover useful learning resources, each as a
 structured card with a short review in Uzbek. Web MVP built with Next.js 16, Supabase and Tailwind CSS.
 
-> The product name lives in `src/lib/site-config.ts`.
+> The product name lives in `src/lib/config.ts` (`APP_NAME`).
 
 Project status: [CHANGELOG.md](CHANGELOG.md). Design choices: [DECISIONS.md](DECISIONS.md).
 Full product brief: [claude-code-prompt.md](claude-code-prompt.md) (written under the working name "Resurs").
@@ -78,11 +78,18 @@ All demo accounts use the password `davra-demo-parol`:
 | `SUPABASE_SECRET_KEY`                  | **server only** | Supabase secret key; bypasses RLS. Never expose or commit |
 | `CRON_SECRET`                          | **server only** | Token for the scheduled link check; optional              |
 | `NEXT_PUBLIC_CONTACT_EMAIL`            | public          | Contact address on the legal pages; optional              |
+| `SAFE_BROWSING_API_KEY`                | **server only** | Google Safe Browsing key for link reputation; optional    |
 
 `pnpm build` first runs `scripts/check-env.ts`: a missing or malformed variable fails the build with its
 name (never its value) instead of deploying a site that answers every request with "Internal Server Error".
-URLs must include `https://`. On Vercel, mark `SUPABASE_SECRET_KEY` and `CRON_SECRET` as sensitive;
-`NEXT_PUBLIC_*` values are compiled into the browser bundle anyway. After changing a variable, redeploy.
+URLs must include `https://`. On Vercel, mark `SUPABASE_SECRET_KEY`, `CRON_SECRET` and
+`SAFE_BROWSING_API_KEY` as sensitive; `NEXT_PUBLIC_*` values are compiled into the browser bundle anyway.
+After changing a variable, redeploy.
+
+Without `SAFE_BROWSING_API_KEY` links are still checked by Davra's own rules (shorteners, blocklists,
+redirects, lookalike domains) but not against Google's list of phishing and malware sites; the server logs
+a warning once. To get a key: Google Cloud console → create a project → APIs & Services → enable "Safe
+Browsing API" → Credentials → Create credentials → API key, restricted to that API.
 
 ## Tests
 
@@ -137,7 +144,7 @@ by row. Links already on Davra are skipped, so the same file can be imported aga
 
 ## Deploying
 
-### 1. Supabase (database, auth, storage)
+### 1. Supabase (database and auth)
 
 1. Create a project at https://supabase.com (pick the region closest to your users and Vercel functions;
    we use Central EU, Frankfurt). Security options: keep **Enable Data API** and **Automatically expose new
@@ -162,7 +169,9 @@ by row. Links already on Davra are skipped, so the same file can be imported aga
    signed up or asked for the reset (on another device, the address is still confirmed; the person signs in).
 
 7. Apply the schema. This creates the tables, policies, triggers, the starting topics, the URL-shortener
-   blocklist, the `avatars` bucket and the pg_cron jobs.
+   blocklist and the pg_cron jobs. Davra stores no uploaded files: a project set up before the security
+   addendum still has an `avatars` bucket, which the migration closes; delete it under Storage → avatars →
+   Delete bucket.
    - **Automatically (recommended):** the `Supabase migrations` GitHub Action
      (`.github/workflows/supabase-migrations.yml`) runs `supabase db push` whenever migrations reach
      `main`. Add three repository secrets under GitHub → Settings → Secrets and variables → Actions:
@@ -257,6 +266,11 @@ explained in [DECISIONS.md](DECISIONS.md). In short:
   audit entries are set by the database (column privileges + triggers).
 - **Every moderation action is audited** in `audit_log` by triggers, with the acting staff member.
 - **Limits live in the database**: new cards, comments, likes, saves and reports per user and time window.
+- **User texts pass the safety check** (`src/server/safety/`): the server checks every card, comment,
+  review and profile (word lists, links, contacts, where a link really leads) and gives the database a
+  single-use ticket for exactly that content; triggers refuse texts without one, so the Data API cannot
+  be used to skip the check. Word lists and domain lists are starter lists in `src/server/safety/data/`,
+  to be extended by the owner.
 
 After changing the schema, add a new migration (never edit an applied one), then:
 
@@ -294,7 +308,8 @@ messages/uz.json          every UI string (Uzbek); structure ready for ru.json
 src/app/                  routes (App Router); admin/, api/cron/, legal pages, share images, sitemap
 src/components/           UI by feature (resources, feed, admin, legal, …) and ui/ primitives
 src/lib/                  shared code: validators (Zod), routes, URL normalization, transliteration, SEO
-src/server/               server-only code: auth/session, actions, services, link checker, share images
+src/server/               server-only code: auth/session, actions, services, link checker, share images,
+                          safety/ (URL and text policy, word lists, safe fetch, safety tickets)
 supabase/migrations/      schema, RLS, triggers, jobs        supabase/tests/database/   pgTAP tests
 supabase/seed/            demo cards (CSV)                    scripts/                   seed, import, icons
 tests/unit/               Vitest                              tests/e2e/                 Playwright + axe

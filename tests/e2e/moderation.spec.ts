@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { accounts, signIn } from "./helpers";
+import { accounts, randomWords, signIn } from "./helpers";
 
 test("a new member's card waits for a moderator, who approves it", async ({ browser }) => {
   const member = await (await browser.newContext()).newPage();
@@ -19,7 +19,7 @@ test("a new member's card waits for a moderator, who approves it", async ({ brow
   }
   await member
     .getByLabel("Nimani oʻrgatadi?")
-    .fill("Dizayn asoslarini oʻzbek tilida tushuntiradigan sayt, koʻplab misollar bilan.");
+    .fill(`Dizayn asoslarini oʻzbek tilida tushuntiradigan sayt, koʻplab misollar bilan. ${randomWords()}`);
   await member.getByLabel("Kimga foydali?").fill("Dizaynni boshlayotganlar uchun");
   await member.getByRole("button", { name: "Ulashish" }).click();
   await expect(member.getByRole("heading", { level: 1 })).toHaveText(title);
@@ -38,6 +38,31 @@ test("a new member's card waits for a moderator, who approves it", async ({ brow
 
   await guest.goto(cardPath);
   await expect(guest.getByRole("heading", { level: 1 })).toHaveText(title);
+});
+
+test("a new member's comment with a link waits for a moderator", async ({ browser }) => {
+  const member = await (await browser.newContext()).newPage();
+  await signIn(member, accounts.newMember, "/resurs/sqlbolt");
+  const body = `Qoʻshimcha mashqlar shu yerda: https://example.org/mashq/${Date.now()}`;
+  await member.getByLabel("Izohingiz").fill(body);
+  await member.getByRole("button", { name: "Yuborish" }).click();
+  await expect(member.getByText("Izohingiz moderator tekshiruvidan keyin hammaga koʻrinadi")).toBeVisible();
+  const own = member.locator("li").filter({ hasText: body });
+  await expect(own.getByText("Moderator tekshiruvida — hozircha faqat siz koʻrasiz")).toBeVisible();
+
+  const guest = await (await browser.newContext()).newPage();
+  await guest.goto("/resurs/sqlbolt");
+  await expect(guest.getByText(body)).toHaveCount(0);
+
+  const moderator = await (await browser.newContext()).newPage();
+  await signIn(moderator, accounts.moderator, "/admin/izohlar");
+  const row = moderator.locator("main li").filter({ hasText: body });
+  await expect(row.getByText("Yangi aʼzo havola qoʻshgan")).toBeVisible();
+  await row.getByRole("button", { name: "Eʼlon qilish" }).click();
+  await expect(moderator.getByText("Bajarildi").first()).toBeVisible();
+
+  await guest.reload();
+  await expect(guest.getByText(body)).toBeVisible();
 });
 
 test("a report reaches the moderators and can be dismissed", async ({ browser }) => {

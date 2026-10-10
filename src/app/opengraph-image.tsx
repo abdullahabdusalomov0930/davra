@@ -1,11 +1,11 @@
 import { getTranslations } from "next-intl/server";
 
 import { defaultLocale } from "@/i18n/config";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 import { renderShareImage, SHARE_IMAGE_SIZE } from "@/server/og/share-image";
 
 // The share image for every page without its own (home, topics, profiles, …).
-export const alt = siteConfig.name;
+export const alt = APP_NAME;
 export const size = SHARE_IMAGE_SIZE;
 export const contentType = "image/png";
 

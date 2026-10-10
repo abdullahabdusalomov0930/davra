@@ -1,5 +1,5 @@
 import { getPublicEnv } from "@/lib/env";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 
 /** Search engines show about 160 characters of a description. */
 const DESCRIPTION_MAX = 160;
@@ -23,4 +23,4 @@ export function absoluteUrl(path: string): string {
  * OpenGraph fields every page shares. A page that sets its own `openGraph` replaces the layout's
  * object entirely, so it spreads these in.
  */
-export const openGraphBase = { siteName: siteConfig.name, locale: "uz_UZ" } as const;
+export const openGraphBase = { siteName: APP_NAME, locale: "uz_UZ" } as const;

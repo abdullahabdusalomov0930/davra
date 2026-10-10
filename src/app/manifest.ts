@@ -3,15 +3,15 @@ import { getTranslations } from "next-intl/server";
 
 import { defaultLocale } from "@/i18n/config";
 import { brandColors } from "@/lib/brand";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 
 /** Web app manifest: "Add to home screen" opens Davra like an app. Icons come from `pnpm icons`. */
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const t = await getTranslations({ locale: defaultLocale, namespace: "Metadata" });
 
   return {
-    name: t("title", { appName: siteConfig.name }),
-    short_name: siteConfig.name,
+    name: t("title", { appName: APP_NAME }),
+    short_name: APP_NAME,
     description: t("description"),
     lang: defaultLocale,
     dir: "ltr",

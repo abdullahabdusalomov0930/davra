@@ -21,7 +21,7 @@ describe("ratingSchema", () => {
   });
 
   it("limits the review to 500 characters", () => {
-    expect(errorOf(ratingSchema, { stars: 3, reviewText: "a".repeat(501) })).toEqual(["reviewTooLong"]);
+    expect(errorOf(ratingSchema, { stars: 3, reviewText: "ab".repeat(251) })).toEqual(["reviewTooLong"]);
   });
 });
 
@@ -29,6 +29,6 @@ describe("commentSchema", () => {
   it("trims and requires text", () => {
     expect(commentSchema.parse({ body: "  Rahmat!  " })).toEqual({ body: "Rahmat!" });
     expect(errorOf(commentSchema, { body: "   " })).toEqual(["commentRequired"]);
-    expect(errorOf(commentSchema, { body: "a".repeat(501) })).toEqual(["commentTooLong"]);
+    expect(errorOf(commentSchema, { body: "ab".repeat(251) })).toEqual(["commentTooLong"]);
   });
 });

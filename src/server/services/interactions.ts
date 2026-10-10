@@ -2,12 +2,13 @@ import "server-only";
 
 import type { ActionResult } from "@/lib/action-result";
 import { createClient } from "@/lib/supabase/server";
-import type { CommentData, RatingData, RatingInput } from "@/lib/validators";
+import type { CommentData, CommentInput, RatingData, RatingInput } from "@/lib/validators";
+import { screenSubmission } from "@/server/safety/screen";
 
 import { type DbError, rateLimitError } from "./db-errors";
 
 /** Insert/delete failures that RLS, constraints and rate limits explain; anything else is unexpected. */
-function writeError(error: DbError, context: string): ActionResult {
+function writeError(error: DbError, context: string): Extract<ActionResult, { ok: false }> {
   const limited = rateLimitError(error);
   if (limited) return { ok: false, error: limited };
   // RLS: own resource, not published (any more), or a banned account.
@@ -91,11 +92,24 @@ export async function getViewerRating(viewerId: string, resourceId: string) {
   return data;
 }
 
-/**
- * Creates or replaces the user's rating. Update first, then insert: an upsert would need UPDATE on
- * resource_id, which users do not have (column privileges, D14).
- */
+/** Creates or replaces the user's rating. A written review passes the safety check first (D64). */
 export async function saveRating(
+  viewerId: string,
+  resourceId: string,
+  data: RatingData,
+): Promise<ActionResult<keyof RatingInput>> {
+  if (data.reviewText) {
+    const screening = await screenSubmission(viewerId, { kind: "rating", resourceId, reviewText: data.reviewText });
+    if (!screening.ok) return { ok: false, error: "invalidInput", fieldErrors: screening.fieldErrors };
+  }
+  return writeRating(viewerId, resourceId, data);
+}
+
+/**
+ * Update first, then insert: an upsert would need UPDATE on resource_id, which users do not have
+ * (column privileges, D14).
+ */
+async function writeRating(
   viewerId: string,
   resourceId: string,
   data: RatingData,
@@ -115,7 +129,7 @@ export async function saveRating(
 
   const inserted = await supabase.from("resource_ratings").insert({ resource_id: resourceId, ...values });
   // A parallel request inserted first: try the update once more.
-  if (inserted.error?.code === "23505" && !retried) return saveRating(viewerId, resourceId, data, true);
+  if (inserted.error?.code === "23505" && !retried) return writeRating(viewerId, resourceId, data, true);
   if (inserted.error) return writeError(inserted.error, "rating insert");
   return { ok: true };
 }
@@ -138,7 +152,7 @@ export async function listReviews(resourceId: string, limit = 30) {
   const { data, error } = await supabase
     .from("resource_ratings")
     .select(
-      "user_id, stars, review_text, created_at, updated_at, author:profiles!resource_ratings_user_id_fkey (username, display_name, avatar_url)",
+      "user_id, stars, review_text, created_at, updated_at, author:profiles!resource_ratings_user_id_fkey (username, display_name)",
     )
     .eq("resource_id", resourceId)
     .not("review_text", "is", null)
@@ -159,9 +173,7 @@ export async function listComments(resourceId: string, limit = 200) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("comments")
-    .select(
-      "id, author_id, body, status, created_at, author:profiles!comments_author_id_fkey (username, display_name, avatar_url)",
-    )
+    .select("id, author_id, body, status, created_at, author:profiles!comments_author_id_fkey (username, display_name)")
     .eq("resource_id", resourceId)
     .order("created_at", { ascending: true })
     .limit(limit);
@@ -171,10 +183,27 @@ export async function listComments(resourceId: string, limit = 200) {
 
 export type Comment = Awaited<ReturnType<typeof listComments>>[number];
 
-export async function addComment(resourceId: string, data: CommentData): Promise<ActionResult> {
+/**
+ * Adds a comment after the safety check (D64). A comment the check holds is saved as pending: its
+ * author sees it, everyone else after a moderator publishes it.
+ */
+export async function addComment(
+  viewerId: string,
+  resourceId: string,
+  data: CommentData,
+): Promise<ActionResult<keyof CommentInput, { pending: boolean }>> {
+  const screening = await screenSubmission(viewerId, { kind: "comment", resourceId, body: data.body });
+  if (!screening.ok) return { ok: false, error: "invalidInput", fieldErrors: screening.fieldErrors };
+
   const supabase = await createClient();
-  const { error } = await supabase.from("comments").insert({ resource_id: resourceId, body: data.body });
-  return error ? writeError(error, "comment insert") : { ok: true };
+  const { data: row, error } = await supabase
+    .from("comments")
+    .insert({ resource_id: resourceId, body: data.body })
+    .select("id, status")
+    .single();
+  if (error) return writeError(error, "comment insert");
+  await screening.recordHeld(row.id);
+  return { ok: true, pending: row.status === "pending" };
 }
 
 export async function deleteComment(viewerId: string, commentId: string): Promise<ActionResult> {

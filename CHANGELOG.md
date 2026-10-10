@@ -5,6 +5,44 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Security addendum X1 — Content safety core
+
+#### Added
+
+- Safety check on every card, comment, review and profile (`src/server/safety/`): link policy, text
+  policy with word lists, near-duplicate check and the author's trust level combine into allow, hold for
+  a moderator or refuse, with an Uzbek message on the field to change. The database refuses texts that
+  did not pass the check (single-use safety tickets), so the Data API cannot be used to skip it.
+- Link policy: link shorteners, a category blocklist (adult, gambling, piracy; file hosting is held),
+  lookalike domains mixing alphabets and non-standard ports are refused; redirects are followed (at most
+  3, SSRF-safe) and where the link really leads is checked too and stored with the card. Optional Google
+  Safe Browsing check (`SAFE_BROWSING_API_KEY`).
+- Word filter for Uzbek (Latin and Cyrillic), Russian and English that sees through common disguises
+  (k.a.z.i.n.o, k4z1n0, mixed alphabets, stylised letters). Starter lists, to be extended by the owner.
+- Comments can be held: a new member's comment with a link, a phone number or a doubtful word waits for
+  a moderator on the new `/admin/izohlar` page; the author sees it marked as waiting.
+- Moderators see why the check held a card or comment; refusals are logged in `moderation_events`
+  (staff only, kept 180 days).
+
+#### Changed
+
+- Profile photos removed: avatars are initials on a colour, nothing is uploaded or stored any more.
+  Site favicons removed too, so pages load no images from other sites.
+- Texts are cleaned before they are checked and stored (invisible characters, repeated letters, extra
+  spaces, stylised Unicode).
+- The product name is set in `src/lib/config.ts` (`APP_NAME`).
+
+#### Owner to do
+
+- Supabase Dashboard → Storage → avatars → Delete bucket (the migration closes it; files cannot be
+  deleted from SQL).
+- Optional: set `SAFE_BROWSING_API_KEY` on Vercel (README, Environment variables).
+- Extend the word lists and domain lists in `src/server/safety/data/`.
+
+#### Results
+
+- Tests: 234 unit, 263 pgTAP, 42 end-to-end.
+
 ### Phase 10 — Demo data, tests, accessibility and performance
 
 #### Added

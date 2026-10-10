@@ -10,7 +10,7 @@ import { ThemeProvider } from "@/components/layout/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { getPublicEnv } from "@/lib/env";
 import { openGraphBase } from "@/lib/seo";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 
 import "./globals.css";
 
@@ -25,13 +25,13 @@ const inter = Inter({
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata");
-  const title = t("title", { appName: siteConfig.name });
+  const title = t("title", { appName: APP_NAME });
 
   return {
     metadataBase: new URL(getPublicEnv().NEXT_PUBLIC_SITE_URL),
-    title: { default: title, template: `%s · ${siteConfig.name}` },
+    title: { default: title, template: `%s · ${APP_NAME}` },
     description: t("description"),
-    applicationName: siteConfig.name,
+    applicationName: APP_NAME,
     // Title and description fall through from each page; the image comes from opengraph-image files.
     openGraph: { ...openGraphBase, type: "website" },
     twitter: { card: "summary_large_image" },
