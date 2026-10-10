@@ -1,4 +1,4 @@
-import { BookOpenIcon, SearchIcon } from "lucide-react";
+import { BookOpenIcon, PlusIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -54,7 +54,15 @@ export async function SiteHeader() {
           </Button>
           <ThemeToggle />
           {user ? (
-            <UserMenu user={user} />
+            <>
+              <Button asChild size="sm" className="mx-1">
+                <Link href={routes.newResource}>
+                  <PlusIcon aria-hidden />
+                  <span className="sr-only sm:not-sr-only">{t("share")}</span>
+                </Link>
+              </Button>
+              <UserMenu user={user} />
+            </>
           ) : (
             <div className="hidden items-center gap-2 md:flex">
               <Button asChild variant="ghost">

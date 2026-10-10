@@ -4,13 +4,17 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 
+import { EmptyState } from "@/components/layout/empty-state";
 import { UserAvatar } from "@/components/profile/user-avatar";
+import { ResourceCard } from "@/components/resources/resource-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
+import { uzDateParts } from "@/lib/dates";
 import { siteConfig } from "@/lib/site-config";
 import { getViewer } from "@/server/auth/session";
 import { getPublicProfile } from "@/server/services/profiles";
+import { listResourcesByAuthor } from "@/server/services/resources";
 
 const USERNAME_PATTERN = /^[A-Za-z0-9_]{3,30}$/;
 
@@ -37,15 +41,16 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
   // One canonical URL per profile: /u/Nodira → /u/nodira.
   if (profile.username !== username) permanentRedirect(routes.profile(profile.username));
 
-  const [t, format, viewer] = await Promise.all([getTranslations("Profile"), getFormatter(), getViewer()]);
+  const [t, tResource, format, viewer, resources] = await Promise.all([
+    getTranslations("Profile"),
+    getTranslations("Resource"),
+    getFormatter(),
+    getViewer(),
+    // Others see the published cards; the owner also sees pending and hidden ones (RLS).
+    listResourcesByAuthor(profile.id),
+  ]);
   const isOwner = viewer?.id === profile.id;
-  // Uzbek writes "2026-yil oktabr"; Intl would give "oktabr, 2026".
-  const createdAt = new Date(profile.created_at);
-  const joined = {
-    year: format.dateTime(createdAt, { year: "numeric" }),
-    // Stand-alone month names come capitalized ("Oktabr"); in a sentence they are lower-case.
-    month: format.dateTime(createdAt, { month: "long" }).toLocaleLowerCase("uz"),
-  };
+  const { year, month } = uzDateParts(format, profile.created_at);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
@@ -94,10 +99,34 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
           )}
           <li className="flex items-center gap-1.5">
             <CalendarDaysIcon className="size-4" aria-hidden />
-            {t("joined", joined)}
+            {t("joined", { year, month })}
           </li>
         </ul>
       </article>
+
+      <section aria-labelledby="resources-title" className="mt-10">
+        <h2 id="resources-title" className="mb-4 flex items-baseline gap-2 text-xl font-semibold tracking-tight">
+          {tResource("listTitle")}
+          <span className="text-base font-normal text-muted-foreground">{format.number(resources.length)}</span>
+        </h2>
+        {resources.length > 0 ? (
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {resources.map((resource) => (
+              <li key={resource.id} className="grid">
+                <ResourceCard resource={resource} hideAuthor />
+              </li>
+            ))}
+          </ul>
+        ) : isOwner ? (
+          <EmptyState
+            title={tResource("listEmptyOwnerTitle")}
+            description={tResource("listEmptyOwnerText")}
+            action={{ href: routes.newResource, label: tResource("listEmptyOwnerCta") }}
+          />
+        ) : (
+          <EmptyState title={tResource("listEmptyTitle", { name: profile.display_name })} />
+        )}
+      </section>
     </div>
   );
 }

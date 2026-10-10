@@ -1,3 +1,5 @@
+import { FAVICON_ORIGIN } from "@/lib/favicon";
+
 type CspOptions = {
   nonce: string;
   isDev: boolean;
@@ -19,7 +21,8 @@ export function buildCsp({ nonce, isDev, supabaseUrl }: CspOptions): string {
     "default-src": ["'self'"],
     "script-src": ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", ...(isDev ? ["'unsafe-eval'"] : [])],
     "style-src": ["'self'", "'unsafe-inline'"],
-    "img-src": ["'self'", "data:", "blob:", supabaseOrigin],
+    // Favicons next to resource links come from DuckDuckGo's icon service (DECISIONS.md D41).
+    "img-src": ["'self'", "data:", "blob:", supabaseOrigin, FAVICON_ORIGIN],
     "font-src": ["'self'"],
     "connect-src": ["'self'", supabaseOrigin],
     "object-src": ["'none'"],

@@ -5,6 +5,34 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 4 — Resource cards
+
+#### Added
+
+- Share a resource at `/yangi-resurs`: link, title, topic, type, language, price, level, "what it teaches",
+  "who it is for" and an optional personal review, with live character counters and Uzbek messages.
+- Resource page `/resurs/[slug]`: all fields, "Havolaga oʻtish" (new tab, `rel="nofollow ugc noopener
+noreferrer"`), domain with favicon, rating summary, author, date; banners for pending, hidden, rejected
+  cards and broken links; edit and delete (with confirmation) for the author.
+- Edit page `/resurs/[slug]/tahrirlash` (author only). Text edits keep the card published; a new link sends
+  a non-trusted author's card back to review (database trigger).
+- URL normalization (`src/lib/url-normalize.ts`): https for bare domains, lower-case host, no fragment, no
+  tracking parameters (`utm_*`, `fbclid`, `gclid`, …), one form for YouTube links; IPs, intranet hosts and
+  credentials are refused. The form shows the cleaned link when the field loses focus.
+- Duplicate detection: the database's unique URL plus a friendly check against the same page with or
+  without `www.`, `http`/`https` and a trailing slash, pointing the author to the existing card.
+- Spam rules in the shared Zod schema: no ALL-CAPS titles, emoji limits, summaries that are more than a link.
+- Slugs transliterated from the title (Uzbek Latin and Cyrillic, `oʻ`/`gʻ` → `o`/`g`), stable after edits,
+  with a short suffix when taken.
+- Resource card component (type icon, title, domain and favicon, topic chip, tags, summary, rating, author,
+  relative date) and the author's cards on `/u/[username]` (the owner also sees pending ones).
+- "Resurs qoʻshish" button in the header; UI primitives: alert dialog, native select, radio chips.
+- Unit tests for URL normalization, slugs and the resource schema (94 in total).
+
+#### Changed
+
+- CSP `img-src` allows `https://icons.duckduckgo.com` for favicons.
+
 ### Phase 3 — Auth, profiles, settings
 
 #### Added

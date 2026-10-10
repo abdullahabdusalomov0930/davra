@@ -25,10 +25,11 @@ describe("buildCsp", () => {
     expect(csp).not.toContain("upgrade-insecure-requests");
   });
 
-  it("allows the Supabase origin (not the full URL) for API calls and images", () => {
+  it("allows the Supabase origin (not the full URL) for API calls and images, plus favicons", () => {
     const csp = buildCsp({ ...base, isDev: false });
     expect(directive(csp, "connect-src")).toBe("connect-src 'self' https://xyz.supabase.co");
     expect(directive(csp, "img-src")).toContain("https://xyz.supabase.co");
+    expect(directive(csp, "img-src")).toContain("https://icons.duckduckgo.com");
     expect(csp).not.toContain("/some/path");
   });
 
