@@ -10,6 +10,7 @@ import { renderCardEntries } from "@/components/feed/card-entries";
 import { FollowButton } from "@/components/follow/follow-button";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { RatingsSection } from "@/components/ratings/ratings-section";
+import { BrokenLinkButton } from "@/components/reports/broken-link-button";
 import { ReportButton } from "@/components/reports/report-button";
 import { StaffResourceToolbar } from "@/components/admin/staff-resource-toolbar";
 import { DeleteResourceButton } from "@/components/resources/delete-resource-button";
@@ -147,6 +148,13 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
                 viewer={actionsViewer}
                 signInHref={signInHere}
                 variant="full"
+              />
+            )}
+            {!isOwner && resource.status === "published" && resource.link_status !== "broken" && (
+              <BrokenLinkButton
+                resourceId={resource.id}
+                signedIn={Boolean(viewer)}
+                returnTo={routes.resource(resource.slug)}
               />
             )}
             {!isOwner && (

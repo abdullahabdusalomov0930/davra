@@ -26,6 +26,11 @@ if (process.env.VERCEL_ENV === "production" && !process.env.NEXT_PUBLIC_SITE_URL
   problems.push("NEXT_PUBLIC_SITE_URL: required in production");
 }
 
+// Not fatal: the site works without it, only the scheduled link check does not run.
+if (process.env.VERCEL_ENV === "production" && (process.env.CRON_SECRET?.trim().length ?? 0) < 16) {
+  console.warn("CRON_SECRET: missing or shorter than 16 characters; the link check cron will be refused.");
+}
+
 if (problems.length > 0) {
   console.error(
     [

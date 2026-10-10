@@ -5,17 +5,19 @@ import { z } from "zod";
 
 import type { ActionResult } from "@/lib/action-result";
 import { type BlockedDomainInput, blockedDomainSchema, type TopicInput, topicSchema } from "@/lib/validators";
-import { getViewer } from "@/server/auth/session";
+import { getStaffProfile, getViewer } from "@/server/auth/session";
+import type { LinkCheckOutcome } from "@/server/link-check/check-link";
+import { recheckLink } from "@/server/link-check/job";
 import {
   addBlockedDomain,
   createTopic,
+  decideLinkStatus,
   deleteTopic,
   removeBlockedDomain,
   resolveReportWithAction,
   setCommentStatus,
   setRemovalRequestStatus,
   setReportStatus,
-  setResourceLinkStatus,
   setResourceStatus,
   setUserBanned,
   setUserRole,
@@ -52,9 +54,27 @@ export async function moderateResourceAction(resourceId: string, status: string)
   return run(id.safeParse(resourceId).success && parsed.success, () => setResourceStatus(resourceId, parsed.data!));
 }
 
-export async function setLinkStatusAction(resourceId: string, linkStatus: string) {
-  const parsed = z.enum(enums.link_status).safeParse(linkStatus);
-  return run(id.safeParse(resourceId).success && parsed.success, () => setResourceLinkStatus(resourceId, parsed.data!));
+/** "Ishlamayapti" / "Ishlayapti" on the Havolalar page; also closes the link's open reports. */
+export async function decideLinkAction(resourceId: string, linkStatus: string) {
+  const parsed = z.enum(["ok", "broken"]).safeParse(linkStatus);
+  return run(id.safeParse(resourceId).success && parsed.success, () => decideLinkStatus(resourceId, parsed.data!));
+}
+
+type Recheck = { outcome: LinkCheckOutcome; linkStatus: (typeof enums.link_status)[number] | null };
+
+/**
+ * "Hozir tekshirish": runs the link checker on one link now. The exception to the rule above: the
+ * checker records its result with the secret key, like the scheduled run (D56), so staff are checked
+ * here. It records what the checker saw, never a person's decision.
+ */
+export async function recheckLinkAction(resourceId: string): Promise<ActionResult<never, Recheck>> {
+  if (!(await getStaffProfile())) return { ok: false, error: "forbidden" };
+  if (!id.safeParse(resourceId).success) return { ok: false, error: "invalidInput" };
+
+  const result = await recheckLink(resourceId);
+  if (!result) return { ok: false, error: "notFound" };
+  revalidatePath("/", "layout");
+  return { ok: true, outcome: result.outcome, linkStatus: result.linkStatus };
 }
 
 export async function moderateCommentAction(commentId: string, status: string) {

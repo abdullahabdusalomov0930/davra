@@ -17,3 +17,12 @@ export function getServerEnv(): ServerEnv {
   });
   return cached;
 }
+
+/**
+ * The token Vercel Cron sends to /api/cron/* as `Authorization: Bearer …` (DECISIONS.md D58). Optional:
+ * without it, or with one shorter than 16 characters, the cron routes refuse every call.
+ */
+export function getCronSecret(): string | undefined {
+  const secret = process.env.CRON_SECRET?.trim();
+  return secret && secret.length >= 16 ? secret : undefined;
+}

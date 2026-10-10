@@ -461,3 +461,53 @@ Content rules (no ALL-CAPS titles, emoji limits, summaries that are more than a 
 shared Zod schema in the browser and in the Server Action (D44). They are not duplicated as database
 constraints: a client calling the Data API directly could skip them, but not the structural limits, the
 blocklist, the rate limits or the pending queue, and new members' cards are reviewed by a person anyway.
+
+### D56. Link checker: schedule and results
+
+A Route Handler (`/api/cron/link-check`) does the checking and Vercel Cron calls it once a day; the
+Hobby plan allows one cron run a day, and doing the HTTP work in Node rather than in Postgres (pg_net)
+lets us control DNS, redirects and time limits (D57). Each run takes the published links whose last check
+is more than 7 days old (never checked first), checks six sites at a time and one request at a time per
+site, and stops starting new checks after 40 seconds so it ends inside the route's 60-second limit; the
+rest wait for the next day. A HEAD request goes first; anything but a clear "ok" is asked again with GET,
+whose answer counts (many servers answer HEAD wrongly).
+
+Results are recorded through `record_link_check(resource_id, checked_url, outcome)`, which only the
+service role may call: `ok` resets the failure count and sets the link ok, `failure` adds one and marks
+the link broken from the second failure in a row, `unknown` stores only the check time. A result for a
+link the author has changed meanwhile is ignored. Outcomes: 2xx/3xx are ok; 404, 410, 5xx, a domain
+that does not exist, a refused connection, a timeout or a private address are failures; 401, 403, 429,
+other 4xx, Cloudflare challenges, too many redirects, TLS certificates Node cannot verify (often a
+missing intermediate or a national CA that browsers handle) and temporary DNS errors are unknown. Broken
+links get a warning on the card and the page and leave the "Mashhur" feed (the popular sort has left them
+out since Phase 5).
+
+Staff's "Hozir tekshirish" runs the same checker on one link and records the result the same way, with
+the secret key, after an explicit staff check in the Server Action. It records what the checker saw,
+not a person's decision, so like the scheduled run it is not in the audit log. Staff decisions —
+"Ishlamayapti", "Ishlayapti", hiding — go through the staff member's own session and are audited (D16);
+they also close the link's open "Havola ishlamayapti" reports (resolved when broken, dismissed when it
+works). A staff "Ishlayapti" is not sticky: if the checker keeps failing (e.g. a site that blocks
+foreign servers), the link is marked broken again after two more weekly failures. If that happens with
+real sites, add a per-resource "checked by hand" flag.
+
+### D57. SSRF protection in the link checker
+
+Links come from users, so the checker must not become a way to reach our own network or the cloud
+metadata service. It only fetches http and https URLs, uses `node:http`/`node:https` with a custom DNS
+lookup that resolves every address of the host and refuses the host if any of them is not public
+(private, loopback, link-local, CGNAT, multicast, documentation and other special ranges; for IPv6 only
+global unicast outside the special blocks, which also refuses IPv4-mapped and NAT64 forms), and connects
+to exactly the address it checked, so DNS rebinding between check and connect is impossible. IP literals
+are checked before connecting, every redirect target is checked again, and at most 5 redirects are
+followed. Connections are not pooled, the body is never downloaded (the response is dropped after the
+headers), and each attempt has a time limit (4 s for HEAD, 7 s for GET, redirects included).
+
+### D58. Protecting the cron route
+
+Vercel Cron sends `Authorization: Bearer $CRON_SECRET` when that variable is set. The route compares the
+header with SHA-256 digests and `timingSafeEqual`, and refuses every call while `CRON_SECRET` is missing
+or shorter than 16 characters, so a missing variable cannot leave the route open. The variable is
+optional for the build (the site works without it) but `scripts/check-env.ts` warns about it in
+production. "Havola ishlamayapti" reports from members do not trigger a check: that would let anyone
+make the server send requests; they go to the Havolalar page, where staff can check at once.
