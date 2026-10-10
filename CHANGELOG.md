@@ -12,6 +12,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `pnpm build` checks environment variables first (`scripts/check-env.ts`) and fails with the variable's
   name instead of deploying a site that returns "Internal Server Error". Supabase/site URLs must be http(s)
   and are trimmed.
+- `Supabase migrations` GitHub Action: applies new migrations to the production Supabase project when
+  they reach `main`.
 
 ### Phase 2 — Database
 

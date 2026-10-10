@@ -66,13 +66,20 @@ values are compiled into the browser bundle anyway. After changing a variable, r
    `http://localhost:3000/**` and `https://<your-domain>/**` to **Redirect URLs**.
 4. Authentication → Providers → Email: keep **Confirm email** enabled.
 5. Configure a custom SMTP provider before launch: Supabase's built-in email sender is heavily rate-limited.
-6. Link the CLI and push the schema. This creates the tables, policies, triggers, the starting topics,
-   the URL-shortener blocklist, the `avatars` bucket and the daily popularity job (pg_cron):
-   ```bash
-   pnpm supabase login
-   pnpm supabase link --project-ref <project-ref>
-   pnpm supabase db push
-   ```
+6. Apply the schema. This creates the tables, policies, triggers, the starting topics, the URL-shortener
+   blocklist, the `avatars` bucket and the daily popularity job (pg_cron).
+   - **Automatically (recommended):** the `Supabase migrations` GitHub Action
+     (`.github/workflows/supabase-migrations.yml`) runs `supabase db push` whenever migrations reach
+     `main`. Add three repository secrets under GitHub → Settings → Secrets and variables → Actions:
+     `SUPABASE_ACCESS_TOKEN` (https://supabase.com/dashboard/account/tokens), `SUPABASE_DB_PASSWORD`
+     (the database password chosen when creating the project) and `SUPABASE_PROJECT_ID` (Project
+     Settings → General). To re-run it, open Actions → Supabase migrations → Run workflow.
+   - **By hand:**
+     ```bash
+     pnpm supabase login
+     pnpm supabase link --project-ref <project-ref>
+     pnpm supabase db push
+     ```
 7. Make the first admin: sign up in the app, then run in the SQL editor (Dashboard → SQL Editor, or
    Studio locally):
    ```sql

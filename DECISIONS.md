@@ -223,3 +223,11 @@ succeeded. `pnpm build` now runs `scripts/check-env.ts` first (loading `.env*` f
 `next build`), so a bad value fails the build with the variable's name. URLs must be http(s), values are
 trimmed, and Vercel production builds require `NEXT_PUBLIC_SITE_URL`. The check lives in the build script,
 not `next.config.ts`, because `next typegen` (part of `pnpm check`) loads the config in the build phase too.
+
+### D31. Production migrations through GitHub Actions
+
+Vercel builds `main`; a GitHub Action applies `supabase/migrations` to the production project with
+`supabase db push` whenever a push to `main` changes them, so the site and the schema move together and
+nobody runs commands against production by hand. Credentials live only in GitHub repository secrets.
+Supabase's own GitHub integration was not used because its production deploys run through the paid
+branching feature. Migrations are never edited after they reach `main` (CLAUDE.md).
