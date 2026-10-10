@@ -1,0 +1,66 @@
+{
+  "Metadata": {
+    "title": "{appName} — talabalar uchun oʻquv resurslari",
+    "description": "Talabalar ulashgan foydali oʻquv resurslari: kurslar, videolar, kitoblar va vositalar — oʻzbek tilidagi qisqa sharhlar bilan."
+  },
+  "Nav": {
+    "skipToContent": "Asosiy mazmunga oʻtish",
+    "homeLabel": "{appName} — bosh sahifa",
+    "mainNav": "Asosiy navigatsiya",
+    "topics": "Mavzular",
+    "search": "Qidiruv",
+    "weekly": "Haftalik Top 10",
+    "login": "Kirish",
+    "signup": "Roʻyxatdan oʻtish",
+    "openMenu": "Menyuni ochish",
+    "closeMenu": "Menyuni yopish",
+    "menuTitle": "Menyu"
+  },
+  "Theme": {
+    "toggle": "Rang rejimini almashtirish",
+    "light": "Yorugʻ rejim",
+    "dark": "Qorongʻi rejim",
+    "system": "Tizim boʻyicha"
+  },
+  "Footer": {
+    "tagline": "Talabalar uchun foydali oʻquv resurslari tarmogʻi.",
+    "legalNav": "Huquqiy maʼlumotlar",
+    "rules": "Hamjamiyat qoidalari",
+    "terms": "Foydalanish shartlari",
+    "privacy": "Maxfiylik siyosati",
+    "removal": "Kontentni olib tashlash soʻrovi",
+    "copyright": "© {year} {appName}"
+  },
+  "Home": {
+    "heroTitle": "Eng foydali oʻquv resurslari — bir joyda",
+    "heroSubtitle": "Talabalar kurslar, YouTube kanallari, kitoblar va vositalarni oʻzbek tilidagi qisqa sharhlar bilan ulashadi. Oʻqish uchun roʻyxatdan oʻtish shart emas.",
+    "ctaBrowse": "Resurslarni koʻrish",
+    "ctaShare": "Resurs ulashish",
+    "valuesTitle": "Nega aynan {appName}?",
+    "valueSearchTitle": "Tez topasiz",
+    "valueSearchText": "Mavzu, daraja, til va narx boʻyicha filtrlang — kanallarni varaqlab oʻtirish shart emas.",
+    "valueStructuredTitle": "Tushunarli kartalar",
+    "valueStructuredText": "Har bir resursda nimani oʻrgatishi, kimga mosligi va reytingi koʻrsatiladi.",
+    "valueQualityTitle": "Sifat nazorati",
+    "valueQualityText": "Moderatsiya, shikoyatlar va ishlamaydigan havolalarni avtomatik tekshirish.",
+    "popularTitle": "Mashhur resurslar",
+    "emptyTitle": "Hozircha resurslar yoʻq",
+    "emptyText": "Birinchi resursni siz qoʻshing — boshqa talabalar sizga rahmat aytadi.",
+    "emptyCta": "Resurs qoʻshish"
+  },
+  "NotFound": {
+    "metaTitle": "Sahifa topilmadi",
+    "title": "Sahifa topilmadi",
+    "text": "Bu sahifa mavjud emas yoki olib tashlangan.",
+    "backHome": "Bosh sahifaga qaytish"
+  },
+  "Error": {
+    "title": "Nimadir notoʻgʻri ketdi",
+    "text": "Kutilmagan xatolik yuz berdi. Iltimos, qayta urinib koʻring.",
+    "retry": "Qayta urinish",
+    "backHome": "Bosh sahifaga qaytish"
+  },
+  "Loading": {
+    "label": "Yuklanmoqda…"
+  }
+}

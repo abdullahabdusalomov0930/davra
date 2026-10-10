@@ -1,0 +1,10 @@
+.next
+node_modules
+pnpm-lock.yaml
+coverage
+test-results
+playwright-report
+supabase/.temp
+supabase/.branches
+claude-code-prompt.md
+src/types/database.ts
