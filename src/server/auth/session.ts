@@ -1,6 +1,6 @@
 import "server-only";
 
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 
 import { createClient } from "@/lib/supabase/server";
@@ -44,4 +44,15 @@ export async function requireViewer(returnTo: string): Promise<Viewer> {
   const viewer = await getViewer();
   if (!viewer) redirect(`/kirish?next=${encodeURIComponent(returnTo)}`);
   return viewer;
+}
+
+/**
+ * For the moderation panel: staff only (moderators and admins who are not banned). Everyone else gets
+ * a 404, so the panel does not advertise itself. RLS still guards every query and action.
+ */
+export async function requireStaff(returnTo: string): Promise<ViewerProfile> {
+  await requireViewer(returnTo);
+  const profile = await getViewerProfile();
+  if (!profile || profile.is_banned || profile.role === "user") notFound();
+  return profile;
 }

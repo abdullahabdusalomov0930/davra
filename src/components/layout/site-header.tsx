@@ -18,6 +18,7 @@ export async function SiteHeader() {
     username: profile.username,
     displayName: profile.display_name,
     avatarUrl: profile.avatar_url,
+    isStaff: !profile.is_banned && profile.role !== "user",
   };
 
   return (

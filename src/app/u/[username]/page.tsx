@@ -6,6 +6,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 
 import { renderCardEntries } from "@/components/feed/card-entries";
 import { FollowButton } from "@/components/follow/follow-button";
+import { ReportButton } from "@/components/reports/report-button";
 import { EmptyState } from "@/components/layout/empty-state";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { Badge } from "@/components/ui/badge";
@@ -84,11 +85,17 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
               </Link>
             </Button>
           ) : (
-            <div className="self-start sm:self-center">
+            <div className="flex items-center gap-1 self-start sm:self-center">
               <FollowButton
                 target={{ kind: "user", id: profile.id }}
                 following={following}
                 signInHref={routes.signInTo(routes.profile(profile.username))}
+              />
+              <ReportButton
+                target={{ type: "user", id: profile.id }}
+                signedIn={Boolean(viewer)}
+                returnTo={routes.profile(profile.username)}
+                compact
               />
             </div>
           )}

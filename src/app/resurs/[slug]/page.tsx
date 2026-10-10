@@ -10,6 +10,8 @@ import { renderCardEntries } from "@/components/feed/card-entries";
 import { FollowButton } from "@/components/follow/follow-button";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { RatingsSection } from "@/components/ratings/ratings-section";
+import { ReportButton } from "@/components/reports/report-button";
+import { StaffResourceToolbar } from "@/components/admin/staff-resource-toolbar";
 import { DeleteResourceButton } from "@/components/resources/delete-resource-button";
 import { ResourceActions, type ResourceViewer } from "@/components/resources/resource-actions";
 import { RatingSummary } from "@/components/resources/rating-summary";
@@ -21,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { uzDateParts } from "@/lib/dates";
 import { routes } from "@/lib/routes";
 import { isValidSlug } from "@/lib/slugify";
-import { getViewer } from "@/server/auth/session";
+import { getViewer, getViewerProfile } from "@/server/auth/session";
 import { findRelatedResources } from "@/server/services/feed";
 import { isFollowing } from "@/server/services/follows";
 import { getViewerInteractions } from "@/server/services/interactions";
@@ -70,6 +72,8 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
     getViewer(),
     findRelatedResources(resource),
   ]);
+  const viewerProfile = viewer ? await getViewerProfile() : null;
+  const isStaff = Boolean(viewerProfile && !viewerProfile.is_banned && viewerProfile.role !== "user");
   const isOwner = viewer?.id === resource.author_id;
   const TypeIcon = RESOURCE_TYPE_ICONS[resource.type];
 
@@ -104,6 +108,7 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
   return (
     <div className="mx-auto grid max-w-3xl gap-6 px-4 py-10">
       <ResourceStatusAlert status={resource.status} linkStatus={resource.link_status} />
+      {isStaff && <StaffResourceToolbar resourceId={resource.id} status={resource.status} />}
 
       <article className="grid gap-8 rounded-2xl border bg-card p-6 text-card-foreground sm:p-8">
         <header className="grid gap-5">
@@ -142,6 +147,13 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
                 viewer={actionsViewer}
                 signInHref={signInHere}
                 variant="full"
+              />
+            )}
+            {!isOwner && (
+              <ReportButton
+                target={{ type: "resource", id: resource.id }}
+                signedIn={Boolean(viewer)}
+                returnTo={routes.resource(resource.slug)}
               />
             )}
             {isOwner && (
@@ -220,7 +232,7 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
         resource={resource}
         viewer={!viewer ? { kind: "guest" } : isOwner ? { kind: "author" } : { kind: "member", id: viewer.id }}
       />
-      <CommentsSection resource={resource} viewerId={viewer?.id ?? null} />
+      <CommentsSection resource={resource} viewerId={viewer?.id ?? null} isStaff={isStaff} />
 
       {relatedCards.length > 0 && (
         <section aria-labelledby="related-title" className="mt-4">

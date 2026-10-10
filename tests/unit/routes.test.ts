@@ -18,6 +18,8 @@ describe("isProtectedPath", () => {
   it("protects the personal pages", () => {
     expect(isProtectedPath("/saqlanganlar")).toBe(true);
     expect(isProtectedPath("/obunalarim")).toBe(true);
+    expect(isProtectedPath("/admin/shikoyatlar")).toBe(true);
+    expect(isProtectedPath("/removal-request")).toBe(false);
   });
 
   it("leaves public pages and look-alike paths alone", () => {

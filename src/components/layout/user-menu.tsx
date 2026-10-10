@@ -1,6 +1,6 @@
 "use client";
 
-import { BookmarkIcon, LogOutIcon, RssIcon, SettingsIcon, UserIcon } from "lucide-react";
+import { BookmarkIcon, LogOutIcon, RssIcon, SettingsIcon, ShieldCheckIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -18,7 +18,7 @@ import {
 import { routes } from "@/lib/routes";
 import { signOutAction } from "@/server/actions/auth";
 
-export type HeaderUser = { username: string; displayName: string; avatarUrl: string | null };
+export type HeaderUser = { username: string; displayName: string; avatarUrl: string | null; isStaff: boolean };
 
 export function UserMenu({ user }: { user: HeaderUser }) {
   const t = useTranslations("Nav");
@@ -55,6 +55,14 @@ export function UserMenu({ user }: { user: HeaderUser }) {
             {t("following")}
           </Link>
         </DropdownMenuItem>
+        {user.isStaff && (
+          <DropdownMenuItem asChild>
+            <Link href={routes.admin}>
+              <ShieldCheckIcon aria-hidden />
+              {t("moderation")}
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem asChild>
           <Link href={routes.settings}>
             <SettingsIcon aria-hidden />
