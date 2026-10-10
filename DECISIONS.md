@@ -212,3 +212,14 @@ Public `avatars` bucket, 1 MiB limit, JPEG/PNG/WebP only (no SVG: it can carry s
 `^[a-z0-9_]{3,30}$`, lower-case so uniqueness is case-insensitive. The sign-up trigger takes the username
 from sign-up metadata; if it is invalid or taken, it adds a random suffix (`user_3f9a1c`) instead of
 failing the sign-up. Usernames are never derived from the email address, because they are public.
+
+## Deployment
+
+### D30. Environment variables are checked before the build
+
+The first Vercel deploy answered every request with a bare "Internal Server Error": a malformed
+`NEXT_PUBLIC_*` value only fails when the proxy parses it at request time, and the build itself
+succeeded. `pnpm build` now runs `scripts/check-env.ts` first (loading `.env*` files the same way as
+`next build`), so a bad value fails the build with the variable's name. URLs must be http(s), values are
+trimmed, and Vercel production builds require `NEXT_PUBLIC_SITE_URL`. The check lives in the build script,
+not `next.config.ts`, because `next typegen` (part of `pnpm check`) loads the config in the build phase too.

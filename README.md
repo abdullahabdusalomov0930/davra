@@ -49,6 +49,11 @@ Local service URLs (default ports):
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | public          | Supabase publishable key (RLS applies)                    |
 | `SUPABASE_SECRET_KEY`                  | **server only** | Supabase secret key; bypasses RLS. Never expose or commit |
 
+`pnpm build` first runs `scripts/check-env.ts`: a missing or malformed variable fails the build with its
+name (never its value) instead of deploying a site that answers every request with "Internal Server Error".
+URLs must include `https://`. On Vercel, mark only `SUPABASE_SECRET_KEY` as sensitive; `NEXT_PUBLIC_*`
+values are compiled into the browser bundle anyway. After changing a variable, redeploy.
+
 ## Supabase cloud setup
 
 1. Create a project at https://supabase.com (pick the region closest to your users and Vercel functions;

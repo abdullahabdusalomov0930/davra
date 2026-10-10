@@ -19,4 +19,24 @@ describe("publicEnvSchema", () => {
   it("rejects an invalid Supabase URL", () => {
     expect(publicEnvSchema.safeParse({ ...valid, NEXT_PUBLIC_SUPABASE_URL: "not a url" }).success).toBe(false);
   });
+
+  it("rejects a Supabase URL without https:// (a common copy-paste mistake)", () => {
+    expect(publicEnvSchema.safeParse({ ...valid, NEXT_PUBLIC_SUPABASE_URL: "abcdefgh.supabase.co" }).success).toBe(
+      false,
+    );
+  });
+
+  it("accepts only http(s) URLs", () => {
+    expect(publicEnvSchema.safeParse({ ...valid, NEXT_PUBLIC_SITE_URL: "ftp://davra.uz" }).success).toBe(false);
+  });
+
+  it("trims values pasted with surrounding spaces", () => {
+    const env = publicEnvSchema.parse({
+      ...valid,
+      NEXT_PUBLIC_SUPABASE_URL: " https://abcdefgh.supabase.co ",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: " sb_publishable_test\n",
+    });
+    expect(env.NEXT_PUBLIC_SUPABASE_URL).toBe("https://abcdefgh.supabase.co");
+    expect(env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY).toBe("sb_publishable_test");
+  });
 });

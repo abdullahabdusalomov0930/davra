@@ -221,6 +221,9 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
     devDependencies:
+      '@next/env':
+        specifier: 16.4.0
+        version: 16.4.0
       '@playwright/test':
         specifier: ^1.64.0
         version: 1.64.0
