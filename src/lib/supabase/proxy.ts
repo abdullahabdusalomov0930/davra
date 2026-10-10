@@ -6,7 +6,7 @@ import type { Database } from "@/types/database";
 
 /**
  * Refreshes the Supabase auth session for the incoming request and returns the
- * response that carries any updated auth cookies.
+ * response that carries any updated auth cookies, plus whether someone is signed in.
  *
  * `requestHeaders` are forwarded to the render (they carry the CSP nonce), so
  * refreshed cookies are copied into them too; otherwise Server Components would
@@ -38,7 +38,7 @@ export async function updateSession(request: NextRequest, requestHeaders: Header
 
   // Do not run code between createServerClient and getClaims: the refresh must
   // happen before the response is committed.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
 
-  return response;
+  return { response, signedIn: Boolean(data?.claims?.sub) };
 }

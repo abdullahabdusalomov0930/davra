@@ -3,14 +3,22 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
+import { routes } from "@/lib/routes";
 import { siteConfig } from "@/lib/site-config";
+import { getViewerProfile } from "@/server/auth/session";
 
 import { MobileNav } from "./mobile-nav";
 import { mainNavItems } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
+import { type HeaderUser, UserMenu } from "./user-menu";
 
 export async function SiteHeader() {
-  const t = await getTranslations("Nav");
+  const [t, profile] = await Promise.all([getTranslations("Nav"), getViewerProfile()]);
+  const user: HeaderUser | null = profile && {
+    username: profile.username,
+    displayName: profile.display_name,
+    avatarUrl: profile.avatar_url,
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
@@ -45,15 +53,19 @@ export async function SiteHeader() {
             </Link>
           </Button>
           <ThemeToggle />
-          <div className="hidden items-center gap-2 md:flex">
-            <Button asChild variant="ghost">
-              <Link href="/kirish">{t("login")}</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/royxatdan-otish">{t("signup")}</Link>
-            </Button>
-          </div>
-          <MobileNav />
+          {user ? (
+            <UserMenu user={user} />
+          ) : (
+            <div className="hidden items-center gap-2 md:flex">
+              <Button asChild variant="ghost">
+                <Link href={routes.signIn}>{t("login")}</Link>
+              </Button>
+              <Button asChild>
+                <Link href={routes.signUp}>{t("signup")}</Link>
+              </Button>
+            </div>
+          )}
+          <MobileNav signedIn={Boolean(user)} />
         </div>
       </div>
     </header>

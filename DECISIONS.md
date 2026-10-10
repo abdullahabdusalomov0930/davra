@@ -231,3 +231,63 @@ Vercel builds `main`; a GitHub Action applies `supabase/migrations` to the produ
 nobody runs commands against production by hand. Credentials live only in GitHub repository secrets.
 Supabase's own GitHub integration was not used because its production deploys run through the paid
 branching feature. Migrations are never edited after they reach `main` (CLAUDE.md).
+
+## Phase 3 — Auth, profiles, settings
+
+### D32. Auth requests go from the browser to Supabase
+
+Sign-up, sign-in, resend, password-reset and recovery requests use the browser Supabase client.
+Supabase Auth rate-limits by IP; from Server Actions every student would share the server's few IPs,
+so one busy class could lock everyone out. Nothing secret is involved (publishable key, user's own
+password over HTTPS), and Supabase validates the input itself. Server code never sees passwords: it
+reads the session from the cookie with `getClaims()` (`getViewer()`), and profile changes go through
+Zod-validated Server Actions. Signing out is a Server Action so the cookies are cleared on the response.
+
+### D33. Email links use `token_hash`, confirmed by a button
+
+Our Uzbek templates (`supabase/templates/`) link to `/email-tasdiqlash` and `/parolni-tiklash/yangi`
+with a `token_hash`. Unlike the default PKCE link, this works when the email is opened on another
+device. The token is spent only when the person presses the button (or submits the new password):
+corporate mail scanners open links automatically and would otherwise use up the one-time token. A PKCE
+`code` is still accepted: Supabase allows editing cloud templates only once custom SMTP is configured,
+and until then its default emails link with a code (works in the same browser; on another device the
+address is confirmed anyway and the person signs in). The browser client therefore has
+`detectSessionInUrl: false`; otherwise it would exchange the code itself when created and the page's
+own exchange would fail. Confirmed users land on `/sozlamalar` with a welcome note to complete their profile.
+
+### D34. Redirects happen in the proxy
+
+Pages stream (root `loading.tsx`), and a `redirect()` inside a streamed page becomes a client-side one
+with a 200 status. So the proxy, which already knows whether a session exists, sends guests from
+protected pages to `/kirish?next=…` (307), signed-in users away from `/kirish` and `/royxatdan-otish`,
+and `/u/Nodira` to `/u/nodira` (308). Pages still check the user themselves (`requireViewer`), so the
+proxy is not the only guard. `?next=` only accepts same-site paths (`safeRedirectPath`). A missing
+profile is a streamed 404 with `noindex`, which Next.js documents as the expected behavior.
+
+### D35. Usernames
+
+Lower-case `[a-z0-9_]{3,30}`, one canonical URL `/u/<username>`. A reserved list (admin, moderator,
+davra, …) is enforced by a database constraint and by the forms; a unit test keeps both lists equal.
+The sign-up form checks availability first for a friendly message; the database stays the authority
+(the sign-up trigger adds a suffix on a race, profile updates map the unique violation to a field error).
+
+### D36. Avatars
+
+The browser crops the picture to the centre square and re-encodes it as a 256×256 WebP (JPEG where
+WebP encoding is unavailable), which also strips EXIF data such as GPS location. The Server Action
+checks size and the file's magic bytes (not the declared type), uploads under a new random name (so
+CDN caches never serve an old picture), points the profile at it, then deletes the previous file.
+Avatars from anywhere but our Storage are blocked by the CSP and fall back to initials.
+
+### D37. Scope of the settings page
+
+Display name, username, avatar, bio, university and field of study, as the brief lists. Changing
+email or password while signed in and deleting the account are not in the brief and are not built;
+"forgot password" covers password changes. Passwords: 8–72 characters (bcrypt ignores bytes after 72).
+
+### D38. Email delivery
+
+Supabase's built-in sender only delivers to members of the Supabase team and a few emails per hour.
+It is fine for testing; a custom SMTP provider must be configured before students are invited
+(README, cloud setup step 5), and it is also what unlocks editing the email templates. The provider and
+sender domain are the owner's choice.

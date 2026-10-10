@@ -1,0 +1,41 @@
+<!-- Davra: sign-up confirmation. Paste into Supabase Dashboard → Authentication → Emails → "Confirm signup". -->
+<div
+  style="
+    margin: 0 auto;
+    max-width: 480px;
+    padding: 24px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1f2933;
+    line-height: 1.5;
+  "
+>
+  <h1 style="margin: 0 0 16px; font-size: 22px">Emailingizni tasdiqlang</h1>
+  <p style="margin: 0 0 16px">
+    Assalomu alaykum! Davrada roʻyxatdan oʻtganingiz uchun rahmat. Hisobingizni faollashtirish uchun quyidagi tugmani
+    bosing.
+  </p>
+  <p style="margin: 0 0 24px">
+    <a
+      href="{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email"
+      style="
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 8px;
+        background: #0f6e6e;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+      "
+      >Emailni tasdiqlash</a
+    >
+  </p>
+  <p style="margin: 0 0 8px; font-size: 13px; color: #52606d">Tugma ishlamasa, bu havolani brauzerga nusxalang:</p>
+  <p style="margin: 0 0 24px; font-size: 13px; word-break: break-all">
+    <a href="{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email" style="color: #0f6e6e"
+      >{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email</a
+    >
+  </p>
+  <p style="margin: 0; font-size: 13px; color: #52606d">
+    Agar siz roʻyxatdan oʻtmagan boʻlsangiz, bu xatga eʼtibor bermang.
+  </p>
+</div>

@@ -6,10 +6,12 @@ import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { routes } from "@/lib/routes";
 
 import { mainNavItems } from "./nav-items";
 
-export function MobileNav() {
+/** Signed-in users reach their profile and settings through the avatar menu in the header. */
+export function MobileNav({ signedIn }: { signedIn: boolean }) {
   const t = useTranslations("Nav");
 
   return (
@@ -32,18 +34,20 @@ export function MobileNav() {
             </SheetClose>
           ))}
         </nav>
-        <div className="mt-auto flex flex-col gap-2 border-t p-4">
-          <SheetClose asChild>
-            <Button asChild variant="outline">
-              <Link href="/kirish">{t("login")}</Link>
-            </Button>
-          </SheetClose>
-          <SheetClose asChild>
-            <Button asChild>
-              <Link href="/royxatdan-otish">{t("signup")}</Link>
-            </Button>
-          </SheetClose>
-        </div>
+        {!signedIn && (
+          <div className="mt-auto flex flex-col gap-2 border-t p-4">
+            <SheetClose asChild>
+              <Button asChild variant="outline">
+                <Link href={routes.signIn}>{t("login")}</Link>
+              </Button>
+            </SheetClose>
+            <SheetClose asChild>
+              <Button asChild>
+                <Link href={routes.signUp}>{t("signup")}</Link>
+              </Button>
+            </SheetClose>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   );
