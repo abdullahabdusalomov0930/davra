@@ -8,4 +8,5 @@
 - No hard-coded UI strings: everything goes in `messages/uz.json`. Use `ʻ` (U+02BB) for oʻ/gʻ and `ʼ` (U+02BC) for the tutuq belgisi.
 - Secrets only in `src/server/**` (imports `server-only`). Never log tokens or keys.
 - Validate every server input with Zod schemas from `src/lib/validators`.
+- Database: never edit an applied migration; add a new one. After a schema change run `pnpm db:reset`, `pnpm db:test` (pgTAP, needs Docker) and `pnpm db:types`. Security model and staff powers: DECISIONS.md D14–D16. Moderation must use the staff member's own session (RLS), not the secret key, so the audit log knows the actor.
 - Before committing a phase: `pnpm check` (lint, typecheck, format, tests). Conventional Commits, one per phase.
