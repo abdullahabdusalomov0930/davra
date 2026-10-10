@@ -19,8 +19,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
   return { id: claims.sub, email: typeof claims.email === "string" ? claims.email : null };
 });
 
-const VIEWER_PROFILE_COLUMNS =
-  "id, username, display_name, avatar_url, bio, university, field_of_study, role, is_banned" as const;
+const VIEWER_PROFILE_COLUMNS = "id, username, display_name, bio, university, field_of_study, role, is_banned" as const;
 
 /** The signed-in user's profile, or null when signed out. */
 export const getViewerProfile = cache(async () => {

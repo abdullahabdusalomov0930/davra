@@ -3,7 +3,7 @@ import "server-only";
 import { BlockList, isIP } from "node:net";
 
 /**
- * Which IP addresses the link checker may connect to (DECISIONS.md D57). Links are submitted by users,
+ * Which IP addresses the server may connect to when it follows a user's link (DECISIONS.md D57). Links are submitted by users,
  * so without this a link to http://169.254.169.254/ or http://localhost:5432/ would make our server
  * probe its own network for them (SSRF).
  */

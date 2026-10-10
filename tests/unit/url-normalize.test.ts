@@ -50,6 +50,7 @@ describe("normalizeUrl", () => {
     ["localhost", "http://localhost:3000", "urlNotPublic"],
     ["an intranet name", "https://wiki.internal/page", "urlNotPublic"],
     ["IPv6", "http://[::1]/", "urlNotPublic"],
+    ["a non-standard port", "https://example.com:8080/kurs", "urlPort"],
   ])("rejects %s", (_name, input, error) => {
     expect(url(input)).toBe(error);
   });
@@ -60,7 +61,7 @@ describe("normalizeUrl", () => {
 
   it("produces URLs the database accepts", () => {
     const dbPattern = /^https?:\/\/[a-z0-9.-]+(:[0-9]{1,5})?([/?#]|$)/;
-    for (const input of ["Example.COM:8080/x", "https://тест.рф", "youtu.be/abc"]) {
+    for (const input of ["Example.COM:443/x", "https://тест.рф", "youtu.be/abc"]) {
       expect(url(input)).toMatch(dbPattern);
     }
   });

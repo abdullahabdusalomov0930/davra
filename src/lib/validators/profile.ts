@@ -1,5 +1,7 @@
 import { z } from "@/lib/zod";
 
+import { cleanText } from "@/lib/clean-text";
+
 import { message } from "./messages";
 
 export const USERNAME_MIN_LENGTH = 3;
@@ -50,23 +52,22 @@ export const usernameSchema = z
 
 export const displayNameSchema = z
   .string()
-  .trim()
-  .min(1, message("displayNameRequired"))
-  .max(DISPLAY_NAME_MAX_LENGTH, message("displayNameTooLong"));
+  .transform((value) => cleanText(value))
+  .pipe(z.string().min(1, message("displayNameRequired")).max(DISPLAY_NAME_MAX_LENGTH, message("displayNameTooLong")));
 
-/** Optional free text: trimmed, and stored as null when empty. */
-function optionalText(max: number, tooLong: Parameters<typeof message>[0]) {
+/** Optional free text: cleaned (cleanText), and stored as null when empty. */
+function optionalText(max: number, tooLong: Parameters<typeof message>[0], multiline = false) {
   return z
     .string()
-    .trim()
-    .max(max, message(tooLong))
+    .transform((value) => cleanText(value, { multiline }))
+    .pipe(z.string().max(max, message(tooLong)))
     .transform((value) => (value === "" ? null : value));
 }
 
 export const profileSchema = z.object({
   displayName: displayNameSchema,
   username: usernameSchema,
-  bio: optionalText(BIO_MAX_LENGTH, "bioTooLong"),
+  bio: optionalText(BIO_MAX_LENGTH, "bioTooLong", true),
   university: optionalText(UNIVERSITY_MAX_LENGTH, "universityTooLong"),
   fieldOfStudy: optionalText(FIELD_OF_STUDY_MAX_LENGTH, "fieldOfStudyTooLong"),
 });

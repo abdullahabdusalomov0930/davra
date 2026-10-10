@@ -80,7 +80,7 @@ export default async function FollowingPage({ searchParams }: PageProps<"/obunal
                     href={routes.profile(user.username)}
                     className="inline-flex items-center gap-1.5 rounded-full border py-0.5 pr-2.5 pl-0.5 hover:bg-muted"
                   >
-                    <UserAvatar name={user.display_name} src={user.avatar_url} className="size-5 text-[9px]" />
+                    <UserAvatar name={user.display_name} seed={user.username} className="size-5 text-[9px]" />
                     {user.display_name}
                   </Link>
                 ))}

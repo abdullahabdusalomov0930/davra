@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
-import { AvatarSettings } from "@/components/settings/avatar-settings";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -63,10 +62,6 @@ export default async function SettingsPage({ searchParams }: PageProps<"/sozlama
           <AlertTitle>{tProfile("banned")}</AlertTitle>
         </Alert>
       )}
-
-      <Section id="avatar-title" title={t("avatarTitle")}>
-        <AvatarSettings name={profile.display_name} avatarUrl={profile.avatar_url} />
-      </Section>
 
       <Section id="profile-title" title={t("profileTitle")}>
         <ProfileForm

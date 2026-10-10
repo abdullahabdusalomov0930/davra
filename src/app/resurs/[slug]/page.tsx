@@ -1,4 +1,4 @@
-import { ExternalLinkIcon, PencilIcon } from "lucide-react";
+import { ExternalLinkIcon, GlobeIcon, PencilIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -19,7 +19,6 @@ import { ResourceActions, type ResourceViewer } from "@/components/resources/res
 import { RatingSummary } from "@/components/resources/rating-summary";
 import { RESOURCE_TYPE_ICONS } from "@/components/resources/resource-meta";
 import { ResourceStatusAlert } from "@/components/resources/resource-status-alert";
-import { SiteFavicon } from "@/components/resources/site-favicon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { uzDateParts } from "@/lib/dates";
@@ -170,7 +169,7 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
                 {resource.title}
               </h1>
               <p className="mt-2 flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground">
-                <SiteFavicon domain={resource.domain} />
+                <GlobeIcon className="size-4 shrink-0" aria-hidden />
                 <span className="truncate">{resource.domain}</span>
               </p>
             </div>
@@ -253,7 +252,7 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
         <footer className="flex flex-wrap items-center justify-between gap-4 border-t pt-6 text-sm">
           <div className="flex min-w-0 flex-wrap items-center gap-3">
             <Link href={routes.profile(resource.author.username)} className="group flex min-w-0 items-center gap-3">
-              <UserAvatar name={resource.author.display_name} src={resource.author.avatar_url} className="size-10" />
+              <UserAvatar name={resource.author.display_name} seed={resource.author.username} className="size-10" />
               <span className="grid min-w-0">
                 <span className="text-xs text-muted-foreground">{t("sharedBy")}</span>
                 <span className="truncate font-medium group-hover:underline">{resource.author.display_name}</span>

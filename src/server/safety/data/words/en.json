@@ -1,0 +1,41 @@
+{
+  "_note": "STARTER LIST, minimal on purpose: the owner must extend it. Check new entries against ordinary words, also in Uzbek. See src/server/safety/word-filter.ts.",
+  "profanity": ["fuck*", "motherfuck*", "shitty", "bullshit", "bitch*", "cunt*", "asshole*", "dickhead*", "wanker*"],
+  "hate": ["nigger*", "nigga*", "faggot*", "kike", "kikes", "heil hitler", "sieg heil", "white power"],
+  "sexual": [
+    "porn",
+    "porno",
+    "pornhub",
+    "hentai",
+    "nudes",
+    "sexting",
+    "blowjob*",
+    "cumshot*",
+    "onlyfans",
+    "escort service*"
+  ],
+  "drugs_weapons": [
+    "buy weed",
+    "weed for sale",
+    "buy cocaine",
+    "cocaine for sale",
+    "buy mdma",
+    "buy meth",
+    "guns for sale",
+    "buy guns online",
+    "buy a gun online"
+  ],
+  "scam": [
+    "get rich quick",
+    "earn money fast",
+    "make money fast",
+    "guaranteed profit*",
+    "guaranteed income",
+    "guaranteed return*",
+    "double your money",
+    "send your card number",
+    "you have won",
+    "claim your prize"
+  ],
+  "gambling": ["casino*", "sports betting", "bookmaker*", "online betting"]
+}

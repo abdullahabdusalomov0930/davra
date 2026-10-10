@@ -1,5 +1,6 @@
 import { z } from "@/lib/zod";
 
+import { cleanText } from "@/lib/clean-text";
 import { normalizeUrl } from "@/lib/url-normalize";
 import { Constants } from "@/types/database";
 
@@ -37,8 +38,12 @@ export function withoutUrls(text: string): string {
   return text.replace(URL_IN_TEXT, " ").replace(/\s+/g, " ").trim();
 }
 
-function text(min: number, max: number, tooShort: ValidationKey, tooLong: ValidationKey) {
-  return z.string().trim().min(min, message(tooShort)).max(max, message(tooLong));
+/** A text cleaned first (cleanText: invisible characters, spaces, Unicode forms), then measured. */
+function text(min: number, max: number, tooShort: ValidationKey, tooLong: ValidationKey, multiline = false) {
+  return z
+    .string()
+    .transform((value) => cleanText(value, { multiline }))
+    .pipe(z.string().min(min, message(tooShort)).max(max, message(tooLong)));
 }
 
 const maxEmoji = (limit: number) => (value: string) => emojiCount(value) <= limit;
@@ -66,17 +71,14 @@ export const resourceSchema = z.object({
   language: z.enum(RESOURCE_LANGUAGES, message("required")),
   price: z.enum(RESOURCE_PRICES, message("required")),
   level: z.enum(RESOURCE_LEVELS, message("required")),
-  summary: text(SUMMARY_MIN, SUMMARY_MAX, "summaryTooShort", "summaryTooLong")
+  summary: text(SUMMARY_MIN, SUMMARY_MAX, "summaryTooShort", "summaryTooLong", true)
     .refine((value) => withoutUrls(value).length >= SUMMARY_MIN, message("summaryOnlyUrl"))
     .refine(maxEmoji(5), message("tooManyEmoji")),
   forWhom: text(FOR_WHOM_MIN, FOR_WHOM_MAX, "forWhomTooShort", "forWhomTooLong").refine(
     maxEmoji(5),
     message("tooManyEmoji"),
   ),
-  authorReview: z
-    .string()
-    .trim()
-    .max(AUTHOR_REVIEW_MAX, message("authorReviewTooLong"))
+  authorReview: text(0, AUTHOR_REVIEW_MAX, "authorReviewTooLong", "authorReviewTooLong", true)
     .refine(maxEmoji(5), message("tooManyEmoji"))
     .transform((value) => (value === "" ? null : value)),
 });

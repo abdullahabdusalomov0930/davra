@@ -4,12 +4,13 @@ import { getFormatter, getNow, getTranslations } from "next-intl/server";
 
 import { ActionButton } from "@/components/admin/action-button";
 import { AdminEmpty } from "@/components/admin/admin-empty";
+import { HoldReasons } from "@/components/admin/hold-reasons";
 import { ListTabs } from "@/components/feed/list-tabs";
 import { Badge } from "@/components/ui/badge";
 import { firstParam } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
 import { moderateResourceAction } from "@/server/actions/moderation";
-import { listResourcesByStatus } from "@/server/services/admin";
+import { listHoldReasons, listResourcesByStatus } from "@/server/services/admin";
 
 const STATUSES = ["pending", "hidden", "rejected"] as const;
 /** Accounts younger than this are flagged in the queue. */
@@ -30,6 +31,13 @@ export default async function AdminResourcesPage({ searchParams }: PageProps<"/a
     getNow(),
     listResourcesByStatus(status),
   ]);
+  const reasons =
+    status === "pending"
+      ? await listHoldReasons(
+          "resource",
+          resources.map((resource) => resource.id),
+        )
+      : new Map<string, string[]>();
 
   return (
     <div className="grid gap-5">
@@ -86,6 +94,7 @@ export default async function AdminResourcesPage({ searchParams }: PageProps<"/a
                   </p>
                 </div>
                 <p className="line-clamp-3 text-sm text-muted-foreground">{resource.summary}</p>
+                <HoldReasons reasons={reasons.get(resource.id)} />
                 <div className="flex flex-wrap gap-2">
                   {status === "pending" ? (
                     <>

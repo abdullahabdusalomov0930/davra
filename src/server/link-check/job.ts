@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getPublicEnv } from "@/lib/env";
+import { botUserAgent } from "@/server/safety/safe-fetch";
 import { createAdminClient } from "@/server/supabase/admin";
 import type { Database } from "@/types/database";
 
@@ -30,10 +30,6 @@ export type LinkCheckSummary = Record<LinkCheckOutcome, number> & {
   broken: number;
   errors: number;
 };
-
-function userAgent() {
-  return `DavraLinkChecker/1.0 (+${getPublicEnv().NEXT_PUBLIC_SITE_URL})`;
-}
 
 function siteOf(url: string) {
   try {
@@ -76,7 +72,7 @@ export async function runLinkCheckJob(startedAt = Date.now()): Promise<LinkCheck
     broken: 0,
     errors: 0,
   };
-  const agent = userAgent();
+  const agent = botUserAgent();
 
   await forEachByKey(
     due,
@@ -112,6 +108,6 @@ export async function recheckLink(resourceId: string): Promise<LinkRecheck | nul
   if (error) throw new Error(`Could not load the link (${error.code ?? "no code"})`);
   if (!resource) return null;
 
-  const result = await checkLink(resource.url, { userAgent: userAgent() });
+  const result = await checkLink(resource.url, { userAgent: botUserAgent() });
   return { ...result, linkStatus: await record(admin, resource, result.outcome) };
 }

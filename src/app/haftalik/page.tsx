@@ -5,14 +5,14 @@ import { renderCardEntries } from "@/components/feed/card-entries";
 import { EmptyState } from "@/components/layout/empty-state";
 import { routes } from "@/lib/routes";
 import { openGraphBase } from "@/lib/seo";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 import { getWeeklyTop } from "@/server/services/weekly";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Weekly");
   return {
     title: t("title"),
-    description: t("metaDescription", { appName: siteConfig.name }),
+    description: t("metaDescription", { appName: APP_NAME }),
     alternates: { canonical: routes.weekly },
     openGraph: { ...openGraphBase, type: "website", url: routes.weekly },
   };

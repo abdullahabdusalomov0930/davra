@@ -71,7 +71,7 @@ export async function getFollowing(viewerId: string) {
   const [users, topics] = await Promise.all([
     supabase
       .from("follows_users")
-      .select("followed:profiles!follows_users_followed_id_fkey (id, username, display_name, avatar_url)")
+      .select("followed:profiles!follows_users_followed_id_fkey (id, username, display_name)")
       .eq("follower_id", viewerId)
       .order("created_at", { ascending: false }),
     supabase

@@ -1,4 +1,4 @@
-import { EyeOffIcon } from "lucide-react";
+import { ClockIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getNow, getTranslations } from "next-intl/server";
 
@@ -52,7 +52,7 @@ export async function CommentsSection({ resource, viewerId, isStaff = false }: C
               <li key={comment.id} className="flex gap-3">
                 <UserAvatar
                   name={comment.author.display_name}
-                  src={comment.author.avatar_url}
+                  seed={comment.author.username}
                   className="size-9 text-xs"
                 />
                 <div className="min-w-0 flex-1">
@@ -69,6 +69,12 @@ export async function CommentsSection({ resource, viewerId, isStaff = false }: C
                         {t("hidden")}
                       </span>
                     )}
+                    {comment.status === "pending" && (
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                        <ClockIcon className="size-3.5" aria-hidden />
+                        {t("pending")}
+                      </span>
+                    )}
                   </div>
                   <p className="mt-1 text-sm text-pretty break-words whitespace-pre-line">{comment.body}</p>
                 </div>
@@ -78,12 +84,16 @@ export async function CommentsSection({ resource, viewerId, isStaff = false }: C
                       action={moderateCommentAction.bind(
                         null,
                         comment.id,
-                        comment.status === "hidden" ? "published" : "hidden",
+                        comment.status === "published" ? "hidden" : "published",
                       )}
                       variant="ghost"
                       className="h-7 text-xs text-muted-foreground"
                     >
-                      {comment.status === "hidden" ? tAdmin("comments.show") : tAdmin("comments.hide")}
+                      {comment.status === "hidden"
+                        ? tAdmin("comments.show")
+                        : comment.status === "pending"
+                          ? tAdmin("comments.approve")
+                          : tAdmin("comments.hide")}
                     </ActionButton>
                   )}
                   {comment.author_id === viewerId ? (

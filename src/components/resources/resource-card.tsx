@@ -1,4 +1,4 @@
-import { Link2OffIcon } from "lucide-react";
+import { GlobeIcon, Link2OffIcon } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useNow, useTranslations } from "next-intl";
 
@@ -12,7 +12,6 @@ import { RatingSummary } from "./rating-summary";
 import { ResourceActions, type ResourceViewer } from "./resource-actions";
 import { RESOURCE_TYPE_ICONS } from "./resource-meta";
 import { ResourceTags } from "./resource-tags";
-import { SiteFavicon } from "./site-favicon";
 
 type ResourceCardProps = {
   resource: ResourceCardData;
@@ -52,7 +51,7 @@ export function ResourceCard({ resource, viewer, hideAuthor = false }: ResourceC
             </Link>
           </h3>
           <p className="mt-1 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
-            <SiteFavicon domain={resource.domain} />
+            <GlobeIcon className="size-3.5 shrink-0" aria-hidden />
             <span className="truncate">{resource.domain}</span>
             <span aria-hidden>·</span>
             <span className="shrink-0">{tType(resource.type)}</span>
@@ -96,7 +95,7 @@ export function ResourceCard({ resource, viewer, hideAuthor = false }: ResourceC
           >
             <UserAvatar
               name={resource.author.display_name}
-              src={resource.author.avatar_url}
+              seed={resource.author.username}
               className="size-6 text-[10px]"
             />
             <span className="truncate">{resource.author.display_name}</span>

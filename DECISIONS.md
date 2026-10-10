@@ -82,7 +82,7 @@ ESLint 10 is out, but `eslint-plugin-react`, `-jsx-a11y` and `-import` (used by
 ### D13. Product name: Davra
 
 The owner chose **Davra** (matches the GitHub repo name) instead of the working name "Resurs".
-Changed in `src/lib/site-config.ts`, `package.json` and the local Supabase `project_id`.
+Changed in `src/lib/config.ts` (`APP_NAME`), `package.json` and the local Supabase `project_id`.
 The brief (`claude-code-prompt.md`) still says "Resurs"; treat that as the old working name.
 
 ## Phase 2 — Database
@@ -582,3 +582,76 @@ every seed. The importer writes with the secret key (it runs on an admin's machi
 only in a moderator's or admin's name, validates every row with the form's schema before writing
 anything, and skips existing links, so re-running a file is safe. The seed script refuses non-local
 databases because its accounts share a published password.
+
+### D64. Safety check before every user text, enforced by the database
+
+The security addendum (which overrides the brief where they differ) asks for automatic checks on every
+submission. Users write through the Supabase Data API with their own session (D14), so a check that
+lived only in the server actions could be skipped by calling the API directly. Instead the server checks
+a submission (`src/server/safety/evaluate.ts`: text policy, link policy, trust level, near-duplicates)
+and, unless it refuses it, issues a **safety ticket** with the secret key: user, kind, SHA-256 of exactly
+the fields that will be written (joined with U+001F, the same function in SQL and TypeScript) and the
+decision. `safety_check` triggers on resources, comments, ratings (review text) and profiles take the
+matching ticket for Data API writes and refuse the write without one (`unchecked_submission`). A ticket
+is used once and expires after 15 minutes; a failed statement rolls its use back, so a retry works.
+Writes that change no text (stars only, level, a moderator's status change) need no ticket; trusted
+server code (imports, seed, jobs) does not go through the Data API roles and is not checked.
+
+`needs_review` makes a resource or comment `pending` whatever the author's trust; ratings and profiles
+have no queue, so there the server refuses what it would hold. Comments therefore gained the `pending`
+status: the author and staff see a pending comment, it is not counted, and staff publish or hide it on
+`/admin/izohlar`. Why something was held or refused is stored in `moderation_events` (internal reason
+codes such as `text.scam:summary`, an excerpt; staff only, kept 180 days) and shown to moderators next
+to the queue entry, never to the author, who only sees a general message per field.
+
+Trust levels are computed for now (`my_trust_level()`: 0 new or banned, 1 trusted author as in D18,
+3 staff). Level 0 cards always wait (as before); a level 0 comment with a link waits, one without
+publishes after the text check. The stored `trust_level` column with promotion rules comes with the
+report and appeal work (addendum layer 2). Account names chosen at sign-up do not pass the check yet,
+because sign-up runs in the browser (D32); that changes when sign-up moves to the server.
+
+### D65. Link policy
+
+`src/server/safety/url-policy.ts`, on top of `normalizeUrl` (D22): http(s) only, no credentials, no IP
+addresses or intranet names, ports 80/443 only (new), tracking parameters removed (`ref` too, except on
+code hosts where it names a branch). Then a built-in list of link shorteners (refused with a request
+for the full address, `data/shorteners.json`), a category blocklist (`data/blocked-domains.json`: adult,
+gambling, piracy and piracy file hosts are refused; general file hosting is held for review) and
+lookalike domains: a label mixing Latin, Cyrillic or Greek letters, or one written only in Cyrillic or
+Greek letters that look Latin, is refused; genuine Cyrillic domains pass. The admin-editable
+`blocked_domains` table keeps working in the database.
+
+The server then follows the link with `safeFetch` (HEAD, at most 3 redirects, 5 s, the SSRF rules of
+D57) and applies the same rules to where it really leads; a redirect into a private network is refused,
+a longer chain is held, and a site that does not answer is let through (the weekly link check looks
+again). The final address is stored on the card (`final_url`, set only from the ticket, and checked
+against `blocked_domains` by the trigger). If `SAFE_BROWSING_API_KEY` is set, both addresses are looked
+up in Google Safe Browsing (behind the `UrlReputationProvider` interface); a flagged link is refused,
+and without a key the check is skipped with one warning in the log.
+
+Profile photos and site favicons are gone (addendum override): nothing is uploaded or stored, avatars
+are initials on a colour derived from the username, and no page loads images from another site, so
+`img-src` is `'self' data:`.
+
+### D66. Text policy and word lists
+
+Every text is cleaned by the Zod schemas, so forms and server agree (`src/lib/clean-text.ts`): NFKC
+(stylised letters become plain ones; superscripts, subscripts and fractions stay, since x² and H₂O
+matter in learning material), no invisible or control characters, single spaces, at most three of the
+same letter or symbol in a row, line breaks only in multi-line fields. Then `text-policy.ts` checks: no
+links in one-line fields and at most one in longer texts (a domain counts as a link only with a scheme,
+`www.` or a path, so "Node.js" and "ASP.NET" do not), no text that is little more than a link, no phone
+numbers or Telegram/WhatsApp invites (refused in cards, reviews and profiles, held in comments), and the
+word lists. ALL CAPS titles and emoji limits stay in the schemas.
+
+The word lists (`src/server/safety/data/words/{uz,ru,en}.json`) are starter lists to be extended by the
+owner, in six categories. Hate, sexual, drug or weapon selling, scam and profanity are refused;
+gambling is held, because some of its words have innocent uses. Matching compares words in Uzbek Latin
+and sees through simple disguises: case, repeated letters, dots, dashes or spaces between letters,
+digits and symbols for letters, accents, stylised Unicode, and Latin/Cyrillic/Greek lookalikes inside a
+word. It matches whole words, stems (`kazino*`) and phrases, never letters inside other words, so
+"class" does not contain "ass". Entries that collide with ordinary words are left out on purpose: the
+Russian "хуй" reads "xuy" (Uzbek "temper"), "stavka" alone is an interest rate ("foiz stavkasi"),
+"tez pul" is a money transfer. A rejection tells the author which field to change, not which rule
+matched. A card whose title and summary share 80 % of their words with one the same author shared in
+the last 24 hours is refused as a repeat.

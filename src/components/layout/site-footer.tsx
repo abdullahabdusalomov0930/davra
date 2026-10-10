@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 
 import { legalNavItems } from "./nav-items";
 
@@ -12,7 +12,7 @@ export async function SiteFooter() {
     <footer className="border-t bg-muted/40">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 md:flex-row md:items-start md:justify-between">
         <div className="max-w-sm space-y-1">
-          <p className="font-semibold">{siteConfig.name}</p>
+          <p className="font-semibold">{APP_NAME}</p>
           <p className="text-sm text-muted-foreground">{t("tagline")}</p>
         </div>
         <nav aria-label={t("legalNav")}>
@@ -28,7 +28,7 @@ export async function SiteFooter() {
         </nav>
       </div>
       <div className="mx-auto max-w-6xl px-4 pb-8 text-xs text-muted-foreground">
-        {t("copyright", { year: new Date().getFullYear(), appName: siteConfig.name })}
+        {t("copyright", { year: new Date().getFullYear(), appName: APP_NAME })}
       </div>
     </footer>
   );

@@ -71,7 +71,7 @@ export function learningResourceData(resource: LearningResourceInput) {
   };
 }
 
-type ProfileInput = { username: string; displayName: string; bio: string | null; avatarUrl: string | null };
+type ProfileInput = { username: string; displayName: string; bio: string | null };
 
 export function profilePageData(profile: ProfileInput) {
   const page = absoluteUrl(routes.profile(profile.username));
@@ -85,7 +85,6 @@ export function profilePageData(profile: ProfileInput) {
       alternateName: `@${profile.username}`,
       url: page,
       ...(profile.bio && { description: profile.bio }),
-      ...(profile.avatarUrl && { image: profile.avatarUrl }),
     },
   };
 }

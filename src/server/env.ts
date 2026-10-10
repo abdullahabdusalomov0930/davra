@@ -26,3 +26,8 @@ export function getCronSecret(): string | undefined {
   const secret = process.env.CRON_SECRET?.trim();
   return secret && secret.length >= 16 ? secret : undefined;
 }
+
+/** Google Safe Browsing (Lookup API v4) key; optional. Without it link reputation is not checked. */
+export function getSafeBrowsingKey(): string | undefined {
+  return process.env.SAFE_BROWSING_API_KEY?.trim() || undefined;
+}

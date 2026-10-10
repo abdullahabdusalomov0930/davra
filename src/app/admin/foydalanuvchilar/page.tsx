@@ -59,7 +59,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps<"/admin
             const canBan = !self && (isAdmin || user.role === "user");
             return (
               <li key={user.id} className="flex flex-wrap items-center gap-3 p-4 text-sm">
-                <UserAvatar name={user.display_name} src={user.avatar_url} className="size-9 text-xs" />
+                <UserAvatar name={user.display_name} seed={user.username} className="size-9 text-xs" />
                 <div className="min-w-0 flex-1">
                   <p className="flex flex-wrap items-center gap-2">
                     <Link href={routes.profile(user.username)} className="font-medium hover:underline">

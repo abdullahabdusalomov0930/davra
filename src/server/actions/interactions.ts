@@ -13,15 +13,17 @@ import { toFieldErrors } from "./validation";
 const idSchema = z.uuid();
 const flagSchema = z.boolean();
 
+type Failure = Extract<ActionResult, { ok: false }>;
+
 /** The signed-in user's id, or the result to return instead. */
-async function viewerOrError(...ids: unknown[]): Promise<{ id: string } | ActionResult<never>> {
+async function viewerOrError(...ids: unknown[]): Promise<{ id: string } | Failure> {
   const viewer = await getViewer();
   if (!viewer) return { ok: false, error: "unauthorized" };
   if (!ids.every((id) => idSchema.safeParse(id).success)) return { ok: false, error: "invalidInput" };
   return { id: viewer.id };
 }
 
-const isError = (value: { id: string } | ActionResult<never>): value is ActionResult<never> => "ok" in value;
+const isError = (value: { id: string } | Failure): value is Failure => "ok" in value;
 
 export async function setLikeAction(resourceId: string, liked: boolean): Promise<ActionResult> {
   const viewer = await viewerOrError(resourceId);
@@ -60,7 +62,7 @@ export async function deleteRatingAction(resourceId: string): Promise<ActionResu
 export async function addCommentAction(
   resourceId: string,
   input: CommentInput,
-): Promise<ActionResult<keyof CommentInput>> {
+): Promise<ActionResult<keyof CommentInput, { pending: boolean }>> {
   const viewer = await viewerOrError(resourceId);
   if (isError(viewer)) return viewer;
 
@@ -68,7 +70,7 @@ export async function addCommentAction(
   if (!parsed.success) {
     return { ok: false, error: "invalidInput", fieldErrors: toFieldErrors<keyof CommentInput>(parsed.error) };
   }
-  return addComment(resourceId, parsed.data);
+  return addComment(viewer.id, resourceId, parsed.data);
 }
 
 export async function deleteCommentAction(commentId: string): Promise<ActionResult> {

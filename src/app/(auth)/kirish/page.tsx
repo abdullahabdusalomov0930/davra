@@ -8,7 +8,7 @@ import { SignInForm } from "@/components/auth/sign-in-form";
 import { firstParam } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
 import { safeRedirectPath } from "@/lib/safe-redirect";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 import { getViewer } from "@/server/auth/session";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,7 +25,7 @@ export default async function SignInPage({ searchParams }: PageProps<"/kirish">)
   return (
     <AuthCard
       title={t("signInTitle")}
-      description={t("signInSubtitle", { appName: siteConfig.name })}
+      description={t("signInSubtitle", { appName: APP_NAME })}
       footer={
         <>
           {t("noAccount")}{" "}

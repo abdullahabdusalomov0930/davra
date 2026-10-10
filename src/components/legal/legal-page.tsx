@@ -6,7 +6,7 @@ import { legalNavItems } from "@/components/layout/nav-items";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { uzDateParts } from "@/lib/dates";
 import { getPublicEnv } from "@/lib/env";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 
 export type LegalDocument = "rules" | "terms" | "privacy";
 
@@ -14,7 +14,7 @@ type Section = { title: string; paragraphs?: string[]; items?: string[] };
 
 /** The text lives in messages/uz.json (Legal.*) as plain strings; `{appName}` is the only placeholder. */
 function fill(text: string) {
-  return text.replaceAll("{appName}", siteConfig.name);
+  return text.replaceAll("{appName}", APP_NAME);
 }
 
 export async function legalMetadata(document: LegalDocument, path: string) {

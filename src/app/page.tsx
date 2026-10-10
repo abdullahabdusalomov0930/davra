@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { firstParam } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
 import { absoluteUrl, openGraphBase } from "@/lib/seo";
-import { siteConfig } from "@/lib/site-config";
+import { APP_NAME } from "@/lib/config";
 import { type FeedQuery, SEARCH_PARAMS, SORT_PARAM_VALUES } from "@/lib/validators";
 import { getViewer } from "@/server/auth/session";
 import { loadMoreResourcesAction } from "@/server/actions/feed";
@@ -34,7 +34,7 @@ async function websiteData() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: siteConfig.name,
+    name: APP_NAME,
     url: absoluteUrl(routes.home),
     description: t("description"),
     inLanguage: "uz",
@@ -85,7 +85,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
 
           <section aria-labelledby="values-title" className="pb-10">
             <h2 id="values-title" className="sr-only">
-              {t("valuesTitle", { appName: siteConfig.name })}
+              {t("valuesTitle", { appName: APP_NAME })}
             </h2>
             <ul className="grid gap-4 sm:grid-cols-3">
               {values.map(({ icon: Icon, title, text }) => (

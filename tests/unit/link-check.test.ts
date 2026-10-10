@@ -3,7 +3,7 @@ import type { AddressInfo } from "node:net";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { isPublicAddress } from "@/server/link-check/address";
+import { isPublicAddress } from "@/server/safety/address";
 import { checkLink, type LinkCheckOptions } from "@/server/link-check/check-link";
 
 describe("isPublicAddress", () => {
@@ -112,6 +112,7 @@ describe("checkLink", () => {
     headTimeoutMs: 500,
     getTimeoutMs: 500,
     isAllowedAddress: (address) => address === "127.0.0.1",
+    isAllowedPort: () => true,
   };
   const check = (path: string, overrides: Partial<LinkCheckOptions> = {}) =>
     checkLink(`http://127.0.0.1:${port}${path}`, { ...options, ...overrides });

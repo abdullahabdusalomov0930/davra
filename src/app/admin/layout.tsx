@@ -19,6 +19,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const items = [
     { href: routes.admin, label: t("nav.overview") },
     { href: routes.adminResources, label: t("nav.resources"), count: counts.pending },
+    { href: routes.adminComments, label: t("nav.comments"), count: counts.pendingComments },
     { href: routes.adminReports, label: t("nav.reports"), count: counts.reports + counts.removals },
     { href: routes.adminLinks, label: t("nav.links"), count: counts.brokenLinks },
     { href: routes.adminUsers, label: t("nav.users") },

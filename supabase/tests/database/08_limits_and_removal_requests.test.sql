@@ -3,6 +3,53 @@ begin;
 create extension if not exists pgtap with schema extensions;
 select plan(20);
 
+-- These tests are not about the content safety check (11_content_safety.test.sql is). The app server
+-- checks every text before it is written and issues a single-use ticket for it; these triggers stand
+-- in for the server and issue that ticket for every write. They are rolled back with the test.
+create function pg_temp.vouch(kind text, content_hash text)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  select public.issue_safety_ticket((select auth.uid()), kind, content_hash, 'allow') where (select auth.uid()) is not null;
+$$;
+
+create function pg_temp.vouch_resource() returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  perform pg_temp.vouch('resource',
+    private.content_hash(new.url, new.title, new.summary, new.for_whom, coalesce(new.author_review, '')));
+  return new;
+end $$;
+create function pg_temp.vouch_comment() returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  perform pg_temp.vouch('comment', private.content_hash(new.resource_id::text, new.body));
+  return new;
+end $$;
+create function pg_temp.vouch_rating() returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if new.review_text is not null then
+    perform pg_temp.vouch('rating', private.content_hash(new.resource_id::text, new.review_text));
+  end if;
+  return new;
+end $$;
+create function pg_temp.vouch_profile() returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  perform pg_temp.vouch('profile', private.content_hash(new.username, new.display_name,
+    coalesce(new.bio, ''), coalesce(new.university, ''), coalesce(new.field_of_study, '')));
+  return new;
+end $$;
+
+-- "aaa_" runs before the other BEFORE triggers.
+create trigger aaa_vouch before insert or update on public.resources
+  for each row execute function pg_temp.vouch_resource();
+create trigger aaa_vouch before insert on public.comments
+  for each row execute function pg_temp.vouch_comment();
+create trigger aaa_vouch before insert or update on public.resource_ratings
+  for each row execute function pg_temp.vouch_rating();
+create trigger aaa_vouch before update on public.profiles
+  for each row execute function pg_temp.vouch_profile();
+
 -- N = new user, T = trusted author, M = moderator, A = author of the cards everyone interacts with.
 insert into auth.users (id, email, raw_user_meta_data) values
   ('00000000-0000-4000-8000-000000000081', 'n81@test.uz', '{"username": "limit_new"}'),
