@@ -387,3 +387,35 @@ Relative dates ("3 kun oldin") and month names need Uzbek locale data, which not
 (Chromium builds without it print "M10"). Lists therefore receive server-rendered cards, and "load more"
 returns server-rendered cards from its Server Action; the client only appends them. The request config also
 fixes one "now" per request, so any date formatted in a client component matches the server.
+
+## Phase 6 — Likes, saves, ratings, comments, follows
+
+### D49. Obunalarim
+
+The following feed is `search_resources(following_only => true)`: published resources whose author the
+visitor follows or whose topic they follow, newest first, with the same cursors and filters as every other
+list (D45). Follows are private (D21), and the function runs with the visitor's rights, so it can only
+see the visitor's own follows; guests get an empty list. `/obunalarim` shows the feed with the followed
+topics and people above it, and members get it as a third home tab. Follower counts are not shown,
+since who follows whom is private.
+
+### D50. Likes and saves
+
+Buttons update at once and roll back with a message if the server refuses (own resource, card no longer
+published, banned account: all enforced by RLS, D20). Writes are idempotent: liking twice or unliking
+something not liked succeeds, so double clicks and retries are harmless. Like and save do not re-render
+the page; counters are kept by database triggers and show up on the next visit. A list fetches the
+visitor's likes and saves for its cards in two small queries and renders the cards on the server (D48).
+Cards show the like count; saves are personal bookmarks, so their count is not shown.
+
+### D51. Ratings and comments
+
+- A rating is saved with update-then-insert, not an upsert: an upsert would need UPDATE on `resource_id`,
+  which users do not have (column privileges, D14).
+- Reviews are the ratings that come with text; ratings without text count in the average only. A young
+  account's rating is shown with a note that it will count once it is updated after 24 hours (D18).
+- Comments are flat and cannot be edited (as in Phase 2); their author can delete them, with
+  confirmation, like every destructive action. Staff hide comments from the admin panel (Phase 7).
+- After a rating or comment is saved, the page refreshes from the server, so averages, counts and lists
+  always match the database.
+- Daily limits for comments, likes and saves come with the other rate limits in Phase 7.

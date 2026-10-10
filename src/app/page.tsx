@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { ListTabs } from "@/components/feed/list-tabs";
-import { toCardEntries } from "@/components/feed/card-entries";
+import { renderCardEntries } from "@/components/feed/card-entries";
 import { ResourceList } from "@/components/feed/resource-list";
 import { EmptyState } from "@/components/layout/empty-state";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,10 @@ import { routes } from "@/lib/routes";
 import { siteConfig } from "@/lib/site-config";
 import { type FeedQuery, SEARCH_PARAMS, SORT_PARAM_VALUES } from "@/lib/validators";
 import { getViewer } from "@/server/auth/session";
+import { loadMoreResourcesAction } from "@/server/actions/feed";
 import { findResources } from "@/server/services/feed";
 
-const NEWEST_HREF = `/?${SEARCH_PARAMS.sort}=${SORT_PARAM_VALUES.newest}`;
+const NEWEST_HREF = routes.newest;
 
 export default async function HomePage({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
@@ -85,6 +86,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
             tabs={[
               { href: routes.home, label: tFeed("popular"), active: sort === "popular" },
               { href: NEWEST_HREF, label: tFeed("newest"), active: sort === "newest" },
+              ...(viewer ? [{ href: routes.following, label: tFeed("following"), active: false }] : []),
             ]}
           />
         </div>
@@ -92,9 +94,9 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
         {page.items.length > 0 ? (
           <ResourceList
             key={sort}
-            initialCards={toCardEntries(page.items)}
+            initialCards={await renderCardEntries(page.items)}
             initialCursor={page.nextCursor}
-            query={query}
+            loadMore={loadMoreResourcesAction.bind(null, query)}
             baseHref={sort === "newest" ? NEWEST_HREF : routes.home}
           />
         ) : (

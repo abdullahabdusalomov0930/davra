@@ -4,15 +4,17 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 
+import { renderCardEntries } from "@/components/feed/card-entries";
+import { FollowButton } from "@/components/follow/follow-button";
 import { EmptyState } from "@/components/layout/empty-state";
 import { UserAvatar } from "@/components/profile/user-avatar";
-import { ResourceCard } from "@/components/resources/resource-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { uzDateParts } from "@/lib/dates";
 import { siteConfig } from "@/lib/site-config";
 import { getViewer } from "@/server/auth/session";
+import { isFollowing } from "@/server/services/follows";
 import { getPublicProfile } from "@/server/services/profiles";
 import { listResourcesByAuthor } from "@/server/services/resources";
 
@@ -50,6 +52,10 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
     listResourcesByAuthor(profile.id),
   ]);
   const isOwner = viewer?.id === profile.id;
+  const [cards, following] = await Promise.all([
+    renderCardEntries(resources, { hideAuthor: true }),
+    viewer && !isOwner ? isFollowing(viewer.id, { kind: "user", id: profile.id }) : null,
+  ]);
   const { year, month } = uzDateParts(format, profile.created_at);
 
   return (
@@ -70,13 +76,21 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
             </div>
             <p className="mt-0.5 text-muted-foreground">@{profile.username}</p>
           </div>
-          {isOwner && (
+          {isOwner ? (
             <Button asChild variant="outline" className="self-start sm:self-center">
               <Link href={routes.settings}>
                 <PencilIcon aria-hidden />
                 {t("edit")}
               </Link>
             </Button>
+          ) : (
+            <div className="self-start sm:self-center">
+              <FollowButton
+                target={{ kind: "user", id: profile.id }}
+                following={following}
+                signInHref={routes.signInTo(routes.profile(profile.username))}
+              />
+            </div>
           )}
         </div>
 
@@ -111,9 +125,9 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
         </h2>
         {resources.length > 0 ? (
           <ul className="grid gap-4 sm:grid-cols-2">
-            {resources.map((resource) => (
-              <li key={resource.id} className="grid">
-                <ResourceCard resource={resource} hideAuthor />
+            {cards.map((entry) => (
+              <li key={entry.id} className="grid">
+                {entry.card}
               </li>
             ))}
           </ul>

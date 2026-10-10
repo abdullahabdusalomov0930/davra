@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { ListTabs } from "@/components/feed/list-tabs";
-import { toCardEntries } from "@/components/feed/card-entries";
+import { FollowButton } from "@/components/follow/follow-button";
+import { renderCardEntries } from "@/components/feed/card-entries";
 import { ResourceList } from "@/components/feed/resource-list";
 import { EmptyState } from "@/components/layout/empty-state";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,10 @@ import { firstParam } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
 import { isValidSlug } from "@/lib/slugify";
 import { type FeedQuery, SEARCH_PARAMS, SORT_PARAM_VALUES, toSearchQueryString } from "@/lib/validators";
+import { loadMoreResourcesAction } from "@/server/actions/feed";
+import { getViewer } from "@/server/auth/session";
 import { findResources } from "@/server/services/feed";
+import { isFollowing } from "@/server/services/follows";
 import { getTopicBySlug } from "@/server/services/topics";
 
 async function loadTopic(slug: string) {
@@ -43,11 +47,13 @@ export default async function TopicPage({ params, searchParams }: PageProps<"/ma
   const topicHref = routes.topic(topic.slug);
   const newestHref = `${topicHref}?${SEARCH_PARAMS.sort}=${SORT_PARAM_VALUES.newest}`;
 
-  const [t, tFeed, page] = await Promise.all([
+  const [t, tFeed, page, viewer] = await Promise.all([
     getTranslations("Topics"),
     getTranslations("Feed"),
     findResources(query, { cursor: firstParam(search[SEARCH_PARAMS.cursor]) }),
+    getViewer(),
   ]);
+  const following = viewer ? await isFollowing(viewer.id, { kind: "topic", id: topic.id }) : null;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -65,12 +71,19 @@ export default async function TopicPage({ params, searchParams }: PageProps<"/ma
           {topic.description_uz && <p className="mt-2 text-muted-foreground">{topic.description_uz}</p>}
           <p className="mt-2 text-sm font-medium text-primary">{t("resourceCount", { count: topic.resourceCount })}</p>
         </div>
-        <Button asChild variant="outline">
-          <Link href={`${routes.search}${toSearchQueryString({ topic: topic.slug })}`}>
-            <SearchIcon aria-hidden />
-            {t("searchInTopic")}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <Link href={`${routes.search}${toSearchQueryString({ topic: topic.slug })}`}>
+              <SearchIcon aria-hidden />
+              {t("searchInTopic")}
+            </Link>
+          </Button>
+          <FollowButton
+            target={{ kind: "topic", id: topic.id }}
+            following={following}
+            signInHref={routes.signInTo(topicHref)}
+          />
+        </div>
       </header>
 
       <div className="mb-5">
@@ -86,9 +99,9 @@ export default async function TopicPage({ params, searchParams }: PageProps<"/ma
       {page.items.length > 0 ? (
         <ResourceList
           key={sort}
-          initialCards={toCardEntries(page.items)}
+          initialCards={await renderCardEntries(page.items)}
           initialCursor={page.nextCursor}
-          query={query}
+          loadMore={loadMoreResourcesAction.bind(null, query)}
           baseHref={sort === "newest" ? newestHref : topicHref}
         />
       ) : (

@@ -17,6 +17,8 @@ export const feedQuerySchema = z.object({
   price: z.enum(RESOURCE_PRICES).optional(),
   level: z.enum(RESOURCE_LEVELS).optional(),
   sort: z.enum(FEED_SORTS),
+  /** Only resources from the people and topics the visitor follows ("Obunalarim"). */
+  following: z.boolean().optional(),
 });
 
 export type FeedQuery = z.infer<typeof feedQuerySchema>;

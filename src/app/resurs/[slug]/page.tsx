@@ -5,9 +5,13 @@ import { notFound } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
+import { CommentsSection } from "@/components/comments/comments-section";
+import { renderCardEntries } from "@/components/feed/card-entries";
+import { FollowButton } from "@/components/follow/follow-button";
 import { UserAvatar } from "@/components/profile/user-avatar";
-import { ResourceCard } from "@/components/resources/resource-card";
+import { RatingsSection } from "@/components/ratings/ratings-section";
 import { DeleteResourceButton } from "@/components/resources/delete-resource-button";
+import { ResourceActions, type ResourceViewer } from "@/components/resources/resource-actions";
 import { RatingSummary } from "@/components/resources/rating-summary";
 import { RESOURCE_TYPE_ICONS } from "@/components/resources/resource-meta";
 import { ResourceStatusAlert } from "@/components/resources/resource-status-alert";
@@ -19,6 +23,8 @@ import { routes } from "@/lib/routes";
 import { isValidSlug } from "@/lib/slugify";
 import { getViewer } from "@/server/auth/session";
 import { findRelatedResources } from "@/server/services/feed";
+import { isFollowing } from "@/server/services/follows";
+import { getViewerInteractions } from "@/server/services/interactions";
 import { getResourceBySlug } from "@/server/services/resources";
 
 /** Edits within this long after creation are not worth a "Tahrirlangan" note. */
@@ -67,6 +73,22 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
   const isOwner = viewer?.id === resource.author_id;
   const TypeIcon = RESOURCE_TYPE_ICONS[resource.type];
 
+  const [interactions, followsAuthor, relatedCards] = await Promise.all([
+    viewer && !isOwner ? getViewerInteractions([resource.id]) : null,
+    viewer && !isOwner ? isFollowing(viewer.id, { kind: "user", id: resource.author_id }) : null,
+    renderCardEntries(related),
+  ]);
+  const actionsViewer: ResourceViewer = !viewer
+    ? { kind: "guest" }
+    : isOwner
+      ? { kind: "author" }
+      : {
+          kind: "member",
+          liked: Boolean(interactions?.liked.has(resource.id)),
+          saved: Boolean(interactions?.saved.has(resource.id)),
+        };
+  const signInHere = routes.signInTo(routes.resource(resource.slug));
+
   const created = new Date(resource.created_at);
   const shared = new Date(resource.published_at ?? resource.created_at);
   const updated = new Date(resource.updated_at);
@@ -113,6 +135,15 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
                 <span className="sr-only">{t("opensInNewTab")}</span>
               </a>
             </Button>
+            {resource.status === "published" && (
+              <ResourceActions
+                resourceId={resource.id}
+                likes={resource.likes_count}
+                viewer={actionsViewer}
+                signInHref={signInHere}
+                variant="full"
+              />
+            )}
             {isOwner && (
               <div role="group" aria-label={t("actions")} className="flex flex-wrap gap-2">
                 <Button asChild variant="outline" size="lg">
@@ -157,13 +188,23 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
         )}
 
         <footer className="flex flex-wrap items-center justify-between gap-4 border-t pt-6 text-sm">
-          <Link href={routes.profile(resource.author.username)} className="group flex min-w-0 items-center gap-3">
-            <UserAvatar name={resource.author.display_name} src={resource.author.avatar_url} className="size-10" />
-            <span className="grid min-w-0">
-              <span className="text-xs text-muted-foreground">{t("sharedBy")}</span>
-              <span className="truncate font-medium group-hover:underline">{resource.author.display_name}</span>
-            </span>
-          </Link>
+          <div className="flex min-w-0 flex-wrap items-center gap-3">
+            <Link href={routes.profile(resource.author.username)} className="group flex min-w-0 items-center gap-3">
+              <UserAvatar name={resource.author.display_name} src={resource.author.avatar_url} className="size-10" />
+              <span className="grid min-w-0">
+                <span className="text-xs text-muted-foreground">{t("sharedBy")}</span>
+                <span className="truncate font-medium group-hover:underline">{resource.author.display_name}</span>
+              </span>
+            </Link>
+            {!isOwner && (
+              <FollowButton
+                target={{ kind: "user", id: resource.author_id }}
+                following={followsAuthor}
+                signInHref={signInHere}
+                size="sm"
+              />
+            )}
+          </div>
           <p className="grid text-right text-muted-foreground">
             <time dateTime={shared.toISOString()}>{t("date", uzDateParts(format, shared))}</time>
             {showUpdated && (
@@ -175,7 +216,13 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
         </footer>
       </article>
 
-      {related.length > 0 && (
+      <RatingsSection
+        resource={resource}
+        viewer={!viewer ? { kind: "guest" } : isOwner ? { kind: "author" } : { kind: "member", id: viewer.id }}
+      />
+      <CommentsSection resource={resource} viewerId={viewer?.id ?? null} />
+
+      {relatedCards.length > 0 && (
         <section aria-labelledby="related-title" className="mt-4">
           <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="related-title" className="text-xl font-semibold tracking-tight">
@@ -189,9 +236,9 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
             </Link>
           </div>
           <ul className="grid gap-4 sm:grid-cols-2">
-            {related.map((item) => (
-              <li key={item.id} className="grid">
-                <ResourceCard resource={item} />
+            {relatedCards.map((entry) => (
+              <li key={entry.id} className="grid">
+                {entry.card}
               </li>
             ))}
           </ul>

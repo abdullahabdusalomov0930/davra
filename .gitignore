@@ -51,3 +51,6 @@ next-env.d.ts
 
 # local Claude Code preview config
 /.claude/launch.json
+
+# Written by `next dev`; the agent notes live in CLAUDE.md.
+AGENTS.md
