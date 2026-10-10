@@ -9,10 +9,13 @@ import { FollowButton } from "@/components/follow/follow-button";
 import { renderCardEntries } from "@/components/feed/card-entries";
 import { ResourceList } from "@/components/feed/resource-list";
 import { EmptyState } from "@/components/layout/empty-state";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Button } from "@/components/ui/button";
 import { firstParam } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
+import { metaDescription, openGraphBase } from "@/lib/seo";
 import { isValidSlug } from "@/lib/slugify";
+import { breadcrumbList } from "@/lib/structured-data";
 import { type FeedQuery, SEARCH_PARAMS, SORT_PARAM_VALUES, toSearchQueryString } from "@/lib/validators";
 import { loadMoreResourcesAction } from "@/server/actions/feed";
 import { getViewer } from "@/server/auth/session";
@@ -29,10 +32,12 @@ export async function generateMetadata({ params }: PageProps<"/mavzu/[slug]">): 
   if (!topic) return {};
 
   const t = await getTranslations("Topics");
+  const path = routes.topic(topic.slug);
   return {
     title: topic.name_uz,
-    description: topic.description_uz ?? t("topicMetaDescription", { name: topic.name_uz }),
-    alternates: { canonical: routes.topic(topic.slug) },
+    description: metaDescription(topic.description_uz ?? t("topicMetaDescription", { name: topic.name_uz })),
+    alternates: { canonical: path },
+    openGraph: { ...openGraphBase, type: "website", url: path },
   };
 }
 
@@ -47,8 +52,9 @@ export default async function TopicPage({ params, searchParams }: PageProps<"/ma
   const topicHref = routes.topic(topic.slug);
   const newestHref = `${topicHref}?${SEARCH_PARAMS.sort}=${SORT_PARAM_VALUES.newest}`;
 
-  const [t, tFeed, page, viewer] = await Promise.all([
+  const [t, tNav, tFeed, page, viewer] = await Promise.all([
     getTranslations("Topics"),
+    getTranslations("Nav"),
     getTranslations("Feed"),
     findResources(query, { cursor: firstParam(search[SEARCH_PARAMS.cursor]) }),
     getViewer(),
@@ -57,6 +63,16 @@ export default async function TopicPage({ params, searchParams }: PageProps<"/ma
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          ...breadcrumbList([
+            { name: tNav("home"), path: routes.home },
+            { name: tNav("topics"), path: routes.topics },
+            { name: topic.name_uz, path: topicHref },
+          ]),
+        }}
+      />
       <Link
         href={routes.topics}
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"

@@ -8,12 +8,15 @@ import { renderCardEntries } from "@/components/feed/card-entries";
 import { FollowButton } from "@/components/follow/follow-button";
 import { ReportButton } from "@/components/reports/report-button";
 import { EmptyState } from "@/components/layout/empty-state";
+import { JsonLd } from "@/components/seo/json-ld";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { uzDateParts } from "@/lib/dates";
+import { metaDescription, openGraphBase } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
+import { profilePageData } from "@/lib/structured-data";
 import { getViewer } from "@/server/auth/session";
 import { isFollowing } from "@/server/services/follows";
 import { getPublicProfile } from "@/server/services/profiles";
@@ -30,10 +33,14 @@ export async function generateMetadata({ params }: PageProps<"/u/[username]">): 
   if (!profile) return {};
 
   const t = await getTranslations("Profile");
+  const path = routes.profile(profile.username);
   return {
     title: `${profile.display_name} (@${profile.username})`,
-    description: profile.bio ?? t("metaDescription", { name: profile.display_name, appName: siteConfig.name }),
-    alternates: { canonical: routes.profile(profile.username) },
+    description: metaDescription(
+      profile.bio ?? t("metaDescription", { name: profile.display_name, appName: siteConfig.name }),
+    ),
+    alternates: { canonical: path },
+    openGraph: { ...openGraphBase, type: "profile", url: path, username: profile.username },
   };
 }
 
@@ -61,6 +68,14 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
+      <JsonLd
+        data={profilePageData({
+          username: profile.username,
+          displayName: profile.display_name,
+          bio: profile.bio,
+          avatarUrl: profile.avatar_url,
+        })}
+      />
       <article className="rounded-2xl border bg-card p-6 text-card-foreground sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
           <UserAvatar name={profile.display_name} src={profile.avatar_url} className="size-24 text-3xl" />

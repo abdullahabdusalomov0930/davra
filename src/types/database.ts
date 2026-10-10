@@ -627,6 +627,16 @@ export type Database = {
           next_cursor: Json;
         }[];
       };
+      weekly_top_resources: {
+        Args: { max_count?: number };
+        Returns: {
+          resource_id: string;
+          week_likes: number;
+          week_points: number;
+          week_ratings: number;
+          week_saves: number;
+        }[];
+      };
     };
     Enums: {
       comment_status: "published" | "hidden";

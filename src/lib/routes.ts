@@ -12,6 +12,8 @@ export const routes = {
   welcome: "/sozlamalar?xush-kelibsiz=1",
   rules: "/qoidalar",
   terms: "/shartlar",
+  privacy: "/maxfiylik",
+  weekly: "/haftalik",
   profile: (username: string) => `/u/${encodeURIComponent(username)}`,
   newResource: "/yangi-resurs",
   resource: (slug: string) => `/resurs/${encodeURIComponent(slug)}`,

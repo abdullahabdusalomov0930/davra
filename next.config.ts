@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
   // dynamically rendered. See DECISIONS.md.
   poweredByHeader: false,
   reactStrictMode: true,
+  // Share images read their fonts from disk at request time (src/server/og/fonts.ts).
+  outputFileTracingIncludes: { "/**/opengraph-image*": ["./src/assets/fonts/*.woff"] },
   turbopack: {
     rules: {
       "*.css": {
