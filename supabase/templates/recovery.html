@@ -1,0 +1,40 @@
+<!-- Davra: password reset. Paste into Supabase Dashboard → Authentication → Emails → "Reset password". -->
+<div
+  style="
+    margin: 0 auto;
+    max-width: 480px;
+    padding: 24px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1f2933;
+    line-height: 1.5;
+  "
+>
+  <h1 style="margin: 0 0 16px; font-size: 22px">Parolni tiklash</h1>
+  <p style="margin: 0 0 16px">
+    Davra hisobingiz uchun parolni tiklash soʻraldi. Yangi parol oʻrnatish uchun quyidagi tugmani bosing.
+  </p>
+  <p style="margin: 0 0 24px">
+    <a
+      href="{{ .SiteURL }}/parolni-tiklash/yangi?token_hash={{ .TokenHash }}&amp;type=recovery"
+      style="
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 8px;
+        background: #0f6e6e;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+      "
+      >Yangi parol oʻrnatish</a
+    >
+  </p>
+  <p style="margin: 0 0 8px; font-size: 13px; color: #52606d">Tugma ishlamasa, bu havolani brauzerga nusxalang:</p>
+  <p style="margin: 0 0 24px; font-size: 13px; word-break: break-all">
+    <a href="{{ .SiteURL }}/parolni-tiklash/yangi?token_hash={{ .TokenHash }}&amp;type=recovery" style="color: #0f6e6e"
+      >{{ .SiteURL }}/parolni-tiklash/yangi?token_hash={{ .TokenHash }}&amp;type=recovery</a
+    >
+  </p>
+  <p style="margin: 0; font-size: 13px; color: #52606d">
+    Agar buni siz soʻramagan boʻlsangiz, xatga eʼtibor bermang — parolingiz oʻzgarmaydi.
+  </p>
+</div>

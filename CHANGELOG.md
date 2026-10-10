@@ -5,6 +5,29 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 3 — Auth, profiles, settings
+
+#### Added
+
+- Sign-up (`/royxatdan-otish`), sign-in (`/kirish`), email confirmation (`/email-tasdiqlash`), password
+  reset (`/parolni-tiklash`, `/parolni-tiklash/yangi`) with Uzbek messages for every Supabase Auth error,
+  resend with a cooldown, password visibility toggle, and safe `?next=` redirects.
+- Uzbek email templates (`supabase/templates/`) with `token_hash` links that are confirmed by a button.
+- Public profile `/u/[username]`: avatar, name, role badge, bio, university, field of study, join date.
+- Settings `/sozlamalar`: avatar upload (cropped and re-encoded in the browser, checked by magic bytes on
+  the server) and removal, profile form, sign-out.
+- Signed-in header: account menu with profile, settings and sign-out.
+- Proxy redirects for protected pages, sign-in/sign-up when signed in, and lower-case profile URLs.
+- Reserved usernames enforced in the database (migration) and the forms.
+- UI primitives: input, textarea, label, avatar, alert, badge, dropdown menu; form helpers (`Field`,
+  `PasswordInput`, `SubmitButton`).
+- Unit tests for validators, redirects, auth errors, image checks and routes (56 in total); pgTAP checks
+  for reserved usernames (154 in total).
+
+#### Changed
+
+- Local Supabase: minimum password length 8, custom email templates.
+
 ### Deployment
 
 #### Added

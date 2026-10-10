@@ -1,7 +1,7 @@
 -- Profiles: creation on sign-up, who may edit what, bans and roles.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(23);
+select plan(25);
 
 -- Users: 1 = regular, 2 = second regular, 3 = moderator, 4 = admin.
 insert into auth.users (id, email, raw_user_meta_data) values
@@ -9,7 +9,8 @@ insert into auth.users (id, email, raw_user_meta_data) values
   ('00000000-0000-4000-8000-000000000002', 'two@test.uz', '{"username": "nodira_01"}'),
   ('00000000-0000-4000-8000-000000000003', 'mod@test.uz', '{"username": "moderator"}'),
   ('00000000-0000-4000-8000-000000000004', 'admin@test.uz', '{"username": "admin"}'),
-  ('00000000-0000-4000-8000-000000000005', 'five@test.uz', '{"username": "x!"}');
+  ('00000000-0000-4000-8000-000000000005', 'five@test.uz', '{"username": "x!"}'),
+  ('00000000-0000-4000-8000-000000000006', 'six@test.uz', '{"username": "Admin"}');
 update public.profiles set role = 'moderator' where id = '00000000-0000-4000-8000-000000000003';
 update public.profiles set role = 'admin' where id = '00000000-0000-4000-8000-000000000004';
 
@@ -39,6 +40,18 @@ select throws_ok(
   'usernames must be lower-case'
 );
 
+select matches(
+  (select username from public.profiles where id = '00000000-0000-4000-8000-000000000006'),
+  '^user_[0-9a-f]{6}$',
+  'a reserved username falls back to user_xxxxxx'
+);
+
+select throws_ok(
+  $$update public.profiles set username = 'moderator' where id = '00000000-0000-4000-8000-000000000001'$$,
+  '23514', null,
+  'reserved usernames cannot be taken later either'
+);
+
 -- Guests --------------------------------------------------------------------
 
 set local role anon;
@@ -46,7 +59,7 @@ set local request.jwt.claims = '{"role": "anon"}';
 
 select is(
   (select count(*)::integer from public.profiles where id::text like '00000000-0000-4000-8000-%'),
-  5,
+  6,
   'guests can read profiles'
 );
 

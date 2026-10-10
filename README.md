@@ -64,9 +64,16 @@ values are compiled into the browser bundle anyway. After changing a variable, r
    (and later into Vercel).
 3. Authentication → URL Configuration: set **Site URL** to your production URL and add
    `http://localhost:3000/**` and `https://<your-domain>/**` to **Redirect URLs**.
-4. Authentication → Providers → Email: keep **Confirm email** enabled.
-5. Configure a custom SMTP provider before launch: Supabase's built-in email sender is heavily rate-limited.
-6. Apply the schema. This creates the tables, policies, triggers, the starting topics, the URL-shortener
+4. Authentication → Providers → Email: keep **Confirm email** enabled and set **Minimum password length**
+   to 8 (the forms ask for 8; this makes the server enforce it too).
+5. Authentication → Emails → Templates: paste our Uzbek templates. They link to the app's own pages, where
+   the address is confirmed only when the person presses a button (mail scanners cannot use up the link):
+   - **Confirm signup** — subject `Davra: emailingizni tasdiqlang`, body `supabase/templates/confirmation.html`
+   - **Reset password** — subject `Davra: parolni tiklash`, body `supabase/templates/recovery.html`
+6. Before inviting real users, set up a custom SMTP provider (Authentication → Emails → SMTP Settings).
+   Supabase's built-in sender only delivers to members of your Supabase team and only a few emails per
+   hour, so it is enough for testing with your own address but not for students.
+7. Apply the schema. This creates the tables, policies, triggers, the starting topics, the URL-shortener
    blocklist, the `avatars` bucket and the daily popularity job (pg_cron).
    - **Automatically (recommended):** the `Supabase migrations` GitHub Action
      (`.github/workflows/supabase-migrations.yml`) runs `supabase db push` whenever migrations reach
@@ -80,7 +87,7 @@ values are compiled into the browser bundle anyway. After changing a variable, r
      pnpm supabase link --project-ref <project-ref>
      pnpm supabase db push
      ```
-7. Make the first admin: sign up in the app, then run in the SQL editor (Dashboard → SQL Editor, or
+8. Make the first admin: sign up in the app, then run in the SQL editor (Dashboard → SQL Editor, or
    Studio locally):
    ```sql
    update public.profiles set role = 'admin' where username = '<your-username>';
