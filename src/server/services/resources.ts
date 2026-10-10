@@ -13,7 +13,7 @@ import type { Database } from "@/types/database";
 export type ResourceStatus = Database["public"]["Enums"]["resource_status"];
 
 /** Columns a resource card needs, with the topic and the author embedded. */
-const CARD_COLUMNS = `
+export const CARD_COLUMNS = `
   id, slug, title, url, domain, type, language, price, level, summary, status, link_status,
   likes_count, saves_count, comments_count, ratings_count, ratings_sum, published_at, created_at,
   topic:topics (slug, name_uz),
@@ -21,19 +21,6 @@ const CARD_COLUMNS = `
 ` as const;
 
 const DETAIL_COLUMNS = `${CARD_COLUMNS}, author_id, topic_id, for_whom, author_review, updated_at` as const;
-
-export const getTopics = cache(async () => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("topics")
-    .select("id, slug, name_uz")
-    .order("sort_order")
-    .order("name_uz");
-  if (error) throw error;
-  return data;
-});
-
-export type Topic = Awaited<ReturnType<typeof getTopics>>[number];
 
 /** A resource the current visitor may see (RLS: published, or their own, or staff), or null. */
 export const getResourceBySlug = cache(async (slug: string) => {

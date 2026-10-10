@@ -48,10 +48,10 @@
     "valueStructuredText": "Har bir resursda nimani oʻrgatishi, kimga mosligi va reytingi koʻrsatiladi.",
     "valueQualityTitle": "Sifat nazorati",
     "valueQualityText": "Moderatsiya, shikoyatlar va ishlamaydigan havolalarni avtomatik tekshirish.",
-    "popularTitle": "Mashhur resurslar",
     "emptyTitle": "Hozircha resurslar yoʻq",
     "emptyText": "Birinchi resursni siz qoʻshing — boshqa talabalar sizga rahmat aytadi.",
-    "emptyCta": "Resurs qoʻshish"
+    "emptyCta": "Resurs qoʻshish",
+    "feedTitle": "Resurslar lentasi"
   },
   "NotFound": {
     "metaTitle": "Sahifa topilmadi",
@@ -283,7 +283,9 @@
     "listEmptyOwnerTitle": "Siz hali resurs ulashmagansiz",
     "listEmptyOwnerText": "Foydali kurs, kitob yoki kanal topdingizmi? Uni boshqalar bilan ulashing.",
     "listEmptyOwnerCta": "Birinchi resursni qoʻshish",
-    "listEmptyTitle": "{name} hali resurs ulashmagan"
+    "listEmptyTitle": "{name} hali resurs ulashmagan",
+    "relatedTitle": "Shu mavzuda yana",
+    "relatedAll": "Mavzudagi barcha resurslar"
   },
   "ResourceForm": {
     "newTitle": "Yangi resurs",
@@ -325,5 +327,56 @@
     "createdPending": "Resurs yuborildi. Moderator tasdiqlagach hammaga koʻrinadi.",
     "saved": "Oʻzgarishlar saqlandi",
     "savedPending": "Saqlandi. Havola oʻzgargani uchun resurs yana tekshiruvga yuborildi."
+  },
+  "Feed": {
+    "tabsLabel": "Saralash",
+    "popular": "Mashhur",
+    "newest": "Yangi",
+    "top": "Eng yaxshilari",
+    "loadMore": "Yana koʻrsatish",
+    "loadingMore": "Yuklanmoqda…",
+    "loadFailed": "Yuklab boʻlmadi. Qayta urinib koʻring.",
+    "listLabel": "Resurslar"
+  },
+  "Topics": {
+    "title": "Mavzular",
+    "subtitle": "Oʻzingizga kerakli yoʻnalishni tanlang va talabalar tanlagan resurslarni koʻring.",
+    "metaDescription": "Talabalar ulashgan oʻquv resurslari mavzular boʻyicha: dasturlash, matematika, tillar, IELTS va boshqalar.",
+    "resourceCount": "{count, plural, =0 {Hali resurs yoʻq} other {# ta resurs}}",
+    "allTopics": "Barcha mavzular",
+    "searchInTopic": "Shu mavzuda qidirish",
+    "topicMetaDescription": "{name} boʻyicha talabalar tavsiya qilgan kurslar, kitoblar, kanallar va vositalar.",
+    "emptyTitle": "Bu mavzuda hali resurs yoʻq",
+    "emptyText": "Shu mavzuda foydali kurs, kitob yoki kanal bilasizmi? Birinchi boʻlib ulashing.",
+    "emptyCta": "Resurs qoʻshish"
+  },
+  "Search": {
+    "title": "Qidiruv",
+    "metaDescription": "Kurslar, kitoblar, kanallar va vositalarni mavzu, tur, til, narx va daraja boʻyicha qidiring.",
+    "queryLabel": "Qidiruv soʻzi",
+    "placeholder": "Masalan: python, IELTS writing, matematika…",
+    "submit": "Qidirish",
+    "filtersLabel": "Filtrlar",
+    "topic": "Mavzu",
+    "anyTopic": "Barcha mavzular",
+    "type": "Turi",
+    "anyType": "Barcha turlar",
+    "language": "Tili",
+    "anyLanguage": "Barcha tillar",
+    "price": "Narxi",
+    "anyPrice": "Har qanday narx",
+    "level": "Daraja",
+    "anyLevel": "Barcha darajalar",
+    "sort": "Tartib",
+    "sortRelevance": "Eng mosi",
+    "sortNewest": "Eng yangi",
+    "sortTop": "Eng yuqori baho",
+    "clear": "Filtrlarni tozalash",
+    "resultsFor": "“{query}” boʻyicha natijalar",
+    "results": "Natijalar",
+    "allResults": "Barcha resurslar",
+    "emptyTitle": "Hech narsa topilmadi",
+    "emptyText": "Boshqa soʻz bilan qidirib koʻring yoki filtrlarni olib tashlang.",
+    "emptyCta": "Filtrlarni tozalash"
   }
 }

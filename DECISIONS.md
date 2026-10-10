@@ -343,3 +343,47 @@ other rate limits in Phase 7.
 One Zod schema validates in the browser and again in the Server Action: title 3–120 characters and not
 ALL CAPS (10+ letters, none lower-case; short acronyms like "IELTS" are fine), at most 2 emoji in the title
 and 5 in each text, a summary of at least 40 characters besides any links. Messages are translation keys.
+
+## Phase 5 — Feed, topics, search
+
+### D45. One read path for every list
+
+The feed, topic pages, related resources and search all call `public.search_resources` (a Postgres
+function exposed through the Data API). It decides which published cards match and in what order and
+returns their ids with a cursor for each row; the app then loads the cards with their topic and author by
+id. One function means one place for visibility rules (explicitly `status = 'published'`, plus RLS since it
+runs with the visitor's rights), one cursor format and one set of tests (`06_search.test.sql`). It builds
+its query from fixed SQL fragments; every value is a parameter.
+
+### D46. Search matching
+
+Uzbek has no Postgres dictionary, so the `simple` configuration indexes words as written, with apostrophes
+removed and lower-cased (D22). Every word of the query must match, either as a full-text prefix in the
+title, summary or for whom ("dastur" finds "dasturlash"), or fuzzily in the title (pg_trgm
+`word_similarity` ≥ 0.4 for words of 3+ letters: "pyton", "matematka"). Requiring every word keeps the
+fuzzy match from pulling in cards that share one common word. A Cyrillic query is also searched in its
+Latin transliteration, since most cards are written in Latin. Known limit: two swapped letters in a short
+word ("pyhton") are too different for trigrams; a longer query or a correct spelling finds it.
+
+### D47. Sorting and paging
+
+- Home: **Mashhur** by default, so a first visit shows the best cards at once; **Yangi** as a tab. The
+  **Obunalarim** tab comes with follows in Phase 6.
+- Topic pages: **Eng yaxshilari** by default, **Yangi** as a tab. Search: best match when there is a
+  query, otherwise newest; top rated on request.
+- Top rated uses `rating_score = (ratings_sum + 2·3) / (ratings_count + 2)`: the average pulled towards a
+  neutral 3 by two virtual ratings, so one 5-star rating does not beat ten 4.5-star ones.
+- Pages use keyset cursors that the database builds for each row (opaque base64url in URLs). Floats are
+  written as exact text (`extra_float_digits`; Supabase's default would round them to 15 digits and
+  repeat cards). Best-match pages use an offset, which is fine for a few pages. A card whose popularity
+  changes between two requests can move; the list never shows a card twice.
+- "Yana koʻrsatish" appends the next page in place and is also a plain link (`?keyin=…`), so it works
+  without JavaScript and search engines can follow it.
+- Search result URLs are `noindex, follow`; the search page itself, topics and the home page are indexed.
+
+### D48. Cards are rendered on the server
+
+Relative dates ("3 kun oldin") and month names need Uzbek locale data, which not every browser has
+(Chromium builds without it print "M10"). Lists therefore receive server-rendered cards, and "load more"
+returns server-rendered cards from its Server Action; the client only appends them. The request config also
+fixes one "now" per request, so any date formatted in a client component matches the server.

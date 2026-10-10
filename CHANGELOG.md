@@ -5,6 +5,30 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 5 — Feed, topics, search
+
+#### Added
+
+- Home feed with **Mashhur** (default, time-decayed popularity, broken links left out) and **Yangi** tabs.
+  Guests see the value points above it; signed-in users go straight to the feed.
+- Topics: `/mavzular` (all topics with their number of published resources) and `/mavzu/[slug]` with
+  **Eng yaxshilari** (top rated) and **Yangi** tabs and a link to search within the topic.
+- Search `/qidiruv`: query box, filters (topic, type, language, price, level), sort (best match, newest,
+  top rated), all kept in the URL with Uzbek parameter names (`q`, `mavzu`, `tur`, `til`, `narx`,
+  `daraja`, `tartib`). Invalid values in a shared link are ignored.
+- Search matching: every word must match, as a full-text prefix (title, summary, for whom; apostrophe-
+  and case-insensitive) or fuzzily in the title (trigram), so typos like "pyton" still work. Cyrillic
+  queries also search their Latin spelling.
+- "Yana koʻrsatish" pagination with keyset cursors; the button is a real link, so it also works without
+  JavaScript. Cards are always rendered on the server.
+- Related resources from the same topic on the resource page.
+- Migration `20261010170000_search.sql`: `rating_score` (average rating pulled towards 3 by two virtual
+  ratings) with indexes, `private.prefix_tsquery`, and `public.search_resources`, the single read path
+  for every list.
+- Loading skeletons for search and topic pages.
+- Tests: 31 pgTAP checks for search (185 in total) and unit tests for cursors, search parameters and
+  transliteration (107 in total).
+
 ### Phase 4 — Resource cards
 
 #### Added

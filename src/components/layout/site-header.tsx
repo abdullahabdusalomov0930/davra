@@ -48,7 +48,7 @@ export async function SiteHeader() {
 
         <div className="ml-auto flex items-center gap-1">
           <Button asChild variant="ghost" size="icon" className="md:hidden">
-            <Link href="/qidiruv" aria-label={t("search")}>
+            <Link href={routes.search} aria-label={t("search")}>
               <SearchIcon aria-hidden />
             </Link>
           </Button>
