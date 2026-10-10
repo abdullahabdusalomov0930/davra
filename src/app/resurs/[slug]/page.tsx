@@ -13,6 +13,7 @@ import { RatingsSection } from "@/components/ratings/ratings-section";
 import { BrokenLinkButton } from "@/components/reports/broken-link-button";
 import { ReportButton } from "@/components/reports/report-button";
 import { StaffResourceToolbar } from "@/components/admin/staff-resource-toolbar";
+import { JsonLd } from "@/components/seo/json-ld";
 import { DeleteResourceButton } from "@/components/resources/delete-resource-button";
 import { ResourceActions, type ResourceViewer } from "@/components/resources/resource-actions";
 import { RatingSummary } from "@/components/resources/rating-summary";
@@ -23,7 +24,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { uzDateParts } from "@/lib/dates";
 import { routes } from "@/lib/routes";
+import { metaDescription, openGraphBase } from "@/lib/seo";
 import { isValidSlug } from "@/lib/slugify";
+import { breadcrumbList, learningResourceData } from "@/lib/structured-data";
 import { getViewer, getViewerProfile } from "@/server/auth/session";
 import { findRelatedResources } from "@/server/services/feed";
 import { isFollowing } from "@/server/services/follows";
@@ -41,10 +44,19 @@ export async function generateMetadata({ params }: PageProps<"/resurs/[slug]">):
   const resource = await loadResource((await params).slug);
   if (!resource) return {};
 
+  const path = routes.resource(resource.slug);
   return {
     title: resource.title,
-    description: resource.summary.length > 160 ? `${resource.summary.slice(0, 157).trimEnd()}…` : resource.summary,
-    alternates: { canonical: routes.resource(resource.slug) },
+    description: metaDescription(resource.summary),
+    alternates: { canonical: path },
+    openGraph: {
+      ...openGraphBase,
+      type: "article",
+      url: path,
+      section: resource.topic.name_uz,
+      publishedTime: resource.published_at ?? undefined,
+      modifiedTime: resource.updated_at,
+    },
     // Cards waiting for review (or hidden) are visible only to their author and staff.
     robots: resource.status === "published" ? undefined : { index: false },
   };
@@ -63,8 +75,9 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
   const resource = await loadResource((await params).slug);
   if (!resource) notFound();
 
-  const [t, tType, tLanguage, tPrice, tLevel, format, viewer, related] = await Promise.all([
+  const [t, tNav, tType, tLanguage, tPrice, tLevel, format, viewer, related] = await Promise.all([
     getTranslations("Resource"),
+    getTranslations("Nav"),
     getTranslations("ResourceType"),
     getTranslations("ResourceLanguage"),
     getTranslations("ResourcePrice"),
@@ -108,6 +121,36 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
 
   return (
     <div className="mx-auto grid max-w-3xl gap-6 px-4 py-10">
+      {resource.status === "published" && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@graph": [
+              learningResourceData({
+                slug: resource.slug,
+                title: resource.title,
+                summary: resource.summary,
+                url: resource.url,
+                language: resource.language,
+                price: resource.price,
+                ratingsSum: resource.ratings_sum,
+                ratingsCount: resource.ratings_count,
+                publishedAt: resource.published_at,
+                updatedAt: resource.updated_at,
+                topic: resource.topic.name_uz,
+                author: { username: resource.author.username, displayName: resource.author.display_name },
+                typeLabel: tType(resource.type),
+                levelLabel: resource.level === "all" ? undefined : tLevel(resource.level),
+              }),
+              breadcrumbList([
+                { name: tNav("home"), path: routes.home },
+                { name: resource.topic.name_uz, path: routes.topic(resource.topic.slug) },
+                { name: resource.title, path: routes.resource(resource.slug) },
+              ]),
+            ],
+          }}
+        />
+      )}
       <ResourceStatusAlert status={resource.status} linkStatus={resource.link_status} />
       {isStaff && <StaffResourceToolbar resourceId={resource.id} status={resource.status} />}
 

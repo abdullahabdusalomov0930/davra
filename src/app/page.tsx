@@ -1,4 +1,5 @@
 import { FilterIcon, LayersIcon, ShieldCheckIcon } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -6,9 +7,11 @@ import { ListTabs } from "@/components/feed/list-tabs";
 import { renderCardEntries } from "@/components/feed/card-entries";
 import { ResourceList } from "@/components/feed/resource-list";
 import { EmptyState } from "@/components/layout/empty-state";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Button } from "@/components/ui/button";
 import { firstParam } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
+import { absoluteUrl, openGraphBase } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { type FeedQuery, SEARCH_PARAMS, SORT_PARAM_VALUES } from "@/lib/validators";
 import { getViewer } from "@/server/auth/session";
@@ -16,6 +19,32 @@ import { loadMoreResourcesAction } from "@/server/actions/feed";
 import { findResources } from "@/server/services/feed";
 
 const NEWEST_HREF = routes.newest;
+
+export async function generateMetadata(): Promise<Metadata> {
+  // The "Yangi" tab and later pages are the same page for search engines.
+  return {
+    alternates: { canonical: routes.home },
+    openGraph: { ...openGraphBase, type: "website", url: routes.home },
+  };
+}
+
+/** Lets search engines show a search box for Davra (sitelinks search box). */
+async function websiteData() {
+  const t = await getTranslations("Metadata");
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteConfig.name,
+    url: absoluteUrl(routes.home),
+    description: t("description"),
+    inLanguage: "uz",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", urlTemplate: `${absoluteUrl(routes.search)}?${SEARCH_PARAMS.query}={query}` },
+      "query-input": "required name=query",
+    },
+  };
+}
 
 export default async function HomePage({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
@@ -38,6 +67,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
 
   return (
     <div className="mx-auto max-w-6xl px-4">
+      <JsonLd data={await websiteData()} />
       {!viewer && (
         <>
           <section className="pt-10 pb-8 sm:pt-14">

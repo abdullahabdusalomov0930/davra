@@ -5,6 +5,27 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 9 — SEO, sharing, legal pages, weekly top
+
+#### Added
+
+- Metadata on public pages: canonical URLs, OpenGraph and Twitter tags (articles for resources,
+  profiles for people), and JSON-LD: `WebSite` with a search action on the home page,
+  `LearningResource` with rating and breadcrumbs on resource pages, `ProfilePage`, topic breadcrumbs.
+- Share images: a site-wide one and one per resource (topic, title, site, type, language, rating),
+  drawn with bundled Inter fonts so oʻ/gʻ and Cyrillic titles render correctly.
+- `sitemap.xml` (static pages, topics, published resources, authors' profiles; built per request from
+  what guests can see) and `robots.txt` (private and admin paths closed; previews closed entirely).
+- Web app manifest and a Davra icon set (favicon, SVG icon, Apple touch icon, maskable icon) generated
+  by `pnpm icons` from one logo definition.
+- Legal pages `/qoidalar`, `/shartlar`, `/maxfiylik` in Uzbek, marked as drafts for a lawyer's review,
+  with an optional contact address (`NEXT_PUBLIC_CONTACT_EMAIL`).
+- `/haftalik`: the 10 resources with the most likes, saves and good ratings in the last 7 days, with
+  each one's activity this week.
+- Migration `20261010210000_weekly_top.sql`: `weekly_top_resources` and `created_at` indexes.
+- Tests: 9 pgTAP checks (233 in total); unit tests for descriptions, the contact setting and the legal
+  texts (146 in total).
+
 ### Phase 8 — Link checker
 
 #### Added

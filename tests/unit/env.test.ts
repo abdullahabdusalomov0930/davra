@@ -39,4 +39,12 @@ describe("publicEnvSchema", () => {
     expect(env.NEXT_PUBLIC_SUPABASE_URL).toBe("https://abcdefgh.supabase.co");
     expect(env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY).toBe("sb_publishable_test");
   });
+
+  it("accepts an optional contact email and rejects a malformed one", () => {
+    expect(publicEnvSchema.parse(valid).NEXT_PUBLIC_CONTACT_EMAIL).toBeUndefined();
+    expect(
+      publicEnvSchema.parse({ ...valid, NEXT_PUBLIC_CONTACT_EMAIL: " info@davra.uz " }).NEXT_PUBLIC_CONTACT_EMAIL,
+    ).toBe("info@davra.uz");
+    expect(publicEnvSchema.safeParse({ ...valid, NEXT_PUBLIC_CONTACT_EMAIL: "davra.uz" }).success).toBe(false);
+  });
 });

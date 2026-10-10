@@ -3,12 +3,12 @@ import { routes } from "@/lib/routes";
 export const mainNavItems = [
   { href: routes.topics, labelKey: "topics" },
   { href: routes.search, labelKey: "search" },
-  { href: "/haftalik", labelKey: "weekly" },
+  { href: routes.weekly, labelKey: "weekly" },
 ] as const;
 
 export const legalNavItems = [
-  { href: "/qoidalar", labelKey: "rules" },
-  { href: "/shartlar", labelKey: "terms" },
-  { href: "/maxfiylik", labelKey: "privacy" },
-  { href: "/removal-request", labelKey: "removal" },
+  { href: routes.rules, labelKey: "rules" },
+  { href: routes.terms, labelKey: "terms" },
+  { href: routes.privacy, labelKey: "privacy" },
+  { href: routes.removalRequest, labelKey: "removal" },
 ] as const;

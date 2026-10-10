@@ -511,3 +511,48 @@ or shorter than 16 characters, so a missing variable cannot leave the route open
 optional for the build (the site works without it) but `scripts/check-env.ts` warns about it in
 production. "Havola ishlamayapti" reports from members do not trigger a check: that would let anyone
 make the server send requests; they go to the Havolalar page, where staff can check at once.
+
+### D59. Search engines and sharing
+
+Every public page sets its title, description (cut to about 160 characters at a word boundary) and
+canonical URL; "Yangi", filters and cursors share their page's canonical URL, and search results with
+parameters stay `noindex`. OpenGraph and Twitter tags come from the root layout (site name, `uz_UZ`,
+large image card), with `article` on resource pages and `profile` on profiles. JSON-LD (`<` escaped,
+nonce added): `WebSite` with a `SearchAction` on the home page; on resource pages a `LearningResource`
+whose `url` is the external material and `mainEntityOfPage` the Davra page, with the sharer as
+`contributor` (not `author`: they did not make the material), the counted average as `aggregateRating`,
+and a `BreadcrumbList`; `ProfilePage` on profiles; breadcrumbs on topic pages. Only published resources
+get structured data.
+
+Share images are drawn with `next/og`. Its built-in font has no oʻ/gʻ (U+02BB) or Cyrillic, and for
+missing glyphs it would download fonts from Google at request time, so Inter (OFL) is bundled: Latin in
+two weights, Latin Extended and Cyrillic in bold for titles, each subset a separate family in a
+fallback chain. The resource image is regenerated at most hourly and falls back to the site image for
+anything not public. The sitemap and share images read through a session-less "guest" client, so a
+moderator or an author fetching them never leaks pending or hidden cards; the sitemap is built per
+request (`force-dynamic`), so builds never need the database. `robots.txt` closes account, admin and API
+paths, and closes everything on Vercel previews.
+
+### D60. Weekly top
+
+`/haftalik` ranks the last 7 days (a rolling window, so the page is never empty on a Monday morning)
+with the popularity weights of D19 applied to that week's activity only: like 1, save 2, counted rating
+`stars − 3`. Only published resources with working links and a positive score are listed, at most 10;
+there is no padding with older favourites, and an empty week shows an empty state that points to the
+feed. Likes and saves are private rows, so `weekly_top_resources` is SECURITY DEFINER and returns only
+per-resource totals; the cards are then loaded through RLS as in every other list.
+
+### D61. Legal pages, icons and manifest
+
+The legal texts are drafts written for this product (links only, no piracy, what data is stored and
+where) and say so in a banner until a lawyer has reviewed them. They live in `messages/uz.json` as
+arrays of sections rendered with `t.raw`, with `{appName}` filled in by the page; a unit test checks
+their shape and the Uzbek letters. The contact address is optional (`NEXT_PUBLIC_CONTACT_EMAIL`);
+until it is set the pages point to the report button and the removal form. For the lawyer: Uzbekistan's
+personal data law may require citizens' personal data to be stored on servers in Uzbekistan, while the
+database is in Frankfurt (README); this needs a decision before launch.
+
+The logo (lucide "book-open" on the primary colour) is defined once in `src/lib/brand.ts`; `pnpm icons`
+renders the favicon, SVG icon, Apple touch icon and manifest icons from it, and the share images use the
+same mark. Brand colours are repeated there as hex because images and the manifest cannot read CSS
+variables.

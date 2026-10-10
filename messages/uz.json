@@ -7,6 +7,7 @@
     "skipToContent": "Asosiy mazmunga oʻtish",
     "homeLabel": "{appName} — bosh sahifa",
     "mainNav": "Asosiy navigatsiya",
+    "home": "Bosh sahifa",
     "topics": "Mavzular",
     "search": "Qidiruv",
     "weekly": "Haftalik Top 10",
@@ -489,6 +490,18 @@
     "emptyCta": "Resurslarni koʻrish",
     "emptyTopicTitle": "Bu mavzuda saqlangan resurs yoʻq"
   },
+  "Weekly": {
+    "title": "Haftalik Top 10",
+    "metaDescription": "Soʻnggi 7 kunda {appName}da eng koʻp yoqtirilgan, saqlangan va yuqori baholangan oʻquv resurslari.",
+    "intro": "Soʻnggi 7 kunda eng koʻp yoqtirilgan, saqlangan va yuqori baholangan resurslar. Roʻyxat har doim oxirgi bir haftani koʻrsatadi.",
+    "thisWeek": "Bu hafta:",
+    "likes": "{count} ta yoqtirish",
+    "saves": "{count} ta saqlash",
+    "ratings": "{count} ta baho",
+    "emptyTitle": "Bu hafta hali faollik boʻlmadi",
+    "emptyText": "Resurslarni yoqtiring, saqlang va baholang — eng foydalilari shu yerda chiqadi.",
+    "emptyCta": "Lentaga oʻtish"
+  },
   "ReportReason": {
     "spam": "Spam yoki reklama",
     "wrong_info": "Notoʻgʻri maʼlumot",
@@ -545,6 +558,204 @@
     "submit": "Yuborish",
     "sentTitle": "Soʻrovingiz qabul qilindi",
     "sentText": "Moderatorlar uni koʻrib chiqadi va kerak boʻlsa emailingizga javob yozadi."
+  },
+  "Legal": {
+    "draftTitle": "Loyiha matni",
+    "draftText": "Bu matn hali yurist tomonidan koʻrib chiqilmagan va oʻzgarishi mumkin.",
+    "updated": "Oxirgi yangilanish: {year}-yil {day}-{month}",
+    "contactTitle": "Aloqa",
+    "contactText": "Savollar va soʻrovlar uchun yozing: {email}",
+    "contactPending": "Aloqa manzili tez orada shu yerda eʼlon qilinadi. Kontentga oid shikoyatlar uchun saytdagi “Shikoyat” tugmasidan yoki kontentni olib tashlash soʻrovi formasidan foydalaning.",
+    "relatedTitle": "Boshqa huquqiy sahifalar",
+    "rules": {
+      "title": "Hamjamiyat qoidalari",
+      "metaDescription": "{appName}da resurs ulashish, baholash va izoh yozish qoidalari: faqat havola va oʻz soʻzlaringiz, qaroqchilik va spamsiz.",
+      "intro": "{appName} — talabalar bir-biriga foydali oʻquv resurslarini tavsiya qiladigan joy. Quyidagi qoidalar platformani foydali, xavfsiz va halol saqlash uchun kerak. Ularni buzgan kontent yashiriladi, takroriy buzilishlarda esa hisob bloklanadi.",
+      "sections": [
+        {
+          "title": "Faqat havola va oʻz soʻzlaringiz",
+          "paragraphs": [
+            "{appName} fayl saqlamaydi va fayl yuklashga ruxsat bermaydi. Resurs kartasi — bu tashqi sahifaga havola va sizning qisqa sharhingiz: resurs nimani oʻrgatadi, kimga mos va sizga nimasi foydali boʻldi."
+          ],
+          "items": [
+            "Sharh, xulosa va izohlarni oʻzingiz yozing; boshqa saytlardagi matnni koʻchirib qoʻymang.",
+            "Kitob, kurs yoki videoning nusxasini emas, unga olib boradigan rasmiy havolani ulashing."
+          ]
+        },
+        {
+          "title": "Qaroqchilik kontenti taqiqlanadi",
+          "paragraphs": [
+            "Mualliflik huquqi bilan himoyalangan materiallarning ruxsatsiz nusxalariga havola bermang: pullik kurslarning “sliv”lari, kitoblarning noqonuniy PDF fayllari, dastur va filmlarning buzilgan versiyalari mumkin emas."
+          ],
+          "items": [
+            "Resurs pullik boʻlsa, uni “Pullik” deb belgilang va rasmiy sahifasiga havola bering.",
+            "Huquq egalari hisobsiz ham kontentni olib tashlash soʻrovi formasi orqali murojaat qilishi mumkin."
+          ]
+        },
+        {
+          "title": "Sifatli kartalar",
+          "items": [
+            "Sarlavha resursning haqiqiy nomini aytsin: faqat KATTA HARFLAR, ortiqcha emoji va reklama uslubidagi undovlardan foydalanmang.",
+            "Mavzu, tur, til, narx va darajani toʻgʻri tanlang — boshqalar resursni shular boʻyicha topadi.",
+            "Bir resursni qayta qoʻshmang: {appName} bir xil havolani aniqlaydi va mavjud kartani koʻrsatadi.",
+            "Qisqartirilgan havolalar (bit.ly va shunga oʻxshash) qabul qilinmaydi — toʻliq manzilni bering."
+          ]
+        },
+        {
+          "title": "Spam va reklama",
+          "paragraphs": [
+            "{appName} reklama maydoni emas. Oʻz kanalingiz yoki kursingizni ulashishingiz mumkin, lekin faqat u haqiqatan foydali boʻlsa va buni sharhda ochiq aytsangiz."
+          ],
+          "items": [
+            "Bir havolani qayta-qayta yoki bir necha hisobdan ulashish, izohlarda reklama qilish, yoqtirish va baholarni sunʼiy koʻpaytirish taqiqlanadi.",
+            "Yangi aʼzolarning kartalari moderator tekshiruvidan keyin chiqadi; kuniga ulashish, izoh va shikoyatlar soni cheklangan."
+          ]
+        },
+        {
+          "title": "Hurmat va xavfsizlik",
+          "paragraphs": [
+            "Boshqalarni haqorat qilmang, kamsitmang va qoʻrqitmang. Birovning shaxsiy maʼlumotlarini (telefon, manzil, hujjatlar) eʼlon qilmang. Zoʻravonlik, kattalar uchun moʻljallangan kontent va noqonuniy faoliyatga havolalar mumkin emas."
+          ]
+        },
+        {
+          "title": "Baholar va izohlar",
+          "items": [
+            "Resursni oʻzingiz koʻrgan yoki ishlatgan boʻlsangiz baholang.",
+            "Oʻz resursingizni yoqtira yoki baholay olmaysiz.",
+            "Izohda resurs haqida yozing: savol, qoʻshimcha maslahat yoki kamchilik."
+          ]
+        },
+        {
+          "title": "Shikoyat va moderatsiya",
+          "paragraphs": [
+            "Qoidani buzgan karta, izoh yoki profilni koʻrsangiz, “Shikoyat” tugmasini bosing; havola ochilmasa — “Havola ishlamayapti”. Moderatorlar shikoyatlarni koʻrib chiqadi va kontentni yashirishi, rad etishi yoki hisobni bloklashi mumkin. Har bir moderatsiya harakati jurnalga yoziladi."
+          ],
+          "items": ["Shikoyat qilgan kishining ismi boshqa foydalanuvchilarga koʻrsatilmaydi."]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Foydalanish shartlari",
+      "metaDescription": "{appName} veb-saytidan foydalanish shartlari: hisob, siz joylagan kontent, moderatsiya va javobgarlik.",
+      "intro": "Ushbu shartlar {appName} veb-saytidan foydalanish tartibini belgilaydi. Saytdan foydalanish orqali siz ularga rozilik bildirasiz.",
+      "sections": [
+        {
+          "title": "Xizmat haqida",
+          "paragraphs": [
+            "{appName} — talabalar oʻquv resurslariga havolalar va ular haqidagi sharhlarni ulashadigan bepul platforma. Resurslarning oʻzi uchinchi tomon saytlarida joylashgan: biz ularni saqlamaymiz va ularning mazmuni uchun javob bermaymiz."
+          ]
+        },
+        {
+          "title": "Hisob",
+          "items": [
+            "Roʻyxatdan oʻtish uchun ishlaydigan email manzil kerak. Parolingizni sir saqlang: hisobingizdagi harakatlar uchun oʻzingiz javobgarsiz.",
+            "Bir kishi — bir hisob. Boshqa shaxs yoki tashkilot nomidan hisob ochmang.",
+            "16 yoshga toʻlmagan boʻlsangiz, saytdan ota-onangiz yoki vasiyingiz roziligi bilan foydalaning.",
+            "Foydalanuvchi nomi, ism va profil maʼlumotlari hamjamiyat qoidalariga mos boʻlishi kerak."
+          ]
+        },
+        {
+          "title": "Siz joylagan kontent",
+          "paragraphs": [
+            "Kartalar, sharhlar, baholar va izohlar sizniki boʻlib qoladi. Ularni joylash orqali siz {appName}ga ularni saytda koʻrsatish, qidiruvda va ijtimoiy tarmoqlarda havola ulashilganda koʻrsatish uchun bepul va eksklyuziv boʻlmagan ruxsat berasiz. Kartani yoki izohni oʻchirsangiz, u saytdan olib tashlanadi."
+          ],
+          "items": [
+            "Joylagan matn va havolalaringiz qonunga va hamjamiyat qoidalariga zid boʻlmasligi kerak.",
+            "Boshqalarning mualliflik huquqini buzadigan materiallarga havola bermang."
+          ]
+        },
+        {
+          "title": "Moderatsiya",
+          "paragraphs": [
+            "Qoidalarga zid kontentni ogohlantirishsiz yashirish yoki olib tashlash, takroriy yoki jiddiy buzilishlarda esa hisobni bloklash huquqini saqlab qolamiz. Yangi aʼzolarning kartalari eʼlon qilinishidan oldin moderator tomonidan tekshiriladi."
+          ]
+        },
+        {
+          "title": "Mualliflik huquqi",
+          "paragraphs": [
+            "Huquqingiz buzilgan deb hisoblasangiz, kontentni olib tashlash soʻrovi formasini toʻldiring. Soʻrovni koʻrib chiqamiz va u asosli boʻlsa, kartani olib tashlaymiz."
+          ]
+        },
+        {
+          "title": "Javobgarlikni cheklash",
+          "paragraphs": [
+            "Sayt “boricha” taqdim etiladi. Uning uzluksiz ishlashi, resurslarning sifati va havolalarning doim ochilishiga kafolat bermaymiz. Tashqi saytlardan foydalanish ularning oʻz shartlari asosida boʻladi."
+          ]
+        },
+        {
+          "title": "Oʻzgarishlar",
+          "paragraphs": [
+            "Shartlarni yangilashimiz mumkin. Muhim oʻzgarishlar haqida saytda xabar beramiz; ulardan keyin saytdan foydalanishni davom ettirish yangi shartlarga rozilikni bildiradi."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Maxfiylik siyosati",
+      "metaDescription": "{appName} qanday maʼlumotlarni yigʻadi, ulardan qanday foydalanadi va ularni qanday himoya qiladi.",
+      "intro": "Bu siyosat {appName} qanday maʼlumotlarni yigʻishi, ulardan qanday foydalanishi va ularni qanday himoya qilishini tushuntiradi.",
+      "sections": [
+        {
+          "title": "Qanday maʼlumotlarni yigʻamiz",
+          "items": [
+            "Hisob: email manzil, foydalanuvchi nomi, koʻrsatiladigan ism va parol. Parol faqat xeshlangan holda autentifikatsiya xizmatida saqlanadi — biz uni koʻra olmaymiz.",
+            "Profil (ixtiyoriy): rasm, oʻzingiz haqingizda qisqacha, universitet va yoʻnalish.",
+            "Faoliyat: siz qoʻshgan resurslar, baholar, sharhlar, izohlar, yoqtirishlar, saqlanganlar, obunalar va shikoyatlar.",
+            "Kontentni olib tashlash soʻrovlari: yuboruvchining ismi, emaili va soʻrov matni. Suiisteʼmolning oldini olish uchun IP manzilning oʻzi emas, undan hisoblangan qaytarib boʻlmaydigan kalitli xesh saqlanadi.",
+            "Texnik maʼlumotlar: xavfsizlik va xatolarni tuzatish uchun hosting provayderi soʻrovlar jurnalini (vaqt, sahifa, IP manzil) qisqa muddat saqlaydi."
+          ]
+        },
+        {
+          "title": "Nimalar hammaga koʻrinadi",
+          "paragraphs": [
+            "Profil sahifangiz (ism, foydalanuvchi nomi, rasm, bio, universitet, yoʻnalish), eʼlon qilingan resurslaringiz, baholaringiz, sharhlaringiz va izohlaringiz hammaga koʻrinadi. Email manzilingiz, saqlanganlaringiz, obunalaringiz va shikoyatlaringiz boshqa foydalanuvchilarga koʻrsatilmaydi; shikoyatlarni faqat moderatorlar koʻradi."
+          ]
+        },
+        {
+          "title": "Maʼlumotlardan qanday foydalanamiz",
+          "items": [
+            "Hisobingizni yuritish va tizimga kirishingizni taʼminlash.",
+            "Kontentni koʻrsatish, qidiruv, lentalar va reytinglarni hisoblash.",
+            "Spam, suiisteʼmol va qoidabuzarliklarning oldini olish (cheklovlar, moderatsiya).",
+            "Hisob bilan bogʻliq xatlar: emailni tasdiqlash va parolni tiklash. Reklama xatlari yubormaymiz."
+          ],
+          "paragraphs": ["Maʼlumotlaringizni sotmaymiz va reklama uchun uchinchi shaxslarga bermaymiz."]
+        },
+        {
+          "title": "Cookie fayllar va brauzer xotirasi",
+          "paragraphs": [
+            "Faqat zarur cookie fayllaridan foydalanamiz: tizimga kirganingizni eslab qolish uchun. Tanlagan rang mavzusi (yorugʻ yoki qorongʻi) brauzeringiz xotirasida saqlanadi. Analitika va reklama cookie fayllari ishlatilmaydi; kelajakda maxfiylikni hurmat qiladigan analitika qoʻshilsa, bu haqda shu sahifada va saytda alohida xabar beramiz."
+          ]
+        },
+        {
+          "title": "Uchinchi tomon xizmatlari",
+          "items": [
+            "Supabase — maʼlumotlar bazasi, autentifikatsiya va rasmlarni saqlash (serverlar Yevropa Ittifoqida, Frankfurtda).",
+            "Vercel — sayt hostingi.",
+            "Email yuborish xizmati — tasdiqlash va parolni tiklash xatlari uchun.",
+            "DuckDuckGo — resurs kartalaridagi sayt belgilarini (favicon) koʻrsatish uchun brauzeringiz icons.duckduckgo.com manzilidan rasm yuklaydi."
+          ]
+        },
+        {
+          "title": "Saqlash muddati va oʻchirish",
+          "paragraphs": [
+            "Maʼlumotlar hisobingiz mavjud ekan saqlanadi. Kartalaringiz, baholaringiz va izohlaringizni istalgan vaqtda oʻzingiz oʻchira olasiz. Hisobingizni butunlay oʻchirish yoki maʼlumotlaringiz nusxasini olish uchun bizga murojaat qiling."
+          ]
+        },
+        {
+          "title": "Xavfsizlik",
+          "paragraphs": [
+            "Maʼlumotlar shifrlangan ulanish (HTTPS) orqali uzatiladi, bazaga kirish har bir jadval uchun qatʼiy qoidalar bilan cheklangan, moderatorlarning harakatlari jurnalga yoziladi."
+          ]
+        },
+        {
+          "title": "Huquqlaringiz",
+          "paragraphs": [
+            "Oʻzingiz haqingizdagi maʼlumotlarni koʻrish, tuzatish va oʻchirishni talab qilish huquqiga egasiz. Profil maʼlumotlarini sozlamalar sahifasida oʻzingiz oʻzgartira olasiz."
+          ]
+        }
+      ]
+    }
   },
   "Admin": {
     "title": "Moderatsiya",

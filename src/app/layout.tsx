@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { getPublicEnv } from "@/lib/env";
+import { openGraphBase } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 
 import "./globals.css";
@@ -29,6 +30,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: title, template: `%s · ${siteConfig.name}` },
     description: t("description"),
     applicationName: siteConfig.name,
+    // Title and description fall through from each page; the image comes from opengraph-image files.
+    openGraph: { ...openGraphBase, type: "website" },
+    twitter: { card: "summary_large_image" },
   };
 }
 

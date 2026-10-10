@@ -49,6 +49,7 @@ Local service URLs (default ports):
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | public          | Supabase publishable key (RLS applies)                    |
 | `SUPABASE_SECRET_KEY`                  | **server only** | Supabase secret key; bypasses RLS. Never expose or commit |
 | `CRON_SECRET`                          | **server only** | Token for the scheduled link check (see below); optional  |
+| `NEXT_PUBLIC_CONTACT_EMAIL`            | public          | Contact address on the legal pages; optional              |
 
 `pnpm build` first runs `scripts/check-env.ts`: a missing or malformed variable fails the build with its
 name (never its value) instead of deploying a site that answers every request with "Internal Server Error".
@@ -99,6 +100,20 @@ values are compiled into the browser bundle anyway. After changing a variable, r
    update public.profiles set role = 'admin' where username = '<your-username>';
    ```
 
+## Search engines and sharing
+
+Nothing to set up beyond `NEXT_PUBLIC_SITE_URL`, which must be the final public address: canonical
+URLs, `sitemap.xml`, `robots.txt`, structured data and share images are all built from it. Once the site
+is on its own domain, add it to Google Search Console and Yandex Webmaster and submit
+`https://<domain>/sitemap.xml`. Preview deployments tell crawlers to stay away.
+
+- Share images (Telegram, X, …) are drawn per resource by `src/app/resurs/[slug]/opengraph-image.tsx`
+  with the Inter fonts in `src/assets/fonts` (Latin with oʻ/gʻ, and Cyrillic).
+- The web manifest makes "Add to home screen" work; its icons, the favicon and the Apple touch icon come
+  from `pnpm icons`.
+- The legal pages (`/qoidalar`, `/shartlar`, `/maxfiylik`) are drafts marked as such until a lawyer has
+  reviewed them; their text is in `messages/uz.json` under `Legal`.
+
 ## Link checker
 
 Published links are checked about once a week (DECISIONS.md D56–D58). Vercel Cron calls
@@ -119,20 +134,21 @@ curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/link
 
 ## Scripts
 
-| Command                             | What it does                                    |
-| ----------------------------------- | ----------------------------------------------- |
-| `pnpm dev`                          | Start the dev server                            |
-| `pnpm build` / `pnpm start`         | Production build / serve                        |
-| `pnpm lint`                         | ESLint                                          |
-| `pnpm typecheck`                    | Generate route types and run `tsc`              |
-| `pnpm format` / `pnpm format:check` | Prettier                                        |
-| `pnpm test`                         | Unit tests (Vitest)                             |
-| `pnpm check`                        | Lint + typecheck + format check + tests         |
-| `pnpm db:start` / `pnpm db:stop`    | Start / stop local Supabase                     |
-| `pnpm db:status`                    | Show local URLs and keys                        |
-| `pnpm db:reset`                     | Recreate the local DB from migrations and seed  |
-| `pnpm db:test`                      | Database tests (pgTAP: RLS, triggers, counters) |
-| `pnpm db:types`                     | Regenerate `src/types/database.ts`              |
+| Command                             | What it does                                     |
+| ----------------------------------- | ------------------------------------------------ |
+| `pnpm dev`                          | Start the dev server                             |
+| `pnpm build` / `pnpm start`         | Production build / serve                         |
+| `pnpm lint`                         | ESLint                                           |
+| `pnpm typecheck`                    | Generate route types and run `tsc`               |
+| `pnpm format` / `pnpm format:check` | Prettier                                         |
+| `pnpm test`                         | Unit tests (Vitest)                              |
+| `pnpm check`                        | Lint + typecheck + format check + tests          |
+| `pnpm db:start` / `pnpm db:stop`    | Start / stop local Supabase                      |
+| `pnpm db:status`                    | Show local URLs and keys                         |
+| `pnpm db:reset`                     | Recreate the local DB from migrations and seed   |
+| `pnpm db:test`                      | Database tests (pgTAP: RLS, triggers, counters)  |
+| `pnpm db:types`                     | Regenerate `src/types/database.ts`               |
+| `pnpm icons`                        | Regenerate the app icons from `src/lib/brand.ts` |
 
 ## Database
 
