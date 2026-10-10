@@ -5,6 +5,39 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 10 — Demo data, tests, accessibility and performance
+
+#### Added
+
+- `pnpm import:resources <file.csv> --author <username>`: bulk import for a cold start (brief 6.1).
+  Rows are checked with the web form's rules first (nothing is written if any row is invalid, errors
+  listed by row), links already on Davra are skipped so a file can be imported again, and cards are
+  shared in a moderator's or admin's name. `--dry-run` only checks.
+- `pnpm db:seed`: six demo accounts, 36 cards of real learning sites with Uzbek summaries
+  (`supabase/seed/demo-resources.csv`), likes, saves, ratings, comments, follows, a pending card and a
+  report. Local databases only.
+- End-to-end suite (`pnpm test:e2e`, Playwright): guest, member and moderation flows, phone layouts,
+  and axe-core WCAG 2.1 AA checks on every public, member and admin page in light and dark mode.
+- README rewritten as a setup and deploy guide: demo data, tests, CSV import, Supabase and Vercel
+  setup step by step, scheduled jobs, project structure.
+
+#### Changed
+
+- No page-wide loading skeleton any more: pages arrive complete, so nothing jumps when content replaces
+  the skeleton (layout shift was 0.17 on several pages), the largest paint comes earlier, missing pages
+  answer with a real 404, and metadata is in `<head>` for every client.
+- Only the Latin subset of Inter is preloaded (it covers oʻ/gʻ); Cyrillic and Latin Extended load
+  only on pages that use them.
+- Zod no longer probes for `eval` in the browser (it tripped the Content-Security-Policy); all imports
+  go through `src/lib/zod.ts`, enforced by ESLint.
+- Topic and weekly pages have a list heading for screen readers, so the heading outline has no gaps.
+
+#### Results
+
+- Lighthouse (mobile, production build) on public pages: Performance 88–96 (was 71–90),
+  Accessibility 100, SEO 100, layout shift 0.
+- Tests: 156 unit, 233 pgTAP, 38 end-to-end.
+
 ### Phase 9 — SEO, sharing, legal pages, weekly top
 
 #### Added

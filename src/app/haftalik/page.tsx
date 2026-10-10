@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function WeeklyPage() {
-  const [t, entries] = await Promise.all([getTranslations("Weekly"), getWeeklyTop()]);
+  const [t, tFeed, entries] = await Promise.all([getTranslations("Weekly"), getTranslations("Feed"), getWeeklyTop()]);
   const cards = await renderCardEntries(entries.map((entry) => entry.resource));
 
   return (
@@ -36,38 +36,42 @@ export default async function WeeklyPage() {
           action={{ href: routes.home, label: t("emptyCta") }}
         />
       ) : (
-        <ol className="grid gap-x-4 gap-y-6 sm:grid-cols-2">
-          {entries.map((entry, index) => {
-            const stats = [
-              entry.likes > 0 && t("likes", { count: entry.likes }),
-              entry.saves > 0 && t("saves", { count: entry.saves }),
-              entry.ratings > 0 && t("ratings", { count: entry.ratings }),
-            ].filter(Boolean);
-            return (
-              <li key={entry.resource.id} className="grid content-start gap-2">
-                <div className="flex items-center gap-3 text-sm">
-                  {/* The list is ordered; the number is for the eye. */}
-                  <span
-                    aria-hidden
-                    className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground"
-                  >
-                    {index + 1}
-                  </span>
-                  <p className="flex flex-wrap gap-x-1.5 text-muted-foreground">
-                    <span>{t("thisWeek")}</span>
-                    {stats.map((stat, position) => (
-                      <span key={String(stat)}>
-                        {position > 0 && <span aria-hidden>· </span>}
-                        {stat}
-                      </span>
-                    ))}
-                  </p>
-                </div>
-                <div className="grid">{cards[index].card}</div>
-              </li>
-            );
-          })}
-        </ol>
+        <>
+          {/* Cards are h3; this keeps the heading outline in order for screen readers. */}
+          <h2 className="sr-only">{tFeed("listLabel")}</h2>
+          <ol className="grid gap-x-4 gap-y-6 sm:grid-cols-2">
+            {entries.map((entry, index) => {
+              const stats = [
+                entry.likes > 0 && t("likes", { count: entry.likes }),
+                entry.saves > 0 && t("saves", { count: entry.saves }),
+                entry.ratings > 0 && t("ratings", { count: entry.ratings }),
+              ].filter(Boolean);
+              return (
+                <li key={entry.resource.id} className="grid content-start gap-2">
+                  <div className="flex items-center gap-3 text-sm">
+                    {/* The list is ordered; the number is for the eye. */}
+                    <span
+                      aria-hidden
+                      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground"
+                    >
+                      {index + 1}
+                    </span>
+                    <p className="flex flex-wrap gap-x-1.5 text-muted-foreground">
+                      <span>{t("thisWeek")}</span>
+                      {stats.map((stat, position) => (
+                        <span key={String(stat)}>
+                          {position > 0 && <span aria-hidden>· </span>}
+                          {stat}
+                        </span>
+                      ))}
+                    </p>
+                  </div>
+                  <div className="grid">{cards[index].card}</div>
+                </li>
+              );
+            })}
+          </ol>
+        </>
       )}
     </div>
   );

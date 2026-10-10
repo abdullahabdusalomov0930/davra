@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import type { ActionResult } from "@/lib/action-result";
 import { normalizeUrl } from "@/lib/url-normalize";

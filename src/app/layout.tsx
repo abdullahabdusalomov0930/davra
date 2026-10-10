@@ -14,9 +14,11 @@ import { siteConfig } from "@/lib/site-config";
 
 import "./globals.css";
 
-// latin-ext covers Uzbek oʻ/gʻ; cyrillic is ready for the Russian UI.
+// Only Latin is preloaded: it covers Uzbek, including oʻ/gʻ (U+02BB) and ʼ (U+02BC). Cyrillic and Latin
+// Extended stay declared with their unicode-range and download only on pages that use them, so phones
+// on slow networks do not fetch ~130 KB of fonts most pages never need.
 const inter = Inter({
-  subsets: ["latin", "latin-ext", "cyrillic"],
+  subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });

@@ -102,6 +102,8 @@ export default async function TopicPage({ params, searchParams }: PageProps<"/ma
         </div>
       </header>
 
+      {/* Cards are h3; this keeps the heading outline in order for screen readers. */}
+      <h2 className="sr-only">{tFeed("listLabel")}</h2>
       <div className="mb-5">
         <ListTabs
           label={tFeed("tabsLabel")}

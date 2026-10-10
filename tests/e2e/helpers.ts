@@ -1,0 +1,37 @@
+import AxeBuilder from "@axe-core/playwright";
+import { expect, type Page } from "@playwright/test";
+
+/** Demo accounts from scripts/seed-demo.ts. */
+export const accounts = {
+  admin: "admin@example.com",
+  moderator: "moderator@example.com",
+  member: "nodira@example.com",
+  otherMember: "jasur@example.com",
+  reader: "malika@example.com",
+  newMember: "yangi@example.com",
+} as const;
+
+export const DEMO_PASSWORD = "davra-demo-parol";
+
+export async function signIn(page: Page, email: string, next = "/") {
+  await page.goto(`/kirish?next=${encodeURIComponent(next)}`);
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Parol", { exact: true }).fill(DEMO_PASSWORD);
+  await page.getByRole("button", { name: "Kirish", exact: true }).click();
+  await page.waitForURL((url) => !url.pathname.startsWith("/kirish"));
+}
+
+/** WCAG 2.1 A/AA checks by axe-core; any violation fails the test with its rule and elements. */
+export async function expectNoAxeViolations(page: Page) {
+  await page.waitForLoadState("networkidle");
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    // Site icons come from a third-party service and may fail offline; they are decorative.
+    .exclude("img[src*='icons.duckduckgo.com']")
+    .analyze();
+  const summary = results.violations.map(
+    (violation) =>
+      `${violation.id} (${violation.impact}): ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`,
+  );
+  expect(summary).toEqual([]);
+}
