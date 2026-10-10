@@ -5,6 +5,35 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Deployment
+
+#### Added
+
+- `pnpm build` checks environment variables first (`scripts/check-env.ts`) and fails with the variable's
+  name instead of deploying a site that returns "Internal Server Error". Supabase/site URLs must be http(s)
+  and are trimmed.
+- `Supabase migrations` GitHub Action: applies new migrations to the production Supabase project when
+  they reach `main`.
+
+### Phase 2 — Database
+
+#### Added
+
+- Migrations in `supabase/migrations/`: enums; `profiles`, `topics`, `resources`, `resource_likes`,
+  `resource_saves`, `resource_ratings`, `comments`, `follows_users`, `follows_topics`, `reports`,
+  `audit_log`, `blocked_domains`; constraints from the brief (lengths, enums, unique normalized URL,
+  one rating per user, no self-follow) and indexes for feeds, search and moderation queues.
+- Row Level Security on every table, column-level privileges and guard triggers: guests read only,
+  users write only their own rows, moderators/admins moderate, banned users are read-only.
+- Triggers: profile creation on sign-up, trust-based `pending`/`published` status, URL change re-check,
+  denormalized counters, popularity score, report handling, audit log of every moderation action.
+- Popularity score function (documented in `private.popularity_score`) and a daily pg_cron refresh.
+- Full-text `search_vector` (config `simple`, apostrophe-insensitive) and a trigram index on titles.
+- Reference data: the 12 starting topics and a blocklist of URL shorteners.
+- Public `avatars` Storage bucket (JPEG/PNG/WebP, 1 MiB) with per-user folder policies.
+- Generated database types in `src/types/database.ts`, used by all Supabase clients.
+- pgTAP tests (152 checks) in `supabase/tests/database/`; scripts `pnpm db:test` and `pnpm db:types`.
+
 ### Phase 1 — Project setup
 
 #### Added

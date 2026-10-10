@@ -49,35 +49,80 @@ Local service URLs (default ports):
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | public          | Supabase publishable key (RLS applies)                    |
 | `SUPABASE_SECRET_KEY`                  | **server only** | Supabase secret key; bypasses RLS. Never expose or commit |
 
+`pnpm build` first runs `scripts/check-env.ts`: a missing or malformed variable fails the build with its
+name (never its value) instead of deploying a site that answers every request with "Internal Server Error".
+URLs must include `https://`. On Vercel, mark only `SUPABASE_SECRET_KEY` as sensitive; `NEXT_PUBLIC_*`
+values are compiled into the browser bundle anyway. After changing a variable, redeploy.
+
 ## Supabase cloud setup
 
-1. Create a project at https://supabase.com (pick the region closest to your users and Vercel functions).
+1. Create a project at https://supabase.com (pick the region closest to your users and Vercel functions;
+   we use Central EU, Frankfurt). Security options: keep **Enable Data API** and **Automatically expose new
+   tables** on — the migrations revoke and re-grant access table by table, and the server's secret key
+   relies on the default grants. **Enable automatic RLS** can stay off: every migration enables RLS itself.
 2. Project Settings → API Keys: copy the URL, the publishable key and a secret key into `.env.local`
    (and later into Vercel).
 3. Authentication → URL Configuration: set **Site URL** to your production URL and add
    `http://localhost:3000/**` and `https://<your-domain>/**` to **Redirect URLs**.
 4. Authentication → Providers → Email: keep **Confirm email** enabled.
 5. Configure a custom SMTP provider before launch: Supabase's built-in email sender is heavily rate-limited.
-6. Link the CLI and push the schema (available from Phase 2):
-   ```bash
-   pnpm supabase login
-   pnpm supabase link --project-ref <project-ref>
-   pnpm supabase db push
+6. Apply the schema. This creates the tables, policies, triggers, the starting topics, the URL-shortener
+   blocklist, the `avatars` bucket and the daily popularity job (pg_cron).
+   - **Automatically (recommended):** the `Supabase migrations` GitHub Action
+     (`.github/workflows/supabase-migrations.yml`) runs `supabase db push` whenever migrations reach
+     `main`. Add three repository secrets under GitHub → Settings → Secrets and variables → Actions:
+     `SUPABASE_ACCESS_TOKEN` (https://supabase.com/dashboard/account/tokens), `SUPABASE_DB_PASSWORD`
+     (the database password chosen when creating the project) and `SUPABASE_PROJECT_ID` (Project
+     Settings → General). To re-run it, open Actions → Supabase migrations → Run workflow.
+   - **By hand:**
+     ```bash
+     pnpm supabase login
+     pnpm supabase link --project-ref <project-ref>
+     pnpm supabase db push
+     ```
+7. Make the first admin: sign up in the app, then run in the SQL editor (Dashboard → SQL Editor, or
+   Studio locally):
+   ```sql
+   update public.profiles set role = 'admin' where username = '<your-username>';
    ```
 
 ## Scripts
 
-| Command                             | What it does                                   |
-| ----------------------------------- | ---------------------------------------------- |
-| `pnpm dev`                          | Start the dev server                           |
-| `pnpm build` / `pnpm start`         | Production build / serve                       |
-| `pnpm lint`                         | ESLint                                         |
-| `pnpm typecheck`                    | Generate route types and run `tsc`             |
-| `pnpm format` / `pnpm format:check` | Prettier                                       |
-| `pnpm test`                         | Unit tests (Vitest)                            |
-| `pnpm check`                        | Lint + typecheck + format check + tests        |
-| `pnpm db:start` / `pnpm db:stop`    | Start / stop local Supabase                    |
-| `pnpm db:status`                    | Show local URLs and keys                       |
-| `pnpm db:reset`                     | Recreate the local DB from migrations and seed |
+| Command                             | What it does                                    |
+| ----------------------------------- | ----------------------------------------------- |
+| `pnpm dev`                          | Start the dev server                            |
+| `pnpm build` / `pnpm start`         | Production build / serve                        |
+| `pnpm lint`                         | ESLint                                          |
+| `pnpm typecheck`                    | Generate route types and run `tsc`              |
+| `pnpm format` / `pnpm format:check` | Prettier                                        |
+| `pnpm test`                         | Unit tests (Vitest)                             |
+| `pnpm check`                        | Lint + typecheck + format check + tests         |
+| `pnpm db:start` / `pnpm db:stop`    | Start / stop local Supabase                     |
+| `pnpm db:status`                    | Show local URLs and keys                        |
+| `pnpm db:reset`                     | Recreate the local DB from migrations and seed  |
+| `pnpm db:test`                      | Database tests (pgTAP: RLS, triggers, counters) |
+| `pnpm db:types`                     | Regenerate `src/types/database.ts`              |
 
-Seeding, end-to-end tests, cron jobs and the Vercel deploy guide will be documented as those phases land.
+## Database
+
+Schema, policies and triggers live in `supabase/migrations/` (one file per area: foundation, profiles,
+topics, moderation, resources, interactions, audit, jobs, storage, reference data). Design choices are
+explained in [DECISIONS.md](DECISIONS.md) (D14–D29). In short:
+
+- **Row Level Security on every table.** Guests read published content; users write only their own rows;
+  moderators and admins moderate; banned users are read-only.
+- **Clients never write system fields.** Counters, popularity score, status of a new card, author and
+  audit entries are set by the database (column privileges + triggers).
+- **Every moderation action is audited** in `audit_log` by triggers, with the acting staff member.
+- **Popularity** is recomputed on every like/save/rating and daily by a pg_cron job.
+
+After changing a migration:
+
+```bash
+pnpm db:reset   # re-apply all migrations locally
+pnpm db:test    # run the pgTAP tests in supabase/tests/database
+pnpm db:types   # regenerate the TypeScript types
+```
+
+Seeding demo data, end-to-end tests, the link-checker cron and the Vercel deploy guide will be
+documented as those phases land.
