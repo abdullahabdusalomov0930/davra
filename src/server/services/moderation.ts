@@ -67,6 +67,28 @@ export async function setUserRole(id: string, role: Enums["user_role"]) {
 }
 
 /**
+ * A staff decision about a link (Havolalar page): sets its status and closes the open "Havola
+ * ishlamayapti" reports about it (resolved when broken, dismissed when it works). A deleted resource's
+ * reports can still be closed.
+ */
+export async function decideLinkStatus(resourceId: string, linkStatus: "ok" | "broken"): Promise<ActionResult> {
+  const updated = await setResourceLinkStatus(resourceId, linkStatus);
+  if (!updated.ok && updated.error !== "forbidden") return updated;
+
+  const supabase = await createClient();
+  const { data: closed, error } = await supabase
+    .from("reports")
+    .update({ status: linkStatus === "broken" ? "resolved" : "dismissed" })
+    .eq("target_type", "broken_link")
+    .eq("target_id", resourceId)
+    .eq("status", "open")
+    .select("id");
+  if (error) return moderationError(error, "link reports");
+  // Neither the resource nor a report changed: not staff, or nothing to decide.
+  return updated.ok || closed.length > 0 ? { ok: true } : updated;
+}
+
+/**
  * "Confirm" a report: takes the reported content down (hides the resource or comment, bans the
  * user) and marks the report resolved, which also counts against the author's trust (D17).
  */

@@ -48,6 +48,7 @@ Local service URLs (default ports):
 | `NEXT_PUBLIC_SUPABASE_URL`             | public          | Supabase project URL                                      |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | public          | Supabase publishable key (RLS applies)                    |
 | `SUPABASE_SECRET_KEY`                  | **server only** | Supabase secret key; bypasses RLS. Never expose or commit |
+| `CRON_SECRET`                          | **server only** | Token for the scheduled link check (see below); optional  |
 
 `pnpm build` first runs `scripts/check-env.ts`: a missing or malformed variable fails the build with its
 name (never its value) instead of deploying a site that answers every request with "Internal Server Error".
@@ -97,6 +98,24 @@ values are compiled into the browser bundle anyway. After changing a variable, r
    ```sql
    update public.profiles set role = 'admin' where username = '<your-username>';
    ```
+
+## Link checker
+
+Published links are checked about once a week (DECISIONS.md D56–D58). Vercel Cron calls
+`/api/cron/link-check` every day at 21:00 UTC (02:00 in Tashkent, `vercel.json`); each run checks the
+links whose last check is more than 7 days old, oldest first, for up to 40 seconds. Two failed checks in a
+row mark a link broken: the card gets a warning and leaves the "Mashhur" feed. Staff see broken and
+reported links under **Moderatsiya → Havolalar**, where they can check a link again at once.
+
+To turn it on, add `CRON_SECRET` in Vercel → Project → Settings → Environment Variables (Production), a
+random value of at least 16 characters, e.g. the output of `openssl rand -hex 32`, mark it sensitive and
+redeploy. Vercel sends it with every cron call; without it the route refuses every call (the build log
+warns). Cron jobs run on production deployments only. To try it locally, put a `CRON_SECRET` in
+`.env.local` and call:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/link-check
+```
 
 ## Scripts
 

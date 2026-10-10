@@ -5,6 +5,32 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 8 — Link checker
+
+#### Added
+
+- Scheduled link check: Vercel Cron calls `/api/cron/link-check` daily (protected by `CRON_SECRET`);
+  every published link is checked about once a week, oldest check first. HEAD first, GET if HEAD gives
+  no clear answer, up to 5 redirects, time limits, an honest `DavraLinkChecker` user agent, six sites at
+  a time and one request at a time per site.
+- Two failed checks in a row mark a link broken; a working answer resets it. 401/403/429, bot
+  challenges and certificate problems on our side count as "unknown" and change nothing.
+- SSRF protection: only http(s); every address a host resolves to (and every redirect target) must be a
+  public IP, and the connection goes to exactly the checked address.
+- "Havola ishlamayapti" button on resource pages (signed-in members, one report per resource) and a
+  warning badge on cards with broken links (they already left the "Mashhur" feed).
+- **Havolalar** page in `/admin`: reported links grouped per resource and links the checker marked
+  broken, with the last check time and failure count; "Hozir tekshirish" runs the checker at once,
+  "Ishlamayapti" / "Ishlayapti" decide and close the link's reports.
+- Migration `20261010200000_link_checker.sql`: `record_link_check` (service role only) and an index
+  for picking due links.
+- Tests: 11 pgTAP checks (224 in total), unit tests for the address filter, the checker (against a
+  local HTTP server) and the scheduler (138 in total).
+
+#### Fixed
+
+- Cards with long unbreakable content no longer stretch past their grid column.
+
 ### Phase 7 — Reports, moderation, rate limits
 
 #### Added
@@ -17,7 +43,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - overview with queue counts and the latest audit log entries;
   - **Resurslar**: pending, hidden and rejected cards; approve, reject, hide, restore;
   - **Shikoyatlar**: open reports (take the content down, resolve, dismiss) and removal requests;
-  - **Havolalar**: cards with broken links and broken-link reports (filled by Phase 8);
+  - **Havolalar**: cards with broken links and broken-link reports (completed in Phase 8);
   - **Foydalanuvchilar**: search, ban/unban, roles (admins);
   - **Mavzular** and **Domenlar**: topics and the domain blocklist (admins).
 - Staff see a moderation toolbar on resource pages and can hide comments in place; "Moderatsiya" in the

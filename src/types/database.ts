@@ -604,6 +604,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      record_link_check: {
+        Args: { checked_url: string; outcome: string; resource_id: string };
+        Returns: Database["public"]["Enums"]["link_status"];
+      };
       search_resources: {
         Args: {
           after_cursor?: Json;

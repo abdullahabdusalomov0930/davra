@@ -1,3 +1,4 @@
+import { Link2OffIcon } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useNow, useTranslations } from "next-intl";
 
@@ -36,7 +37,7 @@ export function ResourceCard({ resource, viewer, hideAuthor = false }: ResourceC
   const date = new Date(resource.published_at ?? resource.created_at);
 
   return (
-    <article className="group relative flex flex-col gap-3 rounded-2xl border bg-card p-5 text-card-foreground transition-colors focus-within:border-primary/50 hover:border-primary/50">
+    <article className="group relative flex min-w-0 flex-col gap-3 rounded-2xl border bg-card p-5 text-card-foreground transition-colors focus-within:border-primary/50 hover:border-primary/50">
       <div className="flex items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
           <TypeIcon className="size-5" aria-hidden />
@@ -71,6 +72,12 @@ export function ResourceCard({ resource, viewer, hideAuthor = false }: ResourceC
       <p className="line-clamp-3 text-sm text-muted-foreground">{resource.summary}</p>
 
       <div className="flex flex-wrap gap-1.5">
+        {resource.status === "published" && resource.link_status === "broken" && (
+          <Badge variant="warning" title={t("brokenTitle")}>
+            <Link2OffIcon aria-hidden />
+            {t("brokenBadge")}
+          </Badge>
+        )}
         <Badge asChild>
           <Link href={routes.topic(resource.topic.slug)} className="relative z-10 hover:bg-accent/70">
             {resource.topic.name_uz}

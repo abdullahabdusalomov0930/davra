@@ -151,6 +151,7 @@
     "rateLimitedReports": "Bugungi shikoyatlar limitiga yetdingiz. Ertaga yana urinib koʻring.",
     "rateLimited": "Juda koʻp urinish. Birozdan keyin qayta urinib koʻring.",
     "alreadyReported": "Siz bu haqda allaqachon shikoyat qilgansiz. Moderatorlar uni koʻrib chiqadi.",
+    "alreadyReportedLink": "Siz bu havola haqida allaqachon xabar bergansiz. Moderatorlar uni tekshiradi.",
     "topicInUse": "Bu mavzuda resurslar bor, shuning uchun uni oʻchirib boʻlmaydi.",
     "slugTaken": "Bu manzil band. Boshqasini tanlang.",
     "domainExists": "Bu domen roʻyxatda allaqachon bor."
@@ -307,6 +308,7 @@
     "rejectedText": "Resurs qoidalarga mos kelmadi va boshqalarga koʻrinmaydi.",
     "brokenTitle": "Havola ishlamayotgan boʻlishi mumkin",
     "brokenText": "Oxirgi tekshiruvlarda sahifa ochilmadi.",
+    "brokenBadge": "Havola ishlamayapti",
     "rulesLink": "Qoidalarni oʻqish",
     "listTitle": "Resurslar",
     "listEmptyOwnerTitle": "Siz hali resurs ulashmagansiz",
@@ -520,6 +522,13 @@
     "signIn": "Shikoyat qilish uchun hisobingizga kiring",
     "copyrightHint": "Huquq egasimisiz? Olib tashlash soʻrovi formasi hisobsiz ham ishlaydi."
   },
+  "BrokenLink": {
+    "button": "Havola ishlamayapti",
+    "title": "Havola ochilmayaptimi? Moderatorlarga xabar bering",
+    "signIn": "Havola ishlamayotgani haqida xabar berish uchun hisobingizga kiring",
+    "sent": "Rahmat! Moderatorlar havolani tekshiradi.",
+    "reported": "Xabar berildi"
+  },
   "RemovalRequest": {
     "title": "Kontentni olib tashlash soʻrovi",
     "metaDescription": "Mualliflik huquqi yoki boshqa asosli sabab bilan Davra’dagi kartani olib tashlashni soʻrang.",
@@ -615,11 +624,27 @@
       "removalDismiss": "Rad etish"
     },
     "links": {
+      "intro": "Havolalar avtomatik tekshiriladi: har bir havola haftada bir marta. Ketma-ket ikki marta ochilmagan havola “ishlamayapti” deb belgilanadi va “Mashhur” lentasidan chiqariladi. Saytning 403 yoki 429 javobi hisobga olinmaydi.",
+      "reportedTitle": "Foydalanuvchilar xabar bergan havolalar",
       "brokenTitle": "Tekshiruvchi ishlamaydi deb belgilagan havolalar",
-      "reportsTitle": "„Havola ishlamayapti“ xabarlari",
-      "markOk": "Havola ishlayapti",
+      "reports": "{count} ta xabar",
+      "lastCheck": "Oxirgi tekshiruv: {when}",
+      "neverChecked": "Hali tekshirilmagan",
+      "failures": "Ketma-ket {count} marta ochilmadi",
+      "status": {
+        "ok": "Ishlayapti",
+        "broken": "Ishlamayapti",
+        "unknown": "Nomaʼlum"
+      },
+      "recheck": "Hozir tekshirish",
+      "markBroken": "Ishlamayapti",
+      "markOk": "Ishlayapti",
       "hide": "Yashirish",
-      "checkerNote": "Havolalarni avtomatik tekshirish keyingi bosqichda qoʻshiladi."
+      "checkOk": "Havola ishlayapti.",
+      "checkFailure": "Havola ochilmadi. Yana bir marta ochilmasa, “ishlamayapti” deb belgilanadi.",
+      "checkBroken": "Havola ochilmadi va “ishlamayapti” deb belgilandi.",
+      "checkUnknown": "Sayt tekshiruvchiga aniq javob bermadi (masalan, 403 yoki 429). Holat oʻzgarmadi.",
+      "checkIgnored": "Tekshiruv paytida havola oʻzgardi, natija saqlanmadi."
     },
     "users": {
       "search": "Foydalanuvchi nomi yoki ismi",

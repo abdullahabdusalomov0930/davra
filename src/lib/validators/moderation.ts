@@ -5,7 +5,7 @@ import { Constants } from "@/types/database";
 import { message } from "./messages";
 
 export const REPORT_REASONS = Constants.public.Enums.report_reason;
-/** What a user can report with the report button (broken links have their own button, Phase 8). */
+/** What a user can report with the report button (broken links have their own button). */
 export const REPORTABLE_TARGETS = ["resource", "comment", "user"] as const;
 export const REPORT_DETAILS_MAX = 500;
 
@@ -22,6 +22,11 @@ export const reportSchema = z.object({
 
 export type ReportInput = z.input<typeof reportSchema>;
 export type ReportData = z.output<typeof reportSchema>;
+
+/** "Havola ishlamayapti": no reason, no note; the database allows one open report per user and resource. */
+export const brokenLinkReportSchema = z.object({ resourceId: z.uuid() });
+
+export type BrokenLinkReportData = z.output<typeof brokenLinkReportSchema>;
 
 export const REMOVAL_DETAILS_MIN = 20;
 export const REMOVAL_DETAILS_MAX = 2000;

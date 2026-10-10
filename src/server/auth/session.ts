@@ -46,13 +46,19 @@ export async function requireViewer(returnTo: string): Promise<Viewer> {
   return viewer;
 }
 
+/** The viewer's profile if they are staff (a moderator or admin who is not banned), else null. */
+export async function getStaffProfile(): Promise<ViewerProfile | null> {
+  const profile = await getViewerProfile();
+  return profile && !profile.is_banned && profile.role !== "user" ? profile : null;
+}
+
 /**
- * For the moderation panel: staff only (moderators and admins who are not banned). Everyone else gets
- * a 404, so the panel does not advertise itself. RLS still guards every query and action.
+ * For the moderation panel: staff only. Everyone else gets a 404, so the panel does not advertise
+ * itself. RLS still guards every query and action.
  */
 export async function requireStaff(returnTo: string): Promise<ViewerProfile> {
   await requireViewer(returnTo);
-  const profile = await getViewerProfile();
-  if (!profile || profile.is_banned || profile.role === "user") notFound();
+  const profile = await getStaffProfile();
+  if (!profile) notFound();
   return profile;
 }
