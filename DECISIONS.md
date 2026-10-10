@@ -249,8 +249,11 @@ Our Uzbek templates (`supabase/templates/`) link to `/email-tasdiqlash` and `/pa
 with a `token_hash`. Unlike the default PKCE link, this works when the email is opened on another
 device. The token is spent only when the person presses the button (or submits the new password):
 corporate mail scanners open links automatically and would otherwise use up the one-time token. A PKCE
-`code` is still accepted, so the flow also works before the cloud templates are updated (same browser
-only). Confirmed users land on `/sozlamalar` with a welcome note to complete their profile.
+`code` is still accepted: Supabase allows editing cloud templates only once custom SMTP is configured,
+and until then its default emails link with a code (works in the same browser; on another device the
+address is confirmed anyway and the person signs in). The browser client therefore has
+`detectSessionInUrl: false`; otherwise it would exchange the code itself when created and the page's
+own exchange would fail. Confirmed users land on `/sozlamalar` with a welcome note to complete their profile.
 
 ### D34. Redirects happen in the proxy
 
@@ -286,4 +289,5 @@ email or password while signed in and deleting the account are not in the brief 
 
 Supabase's built-in sender only delivers to members of the Supabase team and a few emails per hour.
 It is fine for testing; a custom SMTP provider must be configured before students are invited
-(README, cloud setup step 6). The provider and sender domain are the owner's choice.
+(README, cloud setup step 5), and it is also what unlocks editing the email templates. The provider and
+sender domain are the owner's choice.
