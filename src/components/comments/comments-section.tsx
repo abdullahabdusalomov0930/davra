@@ -2,9 +2,12 @@ import { EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getNow, getTranslations } from "next-intl/server";
 
+import { ActionButton } from "@/components/admin/action-button";
 import { UserAvatar } from "@/components/profile/user-avatar";
+import { ReportButton } from "@/components/reports/report-button";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
+import { moderateCommentAction } from "@/server/actions/moderation";
 import { listComments } from "@/server/services/interactions";
 
 import { CommentForm } from "./comment-form";
@@ -14,12 +17,15 @@ type CommentsSectionProps = {
   resource: { id: string; slug: string; status: string };
   /** The signed-in user's id, or null for guests. */
   viewerId: string | null;
+  /** Staff can hide and show comments. */
+  isStaff?: boolean;
 };
 
 /** Flat comments, oldest first, with the form at the end. */
-export async function CommentsSection({ resource, viewerId }: CommentsSectionProps) {
-  const [t, tRatings, format, now, comments] = await Promise.all([
+export async function CommentsSection({ resource, viewerId, isStaff = false }: CommentsSectionProps) {
+  const [t, tAdmin, tRatings, format, now, comments] = await Promise.all([
     getTranslations("Comments"),
+    getTranslations("Admin"),
     getTranslations("Ratings"),
     getFormatter(),
     getNow(),
@@ -66,7 +72,31 @@ export async function CommentsSection({ resource, viewerId }: CommentsSectionPro
                   </div>
                   <p className="mt-1 text-sm text-pretty break-words whitespace-pre-line">{comment.body}</p>
                 </div>
-                {comment.author_id === viewerId && <DeleteCommentButton commentId={comment.id} />}
+                <div className="flex shrink-0 items-start gap-1">
+                  {isStaff && (
+                    <ActionButton
+                      action={moderateCommentAction.bind(
+                        null,
+                        comment.id,
+                        comment.status === "hidden" ? "published" : "hidden",
+                      )}
+                      variant="ghost"
+                      className="h-7 text-xs text-muted-foreground"
+                    >
+                      {comment.status === "hidden" ? tAdmin("comments.show") : tAdmin("comments.hide")}
+                    </ActionButton>
+                  )}
+                  {comment.author_id === viewerId ? (
+                    <DeleteCommentButton commentId={comment.id} />
+                  ) : (
+                    <ReportButton
+                      target={{ type: "comment", id: comment.id }}
+                      signedIn={Boolean(viewerId)}
+                      returnTo={routes.resource(resource.slug)}
+                      compact
+                    />
+                  )}
+                </div>
               </li>
             );
           })}

@@ -8,6 +8,8 @@ import { createClient } from "@/lib/supabase/server";
 import { urlTwins } from "@/lib/url-normalize";
 import type { ResourceData, ResourceInput } from "@/lib/validators";
 import { createAdminClient } from "@/server/supabase/admin";
+
+import { type DbError, rateLimitError } from "./db-errors";
 import type { Database } from "@/types/database";
 
 export type ResourceStatus = Database["public"]["Enums"]["resource_status"];
@@ -76,8 +78,6 @@ export async function findDuplicate(url: string, viewerId: string, excludeId?: s
 
 type ResourceResult = ActionResult<keyof ResourceInput, { slug: string; status: ResourceStatus }>;
 
-type DbError = { code?: string; message: string };
-
 /**
  * The unique constraint only catches the exact URL; this also catches its twins (`urlTwins`). Checked
  * before writing so the author learns about the existing card instead of creating a second one.
@@ -104,6 +104,8 @@ async function mapWriteError(error: DbError, url: string, viewerId: string, excl
     return { ok: false, error: "invalidInput", fieldErrors: { topicId: "topicRequired" } } satisfies ResourceResult;
   }
   if (error.code === "42501") return { ok: false, error: "forbidden" } satisfies ResourceResult;
+  const limited = rateLimitError(error);
+  if (limited) return { ok: false, error: limited } satisfies ResourceResult;
   return null;
 }
 

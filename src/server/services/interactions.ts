@@ -4,10 +4,12 @@ import type { ActionResult } from "@/lib/action-result";
 import { createClient } from "@/lib/supabase/server";
 import type { CommentData, RatingData, RatingInput } from "@/lib/validators";
 
-type DbError = { code?: string; message: string };
+import { type DbError, rateLimitError } from "./db-errors";
 
-/** Insert/delete failures that RLS and constraints explain; anything else is unexpected. */
+/** Insert/delete failures that RLS, constraints and rate limits explain; anything else is unexpected. */
 function writeError(error: DbError, context: string): ActionResult {
+  const limited = rateLimitError(error);
+  if (limited) return { ok: false, error: limited };
   // RLS: own resource, not published (any more), or a banned account.
   if (error.code === "42501") return { ok: false, error: "forbidden" };
   // The resource was deleted meanwhile.

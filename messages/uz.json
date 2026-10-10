@@ -21,7 +21,8 @@
     "signOut": "Chiqish",
     "share": "Resurs qoʻshish",
     "saved": "Saqlanganlar",
-    "following": "Obunalarim"
+    "following": "Obunalarim",
+    "moderation": "Moderatsiya"
   },
   "Theme": {
     "toggle": "Rang rejimini almashtirish",
@@ -73,7 +74,8 @@
   "Form": {
     "pending": "Kuting…",
     "optional": "ixtiyoriy",
-    "charCount": "{count}/{max}"
+    "charCount": "{count}/{max}",
+    "close": "Yopish"
   },
   "Validation": {
     "required": "Bu maydonni toʻldiring.",
@@ -108,7 +110,19 @@
     "ratingRequired": "Yulduzchalardan birini tanlang.",
     "reviewTooLong": "Sharh 500 ta belgidan oshmasin.",
     "commentRequired": "Izoh matnini yozing.",
-    "commentTooLong": "Izoh 500 ta belgidan oshmasin."
+    "commentTooLong": "Izoh 500 ta belgidan oshmasin.",
+    "reportReasonRequired": "Sababini tanlang.",
+    "reportDetailsTooLong": "Izoh 500 ta belgidan oshmasin.",
+    "removalUrlInvalid": "Toʻliq havola kiriting, masalan: https://davra.uz/resurs/…",
+    "removalNameLength": "Ismingizni kiriting (2–100 ta belgi).",
+    "removalDetailsTooShort": "Kamida 20 ta belgi: nima uchun olib tashlash kerakligini yozing.",
+    "removalDetailsTooLong": "2000 ta belgidan oshmasin.",
+    "removalConfirmRequired": "Maʼlumotlar toʻgʻriligini tasdiqlang.",
+    "topicSlugFormat": "Kichik lotin harflari, raqamlar va chiziqcha: masalan, ingliz-tili.",
+    "topicNameLength": "Nomi 2–60 ta belgi boʻlsin.",
+    "topicDescriptionTooLong": "Tavsif 300 ta belgidan oshmasin.",
+    "domainFormat": "Domen nomini kiriting, masalan: bit.ly",
+    "domainReasonTooLong": "Sabab 200 ta belgidan oshmasin."
   },
   "AuthErrors": {
     "invalidCredentials": "Email yoki parol notoʻgʻri.",
@@ -130,7 +144,16 @@
     "avatarTooLarge": "Rasm hajmi juda katta.",
     "uploadFailed": "Rasmni yuklab boʻlmadi. Qayta urinib koʻring.",
     "unknown": "Kutilmagan xatolik yuz berdi. Qayta urinib koʻring.",
-    "notFound": "Resurs topilmadi yoki uni oʻzgartirishga ruxsatingiz yoʻq."
+    "notFound": "Resurs topilmadi yoki uni oʻzgartirishga ruxsatingiz yoʻq.",
+    "rateLimitedResources": "Bugungi limitga yetdingiz: yangi aʼzolar kuniga 3 ta, ishonchli aʼzolar 10 ta resurs ulasha oladi. Ertaga yana urinib koʻring.",
+    "rateLimitedComments": "Bugungi limitga yetdingiz: kuniga 30 tagacha izoh yozish mumkin.",
+    "rateLimitedLikes": "Juda tez harakat qilyapsiz: bir soatda 100 tagacha yoqtirish va saqlash mumkin.",
+    "rateLimitedReports": "Bugungi shikoyatlar limitiga yetdingiz. Ertaga yana urinib koʻring.",
+    "rateLimited": "Juda koʻp urinish. Birozdan keyin qayta urinib koʻring.",
+    "alreadyReported": "Siz bu haqda allaqachon shikoyat qilgansiz. Moderatorlar uni koʻrib chiqadi.",
+    "topicInUse": "Bu mavzuda resurslar bor, shuning uchun uni oʻchirib boʻlmaydi.",
+    "slugTaken": "Bu manzil band. Boshqasini tanlang.",
+    "domainExists": "Bu domen roʻyxatda allaqachon bor."
   },
   "Auth": {
     "signInTitle": "Kirish",
@@ -463,5 +486,188 @@
     "emptyText": "Resurs kartasidagi saqlash belgisini bosing — u shu yerda paydo boʻladi.",
     "emptyCta": "Resurslarni koʻrish",
     "emptyTopicTitle": "Bu mavzuda saqlangan resurs yoʻq"
+  },
+  "ReportReason": {
+    "spam": "Spam yoki reklama",
+    "wrong_info": "Notoʻgʻri maʼlumot",
+    "inappropriate": "Nomaqbul kontent",
+    "copyright": "Mualliflik huquqi buzilgan",
+    "other": "Boshqa sabab"
+  },
+  "ReportStatus": {
+    "open": "Ochiq",
+    "resolved": "Hal qilingan",
+    "dismissed": "Rad etilgan"
+  },
+  "UserRole": {
+    "user": "Foydalanuvchi",
+    "moderator": "Moderator",
+    "admin": "Administrator"
+  },
+  "Reports": {
+    "button": "Shikoyat",
+    "resource": "Resurs haqida shikoyat qilish",
+    "comment": "Izoh haqida shikoyat qilish",
+    "user": "Foydalanuvchi haqida shikoyat qilish",
+    "title": "Shikoyat yuborish",
+    "description": "Moderatorlar shikoyatni koʻrib chiqadi. Kim shikoyat qilgani boshqalarga koʻrsatilmaydi.",
+    "reason": "Sabab",
+    "details": "Izoh",
+    "detailsPlaceholder": "Qisqacha tushuntiring (ixtiyoriy)",
+    "submit": "Yuborish",
+    "cancel": "Bekor qilish",
+    "sent": "Shikoyatingiz yuborildi. Rahmat!",
+    "signIn": "Shikoyat qilish uchun hisobingizga kiring",
+    "copyrightHint": "Huquq egasimisiz? Olib tashlash soʻrovi formasi hisobsiz ham ishlaydi."
+  },
+  "RemovalRequest": {
+    "title": "Kontentni olib tashlash soʻrovi",
+    "metaDescription": "Mualliflik huquqi yoki boshqa asosli sabab bilan Davra’dagi kartani olib tashlashni soʻrang.",
+    "intro": "Davra’da faqat havolalar va foydalanuvchilarning oʻz soʻzlari joylanadi. Agar karta mualliflik huquqingizni buzsa yoki boshqa asosli sabab bilan olib tashlanishi kerak boʻlsa, shu formani toʻldiring. Hisob shart emas.",
+    "url": "Sahifa yoki havola",
+    "urlHint": "Davra’dagi resurs sahifasi yoki u koʻrsatayotgan havola.",
+    "name": "Ismingiz yoki tashkilot nomi",
+    "email": "Email",
+    "emailHint": "Faqat sizga javob berish uchun; boshqalarga koʻrsatilmaydi.",
+    "details": "Nima uchun olib tashlash kerak?",
+    "detailsPlaceholder": "Qaysi asar, kimga tegishli, qanday huquq buzilgan…",
+    "confirm": "Maʼlumotlar toʻgʻri: men huquq egasi yoki uning vakiliman (yoki boshqa asosli sababim bor).",
+    "honeypot": "Bu maydonni boʻsh qoldiring",
+    "submit": "Yuborish",
+    "sentTitle": "Soʻrovingiz qabul qilindi",
+    "sentText": "Moderatorlar uni koʻrib chiqadi va kerak boʻlsa emailingizga javob yozadi."
+  },
+  "Admin": {
+    "title": "Moderatsiya",
+    "navLabel": "Moderatsiya boʻlimlari",
+    "nav": {
+      "overview": "Umumiy",
+      "resources": "Resurslar",
+      "reports": "Shikoyatlar",
+      "links": "Havolalar",
+      "users": "Foydalanuvchilar",
+      "topics": "Mavzular",
+      "domains": "Domenlar"
+    },
+    "counts": {
+      "pending": "Tekshiruvdagi resurslar",
+      "reports": "Ochiq shikoyatlar",
+      "removals": "Olib tashlash soʻrovlari",
+      "brokenLinks": "Ishlamayotgan havolalar"
+    },
+    "auditTitle": "Soʻnggi amallar",
+    "auditEmpty": "Hali moderatsiya amallari yoʻq.",
+    "auditActions": {
+      "resource_status": "Resurs holati",
+      "resource_link_status": "Havola holati",
+      "comment_status": "Izoh holati",
+      "report_status": "Shikoyat",
+      "removal_request_status": "Olib tashlash soʻrovi",
+      "user_ban": "Bloklash",
+      "user_unban": "Blokdan chiqarish",
+      "user_role": "Rol",
+      "topic_insert": "Yangi mavzu",
+      "topic_update": "Mavzu tahrirlandi",
+      "topic_delete": "Mavzu oʻchirildi",
+      "blocked_domain_insert": "Domen bloklandi",
+      "blocked_domain_update": "Domen tahrirlandi",
+      "blocked_domain_delete": "Domen blokdan chiqarildi"
+    },
+    "unknownActor": "Nomaʼlum",
+    "empty": "Bu yerda hozircha hech narsa yoʻq.",
+    "openPage": "Sahifani ochish",
+    "openLink": "Havolani ochish",
+    "by": "Muallif",
+    "reporter": "Shikoyatchi",
+    "submitted": "Yuborilgan",
+    "done": "Bajarildi",
+    "confirm": "Ha, davom etish",
+    "cancel": "Bekor qilish",
+    "adminOnly": "Bu boʻlimni faqat administratorlar oʻzgartira oladi.",
+    "resources": {
+      "pending": "Tekshiruvda",
+      "hidden": "Yashirilgan",
+      "rejected": "Rad etilgan",
+      "approve": "Tasdiqlash",
+      "hide": "Yashirish",
+      "reject": "Rad etish",
+      "restore": "Qayta eʼlon qilish",
+      "hideTitle": "Resursni yashirasizmi?",
+      "hideText": "Karta hamma uchun yopiladi; muallif uni yashirilgan deb koʻradi.",
+      "rejectTitle": "Resursni rad etasizmi?",
+      "rejectText": "Karta eʼlon qilinmaydi; muallif uni rad etilgan deb koʻradi.",
+      "newAuthor": "Yangi aʼzo"
+    },
+    "reports": {
+      "reportsTab": "Shikoyatlar",
+      "removalsTab": "Olib tashlash soʻrovlari",
+      "takeDown": "Kontentni yashirish",
+      "banUser": "Foydalanuvchini bloklash",
+      "resolve": "Hal qilindi",
+      "dismiss": "Rad etish",
+      "takeDownTitle": "Kontentni yashirib, shikoyatni yopasizmi?",
+      "takeDownText": "Resurs yoki izoh yashiriladi (foydalanuvchi bloklanadi) va shikoyat tasdiqlangan deb belgilanadi — bu muallifning ishonch darajasiga taʼsir qiladi.",
+      "targetGone": "Kontent oʻchirilgan",
+      "targetResource": "Resurs",
+      "targetComment": "Izoh",
+      "targetUser": "Foydalanuvchi",
+      "removalDone": "Bajarildi (olib tashlandi)",
+      "removalDismiss": "Rad etish"
+    },
+    "links": {
+      "brokenTitle": "Tekshiruvchi ishlamaydi deb belgilagan havolalar",
+      "reportsTitle": "„Havola ishlamayapti“ xabarlari",
+      "markOk": "Havola ishlayapti",
+      "hide": "Yashirish",
+      "checkerNote": "Havolalarni avtomatik tekshirish keyingi bosqichda qoʻshiladi."
+    },
+    "users": {
+      "search": "Foydalanuvchi nomi yoki ismi",
+      "searchButton": "Qidirish",
+      "ban": "Bloklash",
+      "unban": "Blokdan chiqarish",
+      "banned": "Bloklangan",
+      "banTitle": "Foydalanuvchini bloklaysizmi?",
+      "banText": "U saytni koʻra oladi, lekin hech narsa yoza, yoqtira yoki ulasha olmaydi.",
+      "role": "Rol",
+      "you": "siz",
+      "joined": "Qoʻshilgan"
+    },
+    "topics": {
+      "newTopic": "Yangi mavzu",
+      "slug": "Manzil (slug)",
+      "name": "Nomi",
+      "description": "Tavsif",
+      "sortOrder": "Tartib raqami",
+      "create": "Qoʻshish",
+      "save": "Saqlash",
+      "delete": "Oʻchirish",
+      "deleteTitle": "Mavzuni oʻchirasizmi?",
+      "deleteText": "Faqat resurslari yoʻq mavzuni oʻchirish mumkin.",
+      "resourceCount": "{count, plural, other {# ta resurs}}",
+      "saved": "Saqlandi",
+      "created": "Mavzu qoʻshildi",
+      "deleted": "Mavzu oʻchirildi"
+    },
+    "domains": {
+      "domain": "Domen",
+      "reason": "Sabab",
+      "add": "Bloklash",
+      "remove": "Olib tashlash",
+      "removeTitle": "Domenni roʻyxatdan olib tashlaysizmi?",
+      "removeText": "Bu domendagi havolalarni yana ulashish mumkin boʻladi.",
+      "added": "Domen bloklandi",
+      "removed": "Domen olib tashlandi"
+    },
+    "staff": {
+      "toolbar": "Moderatsiya",
+      "status": "Holati: {status}"
+    },
+    "comments": {
+      "hide": "Yashirish",
+      "show": "Qayta koʻrsatish",
+      "hideLabel": "Izohni yashirish",
+      "showLabel": "Izohni qayta koʻrsatish"
+    }
   }
 }

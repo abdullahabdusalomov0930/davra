@@ -5,6 +5,29 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 7 — Reports, moderation, rate limits
+
+#### Added
+
+- Report button on resources, comments and profiles: reason (spam, wrong info, inappropriate, copyright,
+  other) and an optional note. One open report per user and target; reporters stay anonymous.
+- `/removal-request`: public form for copyright holders and others (no account), limited per IP address,
+  with a honeypot against bots.
+- Moderation panel `/admin` for moderators and admins (others get a 404):
+  - overview with queue counts and the latest audit log entries;
+  - **Resurslar**: pending, hidden and rejected cards; approve, reject, hide, restore;
+  - **Shikoyatlar**: open reports (take the content down, resolve, dismiss) and removal requests;
+  - **Havolalar**: cards with broken links and broken-link reports (filled by Phase 8);
+  - **Foydalanuvchilar**: search, ban/unban, roles (admins);
+  - **Mavzular** and **Domenlar**: topics and the domain blocklist (admins).
+- Staff see a moderation toolbar on resource pages and can hide comments in place; "Moderatsiya" in the
+  account menu.
+- Rate limits in the database: 3 new resources a day (10 for trusted authors), 30 comments a day, 100
+  likes and saves an hour, 20 reports a day, with clear messages in the forms.
+- Migration `20261010190000_limits_and_removal_requests.sql`: rate-limit events and triggers, a daily
+  cleanup job, the `removal_requests` table and its audit logging.
+- Tests: 20 pgTAP checks (213 in total), unit tests for the moderation validators (121 in total).
+
 ### Phase 6 — Likes, saves, ratings, comments, follows
 
 #### Added

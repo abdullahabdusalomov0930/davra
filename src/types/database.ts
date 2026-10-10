@@ -226,6 +226,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      removal_requests: {
+        Row: {
+          created_at: string;
+          details: string;
+          handled_at: string | null;
+          handled_by: string | null;
+          id: string;
+          ip_hash: string;
+          requester_email: string;
+          requester_name: string;
+          resource_url: string;
+          status: Database["public"]["Enums"]["report_status"];
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          details: string;
+          handled_at?: string | null;
+          handled_by?: string | null;
+          id?: string;
+          ip_hash: string;
+          requester_email: string;
+          requester_name: string;
+          resource_url: string;
+          status?: Database["public"]["Enums"]["report_status"];
+        };
+        Update: {
+          created_at?: string;
+          details?: string;
+          handled_at?: string | null;
+          handled_by?: string | null;
+          id?: string;
+          ip_hash?: string;
+          requester_email?: string;
+          requester_name?: string;
+          resource_url?: string;
+          status?: Database["public"]["Enums"]["report_status"];
+        };
+        Relationships: [
+          {
+            foreignKeyName: "removal_requests_handled_by_fkey";
+            columns: ["handled_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       reports: {
         Row: {
           created_at: string;

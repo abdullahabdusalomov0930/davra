@@ -419,3 +419,45 @@ Cards show the like count; saves are personal bookmarks, so their count is not s
 - After a rating or comment is saved, the page refreshes from the server, so averages, counts and lists
   always match the database.
 - Daily limits for comments, likes and saves come with the other rate limits in Phase 7.
+
+## Phase 7 — Reports, moderation, rate limits
+
+### D52. Rate limits
+
+Limits from the brief live in the database, so they hold for every client: 3 new resources a day (10 for
+trusted authors), 30 comments a day, 100 likes and saves an hour together, and 20 reports a day. Each
+limited insert by a signed-in user records an event in `private.rate_events`; a BEFORE INSERT trigger
+counts the user's events in the window and refuses the insert past the limit (`rate_limited`, with the
+action as detail, so the form can say which limit was hit). Events are counted rather than rows, so
+like–unlike–like does not reset anything, and an insert that fails for another reason rolls its event
+back. Staff and trusted server code are not limited. A daily pg_cron job prunes old events.
+Sign-up, sign-in and password-reset requests are limited per IP by Supabase Auth itself (D32); guest
+removal requests are limited per IP by the server (D53).
+
+### D53. Removal requests
+
+`/removal-request` needs no account: a rights holder may not want one. The Data API grants no insert on
+`removal_requests`; the app's server validates the form, checks the per-IP limit (3 a day) and inserts
+the row with the secret key. That is the only place outside scripts and jobs where the secret key writes
+data; handling a request is still done by staff through their own session and audited. The IP address
+itself is never stored, only an HMAC of it keyed with the server's secret. A hidden honeypot field drops
+naive bots. The sender's name and email are kept for the reply and are visible to staff only; the
+privacy policy (Phase 9) must mention them.
+
+### D54. Moderation panel
+
+`/admin` is for moderators and admins; everyone else gets a 404, and every query and action also goes
+through RLS with the staff member's own session, so the audit log records the actor (D16). Powers follow
+D15: moderators handle the queue, reports and bans of regular users; topics, the domain blocklist, roles
+and banning staff are for admins, and the panel shows those sections read-only to moderators. A report
+can be **taken down** (the resource or comment is hidden, or the user banned, and the report is resolved,
+which counts against the author's trust, D17), **resolved** without action, or **dismissed**. Destructive
+decisions ask for confirmation. Staff also get a moderation toolbar on resource pages and hide or show
+comments in place. Reporters are anonymous to everyone but staff.
+
+### D55. Spam rules
+
+Content rules (no ALL-CAPS titles, emoji limits, summaries that are more than a link) are checked by the
+shared Zod schema in the browser and in the Server Action (D44). They are not duplicated as database
+constraints: a client calling the Data API directly could skip them, but not the structural limits, the
+blocklist, the rate limits or the pending queue, and new members' cards are reviewed by a person anyway.
