@@ -51,7 +51,10 @@ Local service URLs (default ports):
 
 ## Supabase cloud setup
 
-1. Create a project at https://supabase.com (pick the region closest to your users and Vercel functions).
+1. Create a project at https://supabase.com (pick the region closest to your users and Vercel functions;
+   we use Central EU, Frankfurt). Security options: keep **Enable Data API** and **Automatically expose new
+   tables** on — the migrations revoke and re-grant access table by table, and the server's secret key
+   relies on the default grants. **Enable automatic RLS** can stay off: every migration enables RLS itself.
 2. Project Settings → API Keys: copy the URL, the publishable key and a secret key into `.env.local`
    (and later into Vercel).
 3. Authentication → URL Configuration: set **Site URL** to your production URL and add
