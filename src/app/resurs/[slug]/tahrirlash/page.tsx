@@ -8,7 +8,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { routes } from "@/lib/routes";
 import { isValidSlug } from "@/lib/slugify";
 import { getViewerProfile, requireViewer } from "@/server/auth/session";
-import { getResourceBySlug, getTopics } from "@/server/services/resources";
+import { getResourceBySlug } from "@/server/services/resources";
+import { getTopics } from "@/server/services/topics";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("ResourceForm");

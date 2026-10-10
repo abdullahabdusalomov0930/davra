@@ -12,6 +12,9 @@ export default getRequestConfig(async () => {
   return {
     locale,
     timeZone: siteConfig.timeZone,
+    // One "now" per request, shared with client components, so relative dates ("3 kun oldin")
+    // render the same on the server and during hydration.
+    now: new Date(),
     messages: (await import(`../../messages/${locale}.json`)).default,
   };
 });

@@ -1,6 +1,8 @@
+import { routes } from "@/lib/routes";
+
 export const mainNavItems = [
-  { href: "/mavzular", labelKey: "topics" },
-  { href: "/qidiruv", labelKey: "search" },
+  { href: routes.topics, labelKey: "topics" },
+  { href: routes.search, labelKey: "search" },
   { href: "/haftalik", labelKey: "weekly" },
 ] as const;
 

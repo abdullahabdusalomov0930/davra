@@ -7,7 +7,7 @@ import { ResourceForm } from "@/components/resources/resource-form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { routes } from "@/lib/routes";
 import { getViewerProfile, requireViewer } from "@/server/auth/session";
-import { getTopics } from "@/server/services/resources";
+import { getTopics } from "@/server/services/topics";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("ResourceForm");

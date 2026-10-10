@@ -1,43 +1,4 @@
-/** Uzbek Cyrillic (and Russian) to Uzbek Latin, lower-case. */
-const CYRILLIC: Record<string, string> = {
-  а: "a",
-  б: "b",
-  в: "v",
-  г: "g",
-  д: "d",
-  е: "e",
-  ё: "yo",
-  ж: "j",
-  з: "z",
-  и: "i",
-  й: "y",
-  к: "k",
-  л: "l",
-  м: "m",
-  н: "n",
-  о: "o",
-  п: "p",
-  р: "r",
-  с: "s",
-  т: "t",
-  у: "u",
-  ф: "f",
-  х: "x",
-  ц: "ts",
-  ч: "ch",
-  ш: "sh",
-  щ: "sh",
-  ъ: "",
-  ы: "i",
-  ь: "",
-  э: "e",
-  ю: "yu",
-  я: "ya",
-  ў: "o",
-  қ: "q",
-  ғ: "g",
-  ҳ: "h",
-};
+import { toLatin } from "./transliterate";
 
 /** Every apostrophe-like character used in Uzbek Latin (oʻ, gʻ, tutuq belgisi) and its look-alikes. */
 const APOSTROPHES = /['‘’ʻʼ`´]/g;
@@ -58,11 +19,7 @@ export function isValidSlug(slug: string): boolean {
  * written. Falls back to "resurs" when nothing usable is left.
  */
 export function slugify(title: string, fallback = "resurs"): string {
-  const latin = Array.from(title.toLowerCase().replace(APOSTROPHES, ""))
-    .map((char) => CYRILLIC[char] ?? char)
-    .join("")
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "");
+  const latin = toLatin(title).replace(APOSTROPHES, "").normalize("NFKD").replace(/[̀-ͯ]/g, "");
 
   let slug = latin.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
   if (slug.length > SLUG_MAX_LENGTH) {

@@ -423,6 +423,7 @@ export type Database = {
           popularity_score: number;
           price: Database["public"]["Enums"]["resource_price"];
           published_at: string | null;
+          rating_score: number;
           ratings_count: number;
           ratings_sum: number;
           saves_count: number;
@@ -454,6 +455,7 @@ export type Database = {
           popularity_score?: number;
           price: Database["public"]["Enums"]["resource_price"];
           published_at?: string | null;
+          rating_score?: never;
           ratings_count?: number;
           ratings_sum?: number;
           saves_count?: number;
@@ -484,6 +486,7 @@ export type Database = {
           popularity_score?: number;
           price?: Database["public"]["Enums"]["resource_price"];
           published_at?: string | null;
+          rating_score?: never;
           ratings_count?: number;
           ratings_sum?: number;
           saves_count?: number;
@@ -553,7 +556,24 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      search_resources: {
+        Args: {
+          after_cursor?: Json;
+          alt_search_text?: string;
+          page_size?: number;
+          resource_language?: Database["public"]["Enums"]["resource_language"];
+          resource_level?: Database["public"]["Enums"]["resource_level"];
+          resource_price?: Database["public"]["Enums"]["resource_price"];
+          resource_type?: Database["public"]["Enums"]["resource_type"];
+          search_text?: string;
+          sort_by?: string;
+          topic_id?: string;
+        };
+        Returns: {
+          id: string;
+          next_cursor: Json;
+        }[];
+      };
     };
     Enums: {
       comment_status: "published" | "hidden";

@@ -15,6 +15,8 @@ export const routes = {
   resource: (slug: string) => `/resurs/${encodeURIComponent(slug)}`,
   editResource: (slug: string) => `/resurs/${encodeURIComponent(slug)}/tahrirlash`,
   topic: (slug: string) => `/mavzu/${encodeURIComponent(slug)}`,
+  topics: "/mavzular",
+  search: "/qidiruv",
 } as const;
 
 /**

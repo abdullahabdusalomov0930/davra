@@ -6,6 +6,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { UserAvatar } from "@/components/profile/user-avatar";
+import { ResourceCard } from "@/components/resources/resource-card";
 import { DeleteResourceButton } from "@/components/resources/delete-resource-button";
 import { RatingSummary } from "@/components/resources/rating-summary";
 import { RESOURCE_TYPE_ICONS } from "@/components/resources/resource-meta";
@@ -17,6 +18,7 @@ import { uzDateParts } from "@/lib/dates";
 import { routes } from "@/lib/routes";
 import { isValidSlug } from "@/lib/slugify";
 import { getViewer } from "@/server/auth/session";
+import { findRelatedResources } from "@/server/services/feed";
 import { getResourceBySlug } from "@/server/services/resources";
 
 /** Edits within this long after creation are not worth a "Tahrirlangan" note. */
@@ -52,7 +54,7 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
   const resource = await loadResource((await params).slug);
   if (!resource) notFound();
 
-  const [t, tType, tLanguage, tPrice, tLevel, format, viewer] = await Promise.all([
+  const [t, tType, tLanguage, tPrice, tLevel, format, viewer, related] = await Promise.all([
     getTranslations("Resource"),
     getTranslations("ResourceType"),
     getTranslations("ResourceLanguage"),
@@ -60,6 +62,7 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
     getTranslations("ResourceLevel"),
     getFormatter(),
     getViewer(),
+    findRelatedResources(resource),
   ]);
   const isOwner = viewer?.id === resource.author_id;
   const TypeIcon = RESOURCE_TYPE_ICONS[resource.type];
@@ -171,6 +174,29 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
           </p>
         </footer>
       </article>
+
+      {related.length > 0 && (
+        <section aria-labelledby="related-title" className="mt-4">
+          <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 id="related-title" className="text-xl font-semibold tracking-tight">
+              {t("relatedTitle")}
+            </h2>
+            <Link
+              href={routes.topic(resource.topic.slug)}
+              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            >
+              {t("relatedAll")}
+            </Link>
+          </div>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {related.map((item) => (
+              <li key={item.id} className="grid">
+                <ResourceCard resource={item} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
