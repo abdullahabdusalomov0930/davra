@@ -79,11 +79,14 @@ All demo accounts use the password `davra-demo-parol`:
 | `CRON_SECRET`                          | **server only** | Token for the scheduled link check; optional              |
 | `NEXT_PUBLIC_CONTACT_EMAIL`            | public          | Contact address on the legal pages; optional              |
 | `SAFE_BROWSING_API_KEY`                | **server only** | Google Safe Browsing key for link reputation; optional    |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`       | public          | Cloudflare Turnstile site key (bot check); optional       |
+| `TURNSTILE_SECRET_KEY`                 | **server only** | Cloudflare Turnstile secret key; optional                 |
+| `REQUIRE_RECENT_LOGIN_FOR_ADMIN`       | **server only** | `true`: admins sign in again before admin actions         |
 
 `pnpm build` first runs `scripts/check-env.ts`: a missing or malformed variable fails the build with its
 name (never its value) instead of deploying a site that answers every request with "Internal Server Error".
-URLs must include `https://`. On Vercel, mark `SUPABASE_SECRET_KEY`, `CRON_SECRET` and
-`SAFE_BROWSING_API_KEY` as sensitive; `NEXT_PUBLIC_*` values are compiled into the browser bundle anyway.
+URLs must include `https://`. On Vercel, mark `SUPABASE_SECRET_KEY`, `CRON_SECRET`,
+`SAFE_BROWSING_API_KEY` and `TURNSTILE_SECRET_KEY` as sensitive; `NEXT_PUBLIC_*` values are compiled into the browser bundle anyway.
 After changing a variable, redeploy.
 
 Without `SAFE_BROWSING_API_KEY` links are still checked by Davra's own rules (shorteners, blocklists,
@@ -91,14 +94,21 @@ redirects, lookalike domains) but not against Google's list of phishing and malw
 a warning once. To get a key: Google Cloud console → create a project → APIs & Services → enable "Safe
 Browsing API" → Credentials → Create credentials → API key, restricted to that API.
 
+Turnstile asks new members to prove they are not a bot when they sign up and when a level-0 member shares
+a card. It needs both keys; without them the check is skipped with a warning and only the rate limits
+and e-mail confirmation stop bots. To get keys: Cloudflare dashboard → Turnstile → Add widget, with your
+domain (and `localhost` for testing), mode "Managed".
+
 ## Tests
 
-| Command         | What it checks                                                                        | Needs           |
-| --------------- | ------------------------------------------------------------------------------------- | --------------- |
-| `pnpm test`     | Unit tests (Vitest): validators, URL normalization, search, link checker, CSV import… | nothing         |
-| `pnpm db:test`  | Database tests (pgTAP): RLS, triggers, counters, limits, search, weekly top           | `pnpm db:start` |
-| `pnpm test:e2e` | End-to-end flows and accessibility (Playwright + axe-core), desktop and phone         | `pnpm db:start` |
-| `pnpm check`    | Lint, typecheck, format and unit tests: run before every commit                       | nothing         |
+| Command                     | What it checks                                                                        | Needs           |
+| --------------------------- | ------------------------------------------------------------------------------------- | --------------- |
+| `pnpm test`                 | Unit tests (Vitest): validators, URL normalization, search, link checker, CSV import… | nothing         |
+| `pnpm db:test`              | Database tests (pgTAP): RLS, triggers, counters, limits, search, weekly top           | `pnpm db:start` |
+| `pnpm test:e2e`             | End-to-end flows and accessibility (Playwright + axe-core), desktop and phone         | `pnpm db:start` |
+| `pnpm check`                | Lint, typecheck, format and unit tests: run before every commit                       | nothing         |
+| `pnpm security:smoke [url]` | Security headers and CSP nonce on public pages; cron route refuses calls              | a running app   |
+| `pnpm secrets:scan`         | Keys, tokens and `.env` files in tracked files                                        | nothing         |
 
 `pnpm test:e2e` **resets the local database** and loads the demo data before running, then starts
 `pnpm dev` unless something already serves http://localhost:3000. The first time, install the browser:
@@ -106,6 +116,11 @@ Browsing API" → Credentials → Create credentials → API key, restricted to 
 topics, weekly top, keyboard skip link, 404), members (sharing, duplicates, likes, saves, ratings,
 comments, follows), moderation (pending queue, reports, 404 for non-staff), phone layouts, and runs
 axe-core's WCAG 2.1 AA checks on every public, member and admin page in light and dark mode.
+
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, format, unit tests, a production build,
+`pnpm audit` and gitleaks on every pull request. The database and end-to-end tests need Docker and run
+locally only: run them before merging schema or flow changes. `pnpm hooks:install` adds a pre-commit
+hook that refuses commits containing keys.
 
 Lighthouse (mobile, production build, local data) on the public pages: Performance 88–96,
 Accessibility 100, Best Practices 93–100, SEO 100.
@@ -212,14 +227,23 @@ by row. Links already on Davra are skipped, so the same file can be imported aga
 3. Submit `https://<domain>/sitemap.xml` to Google Search Console and Yandex Webmaster.
 4. Have a lawyer review the draft legal pages (and where personal data may be stored, DECISIONS.md D61)
    before inviting students.
+5. Supabase → Authentication → Sign In / Providers → Email: set the minimum password length to 10, the
+   same as the app.
+6. GitHub → Settings → Code security: enable Dependabot alerts, secret scanning and private
+   vulnerability reporting.
+7. Work through the [security checklist](#security-checklist-before-launch).
 
 ## Scheduled jobs
 
-| Job                         | Where                                         | When (UTC)  | What it does                                           |
-| --------------------------- | --------------------------------------------- | ----------- | ------------------------------------------------------ |
-| `/api/cron/link-check`      | Vercel Cron (`vercel.json`)                   | daily 21:00 | Checks the links that are due (each about once a week) |
-| `refresh-popularity-scores` | pg_cron (`…_jobs.sql`)                        | daily 21:00 | Recomputes the time-decayed "Mashhur" scores           |
-| `prune-rate-events`         | pg_cron (`…_limits_and_removal_requests.sql`) | daily 22:30 | Deletes rate-limit events older than two days          |
+| Job                         | Where                                         | When (UTC)   | What it does                                           |
+| --------------------------- | --------------------------------------------- | ------------ | ------------------------------------------------------ |
+| `/api/cron/link-check`      | Vercel Cron (`vercel.json`)                   | daily 21:00  | Checks the links that are due (each about once a week) |
+| `refresh-popularity-scores` | pg_cron (`…_jobs.sql`)                        | daily 21:00  | Recomputes the time-decayed "Mashhur" scores           |
+| `prune-rate-events`         | pg_cron (`…_limits_and_removal_requests.sql`) | daily 22:30  | Deletes rate-limit events older than two days          |
+| `refresh-trust-levels`      | pg_cron (`…_trust_and_reports.sql`)           | hourly :17   | Recomputes members' trust levels                       |
+| `lift-expired-bans`         | pg_cron (`…_trust_and_reports.sql`)           | every 10 min | Ends temporary bans whose time is up                   |
+| `prune-rate-limit-hits`     | pg_cron (`…_auth_security.sql`)               | daily 22:35  | Deletes server rate-limit hits older than 8 days       |
+| `forget-ip-hashes`          | pg_cron (`…_auth_security.sql`)               | daily 22:40  | Deletes IP hashes and auth events older than 30 days   |
 
 21:00 UTC is 02:00 in Tashkent. pg_cron jobs are created by the migrations and run inside the database
 (Supabase → Integrations → Cron shows their runs). Vercel Cron runs on production deployments only; the
@@ -300,6 +324,64 @@ pnpm db:types   # regenerate the TypeScript types
 | `pnpm db:types`                      | Regenerate `src/types/database.ts`               |
 | `pnpm import:resources <file.csv> …` | Import cards from CSV (see above)                |
 | `pnpm icons`                         | Regenerate the app icons from `src/lib/brand.ts` |
+| `pnpm security:smoke [url]`          | Security smoke test against a running app        |
+| `pnpm secrets:scan`                  | Look for keys in every tracked file              |
+| `pnpm hooks:install`                 | Enable the pre-commit secret check               |
+
+## Security
+
+How Davra protects itself and its users, its known limits, reporting a vulnerability and rotating keys:
+[SECURITY.md](SECURITY.md). Moderators: [docs/MODERATION_GUIDE.md](docs/MODERATION_GUIDE.md) (Uzbek).
+When something goes wrong: [docs/INCIDENT_RESPONSE.md](docs/INCIDENT_RESPONSE.md).
+
+The word lists and domain blocklists in `src/server/safety/data/` are **starter lists**: extend them
+for your community (admins can also add words on `/admin/sozlamalar` and domains on `/admin/domenlar`).
+
+### Backups and restore
+
+Supabase makes its own backups depending on the plan (Supabase → Database → Backups shows what your
+project has). Keep an independent copy as well, for example weekly and before risky migrations, using
+the database connection string (Supabase → Connect → Session pooler):
+
+```bash
+pnpm supabase db dump --db-url "$DB_URL" -f roles.sql --role-only
+pnpm supabase db dump --db-url "$DB_URL" -f schema.sql
+pnpm supabase db dump --db-url "$DB_URL" -f data.sql --use-copy --data-only
+```
+
+The dump contains personal data: store it encrypted and outside the repository, and delete old copies.
+Test a restore into a new, empty Supabase project (never into production):
+
+```bash
+psql --single-transaction --variable ON_ERROR_STOP=1 \
+  --file roles.sql --file schema.sql \
+  --command 'SET session_replication_role = replica' \
+  --file data.sql --dbname "$RESTORE_DB_URL"
+```
+
+Then point a local `.env.local` at that project, sign in with a known account and open a few cards.
+
+### Security checklist before launch
+
+The owner completes these before inviting the public:
+
+- [ ] A lawyer reviewed the terms (`/shartlar`), privacy policy (`/maxfiylik`) and rules (`/qoidalar`),
+      where personal data may be stored (DECISIONS.md D61), and the duty to report illegal content
+      (`docs/INCIDENT_RESPONSE.md`).
+- [ ] At least two moderators are assigned and have read `docs/MODERATION_GUIDE.md`; the contacts and
+      response time are written there.
+- [ ] Turnstile keys are set (`NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`).
+- [ ] `SAFE_BROWSING_API_KEY` is set (or Google's terms checked, SECURITY.md).
+- [ ] `CRON_SECRET` is set and the link check ran (Vercel → Cron Jobs).
+- [ ] The minimum password length in Supabase is 10.
+- [ ] A backup was made and restored into a test project.
+- [ ] Every key used during development was rotated (SECURITY.md → Rotating keys).
+- [ ] The admin account has a strong, unique password; GitHub, Supabase, Vercel, Cloudflare and Google
+      Cloud accounts use 2FA.
+- [ ] Dependabot alerts, secret scanning and private vulnerability reporting are on; a security contact
+      is written in SECURITY.md.
+- [ ] `pnpm security:smoke https://<domain>` passes against production.
+- [ ] The starter word lists and domain lists were reviewed and extended.
 
 ## Project structure
 
