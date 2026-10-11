@@ -1,0 +1,28 @@
+# Weekly dependency updates. Security updates are raised as soon as an advisory appears, regardless of
+# this schedule. CI (.github/workflows/ci.yml) runs the full check on every Dependabot pull request.
+version: 2
+updates:
+  - package-ecosystem: npm # also covers pnpm (pnpm-lock.yaml)
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    # Minor and patch bumps arrive as one pull request; major versions one by one.
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    # Skip releases younger than a few days: hijacked packages are usually caught and pulled by then.
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "ci(deps)"

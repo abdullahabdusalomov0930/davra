@@ -1,0 +1,26 @@
+# gitleaks configuration, used by the CI job "secrets" (.github/workflows/ci.yml) and by the pre-commit
+# hook (.githooks/pre-commit) when gitleaks is installed. Needs gitleaks 8.25 or newer.
+#
+# Starts from gitleaks' default rules. Exceptions must stay narrow (one rule, one path or one value) and
+# say why. Checked on 2026-10-10: the git history and tracked files have no findings with the defaults,
+# and no local Supabase demo keys are committed, so none are allowlisted.
+title = "Davra"
+
+[extend]
+useDefault = true
+
+# The default rules have no pattern for Supabase's new secret keys (sb_secret_...), which bypass Row
+# Level Security. SUPABASE_SECRET_KEY lives only in .env.local and the hosting dashboard.
+[[rules]]
+id = "supabase-secret-key"
+description = "Supabase secret API key"
+regex = '''sb_secret_[A-Za-z0-9_-]{20,}'''
+keywords = ["sb_secret_"]
+
+# .env.example is the committed template for .env.local; its values are empty or local defaults. Only
+# the keyword-based generic rule is switched off there, so a real key pasted into the template is still
+# caught by the specific rules (Supabase, JWT, AWS, GitHub, ...).
+[[allowlists]]
+description = "Placeholders in the .env.example template"
+targetRules = ["generic-api-key"]
+paths = ['''^\.env\.example$''']
