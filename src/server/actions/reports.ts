@@ -1,6 +1,5 @@
 "use server";
 
-
 import type { ActionResult } from "@/lib/action-result";
 import {
   brokenLinkReportSchema,
