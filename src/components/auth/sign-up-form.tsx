@@ -14,10 +14,11 @@ import { SubmitButton } from "@/components/forms/submit-button";
 import { useErrorMessage } from "@/components/forms/use-error-message";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
-import { type AuthErrorKey, authErrorKey } from "@/lib/auth-errors";
-import { absoluteUrl, routes } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/client";
+import { Turnstile } from "@/components/forms/turnstile";
+import type { AuthErrorKey } from "@/lib/auth-errors";
+import { routes } from "@/lib/routes";
 import { type SignUpInput, signUpSchema } from "@/lib/validators";
+import { signUpAction } from "@/server/actions/auth";
 
 import { ResendConfirmation } from "./resend-confirmation";
 
@@ -27,6 +28,7 @@ export function SignUpForm() {
   const errorMessage = useErrorMessage();
   const [formError, setFormError] = useState<AuthErrorKey | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const [captcha, setCaptcha] = useState<string | null>(null);
 
   const form = useForm<SignUpInput, unknown, z.output<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -35,32 +37,22 @@ export function SignUpForm() {
   const { errors, isSubmitting } = form.formState;
   const username = useWatch({ control: form.control, name: "username" }).trim().toLowerCase();
 
-  const onSubmit = form.handleSubmit(async ({ displayName, username, email, password }) => {
+  const onSubmit = form.handleSubmit(async (values) => {
     setFormError(null);
-    const supabase = createClient();
-
-    // Friendly early check; the database stays the authority (it adds a suffix on a race).
-    const { data: taken } = await supabase.from("profiles").select("id").eq("username", username).maybeSingle();
-    if (taken) {
-      form.setError("username", { message: "usernameTaken" }, { shouldFocus: true });
+    const result = await signUpAction(form.getValues(), captcha).catch(() => ({
+      ok: false as const,
+      error: "network" as const,
+      fieldErrors: undefined,
+    }));
+    if (!result.ok) {
+      const fieldErrors = Object.entries(result.fieldErrors ?? {}) as [keyof SignUpInput, string][];
+      for (const [field, key] of fieldErrors) form.setError(field, { message: key }, { shouldFocus: true });
+      if (result.error) setFormError(result.error);
       return;
     }
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: absoluteUrl(routes.confirmEmail),
-        data: { username, display_name: displayName },
-      },
-    });
-    if (error) {
-      setFormError(authErrorKey(error));
-      return;
-    }
-    // Supabase answers the same way for new and already registered addresses, so this message
+    // The server answers the same way for new and already registered addresses, so this message
     // never reveals whether an account exists.
-    setSentTo(email);
+    setSentTo(values.email);
   });
 
   if (sentTo) {
@@ -137,6 +129,8 @@ export function SignUpForm() {
           />
         )}
       </Field>
+
+      <Turnstile onToken={setCaptcha} />
 
       <SubmitButton pending={isSubmitting}>{t("signUpSubmit")}</SubmitButton>
 

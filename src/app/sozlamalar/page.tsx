@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
+import { DeleteAccountButton, ExportDataButton } from "@/components/settings/account-data";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,24 @@ export default async function SettingsPage({ searchParams }: PageProps<"/sozlama
               {t("signOut")}
             </Button>
           </form>
+        </div>
+      </Section>
+
+      <Section id="data-title" title={t("dataTitle")}>
+        <div className="grid gap-6">
+          <div className="grid gap-3">
+            <p className="text-sm text-muted-foreground">{t("exportText")}</p>
+            <div>
+              <ExportDataButton />
+            </div>
+          </div>
+          <div className="grid gap-3 border-t pt-6">
+            <h3 className="font-medium">{t("deleteTitle")}</h3>
+            <p className="text-sm text-muted-foreground">{t("deleteText")}</p>
+            <div>
+              <DeleteAccountButton username={profile.username} />
+            </div>
+          </div>
         </div>
       </Section>
     </div>

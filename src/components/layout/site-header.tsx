@@ -1,4 +1,4 @@
-import { BookOpenIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { BellIcon, BookOpenIcon, PlusIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -6,14 +6,27 @@ import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { APP_NAME } from "@/lib/config";
 import { getViewerProfile } from "@/server/auth/session";
+import { countUnreadNotifications, getMyBan, listAppealedTargets } from "@/server/services/notifications";
 
 import { MobileNav } from "./mobile-nav";
 import { mainNavItems } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
+import { BanNotice } from "./ban-notice";
 import { type HeaderUser, UserMenu } from "./user-menu";
 
 export async function SiteHeader() {
-  const [t, profile] = await Promise.all([getTranslations("Nav"), getViewerProfile()]);
+  const [t, tNotifications, profile] = await Promise.all([
+    getTranslations("Nav"),
+    getTranslations("Notifications"),
+    getViewerProfile(),
+  ]);
+  const [unread, ban, appealed] = profile
+    ? await Promise.all([
+        countUnreadNotifications(),
+        profile.is_banned ? getMyBan(profile.id) : null,
+        profile.is_banned ? listAppealedTargets() : null,
+      ])
+    : [0, null, null];
   const user: HeaderUser | null = profile && {
     username: profile.username,
     displayName: profile.display_name,
@@ -61,6 +74,22 @@ export async function SiteHeader() {
                   <span className="sr-only sm:not-sr-only">{t("share")}</span>
                 </Link>
               </Button>
+              <Button asChild variant="ghost" size="icon" className="relative">
+                <Link
+                  href={routes.notifications}
+                  aria-label={`${tNotifications("navLabel")}: ${tNotifications("unread", { count: unread })}`}
+                >
+                  <BellIcon aria-hidden />
+                  {unread > 0 && (
+                    <span
+                      aria-hidden
+                      className="absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-4 font-semibold text-white"
+                    >
+                      {unread > 9 ? "9+" : unread}
+                    </span>
+                  )}
+                </Link>
+              </Button>
               <UserMenu user={user} />
             </>
           ) : (
@@ -76,6 +105,7 @@ export async function SiteHeader() {
           <MobileNav signedIn={Boolean(user)} />
         </div>
       </div>
+      {ban && profile && <BanNotice ban={ban} userId={appealed?.has(`ban:${profile.id}`) ? undefined : profile.id} />}
     </header>
   );
 }

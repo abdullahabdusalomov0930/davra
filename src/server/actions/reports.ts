@@ -1,7 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
-
 import type { ActionResult } from "@/lib/action-result";
 import {
   brokenLinkReportSchema,
@@ -11,6 +9,7 @@ import {
   reportSchema,
 } from "@/lib/validators";
 import { getViewer } from "@/server/auth/session";
+import { clientIp } from "@/server/request";
 import { createRemovalRequest } from "@/server/services/removal-requests";
 import { createBrokenLinkReport, createReport } from "@/server/services/reports";
 
@@ -38,12 +37,6 @@ export async function reportBrokenLinkAction(resourceId: string): Promise<Action
   const parsed = brokenLinkReportSchema.safeParse({ resourceId });
   if (!parsed.success) return { ok: false, error: "invalidInput" };
   return createBrokenLinkReport(parsed.data);
-}
-
-/** The visitor's IP as Vercel (or a local proxy) passes it on; only used for the per-IP limit. */
-async function clientIp(): Promise<string> {
-  const list = await headers();
-  return list.get("x-forwarded-for")?.split(",")[0]?.trim() || list.get("x-real-ip") || "unknown";
 }
 
 /** The public /removal-request form. No account needed; limited per IP address. */

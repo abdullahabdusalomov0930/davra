@@ -9,7 +9,7 @@ export const FEED_SORTS = ["relevance", "newest", "popular", "top"] as const;
 export type FeedSort = (typeof FEED_SORTS)[number];
 
 /** A resource list request: what the feed, topic pages and search send to the server. */
-export const feedQuerySchema = z.object({
+export const feedQuerySchema = z.strictObject({
   text: z.string().trim().max(SEARCH_QUERY_MAX).optional(),
   topicId: z.uuid().optional(),
   type: z.enum(RESOURCE_TYPES).optional(),

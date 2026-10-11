@@ -31,3 +31,6 @@ export function parseRecoveryLink(params: SearchParams) {
   const code = token(params.code);
   return code ? ({ code } as const) : null;
 }
+
+export type ConfirmationLink = ReturnType<typeof parseConfirmationLink>;
+export type RecoveryLink = ReturnType<typeof parseRecoveryLink>;

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/server/supabase/admin";
 import type { ValidationKey } from "@/lib/validators";
 
 import { evaluateSubmission, type Submission } from "./evaluate";
@@ -8,6 +9,7 @@ import { getReputationProvider } from "./reputation";
 import { botUserAgent } from "./safe-fetch";
 import { issueTicket, recordModerationEvent } from "./tickets";
 import { inspectUrl } from "./url-policy";
+import { BUILT_IN_LISTS, createWordFilter, type WordFilter, type WordLists, wordFilter } from "./word-filter";
 
 /**
  * Runs the safety check before a user's text is written (DECISIONS.md D64): evaluates the submission
@@ -25,6 +27,24 @@ export type Screening =
     };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const TERMS_TTL_MS = 60 * 1000;
+
+let terms: { loadedAt: number; filter: WordFilter } | null = null;
+
+/** The built-in word lists plus the words admins added (blocked_terms), reloaded every minute. */
+async function currentWordFilter(): Promise<WordFilter> {
+  if (terms && Date.now() - terms.loadedAt < TERMS_TTL_MS) return terms.filter;
+  const { data, error } = await createAdminClient().from("blocked_terms").select("term, category");
+  if (error) {
+    console.error("blocked terms not loaded", { code: error.code });
+    return terms?.filter ?? wordFilter;
+  }
+  const extra: Record<string, string[]> = {};
+  for (const row of data) (extra[row.category] ??= []).push(row.term);
+  const filter = data.length > 0 ? createWordFilter(...BUILT_IN_LISTS, extra as WordLists) : wordFilter;
+  terms = { loadedAt: Date.now(), filter };
+  return filter;
+}
 
 function excerptOf(submission: Submission) {
   switch (submission.kind) {
@@ -66,6 +86,7 @@ export async function screenSubmission(
   const evaluation = await evaluateSubmission(submission, {
     trustLevel: trust.data ?? 0,
     recentResources,
+    filter: await currentWordFilter(),
     inspectUrl: (url) => inspectUrl(url, { userAgent: botUserAgent(), reputation: getReputationProvider() }),
   });
 

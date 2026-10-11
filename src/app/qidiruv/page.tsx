@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { defaultSearchSort, type FeedQuery, parseSearchParams, toSearchQueryString } from "@/lib/validators";
 import { loadMoreResourcesAction } from "@/server/actions/feed";
+import { checkRateLimit } from "@/server/rate-limit";
+import { clientIp } from "@/server/request";
 import { findResources } from "@/server/services/feed";
 import { getTopics } from "@/server/services/topics";
 
@@ -43,7 +45,9 @@ export default async function SearchPage({ searchParams }: PageProps<"/qidiruv">
     level: params.level,
     sort,
   };
-  const page = await findResources(query, { cursor: params.cursor });
+  // Text searches cost the most: 60 a minute per address (D74). Browsing without text is not counted.
+  const limited = Boolean(params.text) && !(await checkRateLimit("search", { ip: await clientIp() }));
+  const page = limited ? { items: [], nextCursor: null } : await findResources(query, { cursor: params.cursor });
 
   const values = { ...params, topic: topic?.slug, sort };
   const hasFilters = Boolean(params.text || topic || params.type || params.language || params.price || params.level);
@@ -60,7 +64,11 @@ export default async function SearchPage({ searchParams }: PageProps<"/qidiruv">
           {params.text ? t("resultsFor", { query: params.text }) : hasFilters ? t("results") : t("allResults")}
         </h2>
 
-        {page.items.length > 0 ? (
+        {limited ? (
+          <p role="status" className="rounded-xl border border-dashed px-6 py-12 text-center text-muted-foreground">
+            {t("rateLimited")}
+          </p>
+        ) : page.items.length > 0 ? (
           <ResourceList
             key={baseHref}
             initialCards={await renderCardEntries(page.items)}

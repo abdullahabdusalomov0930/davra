@@ -2,6 +2,8 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(30);
+-- Staff actions need a reason (audit log, D71); these tests make them directly.
+select set_config('davra.reason', 'pgTAP', true);
 
 -- N = new member, T = trusted author, M = moderator, O = another member.
 insert into auth.users (id, email, raw_user_meta_data) values
@@ -178,7 +180,7 @@ select is(public.my_trust_level(), 0, 'an old account without published cards is
 reset role;
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "00000000-0000-4000-8000-0000000000b2", "role": "authenticated"}';
-select is(public.my_trust_level(), 1, 'a trusted author is level 1');
+select is(public.my_trust_level(), 2, 'an author with three published cards is level 2');
 select is_empty($$select 1 from public.moderation_events$$, 'members cannot read moderation events');
 
 reset role;

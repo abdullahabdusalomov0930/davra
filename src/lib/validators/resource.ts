@@ -61,7 +61,7 @@ export const resourceUrlSchema = z
     return result.url;
   });
 
-export const resourceSchema = z.object({
+export const resourceSchema = z.strictObject({
   url: resourceUrlSchema,
   title: text(TITLE_MIN, TITLE_MAX, "titleTooShort", "titleTooLong")
     .refine((value) => !isAllCaps(value), message("titleAllCaps"))

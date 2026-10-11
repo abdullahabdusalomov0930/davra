@@ -120,6 +120,9 @@ export function ReportButton({ target, signedIn, returnTo, compact = false }: Re
                     {tReason(reason)}
                   </label>
                 ))}
+                {field.value === "severe" && (
+                  <p className="rounded-lg bg-destructive/10 p-2 text-xs text-destructive">{t("severeHint")}</p>
+                )}
                 {errors.reason && <p className="text-sm text-destructive">{errorMessage(errors.reason)}</p>}
               </fieldset>
             )}

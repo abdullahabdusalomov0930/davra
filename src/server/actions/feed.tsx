@@ -6,6 +6,8 @@ import { type CardEntry, renderCardEntries } from "@/components/feed/card-entrie
 import { decodeCursor } from "@/lib/feed-cursor";
 import { feedQuerySchema } from "@/lib/validators";
 import { getViewer } from "@/server/auth/session";
+import { checkRateLimit } from "@/server/rate-limit";
+import { clientIp } from "@/server/request";
 import { findResources } from "@/server/services/feed";
 import { findSavedResources } from "@/server/services/saved";
 
@@ -31,6 +33,7 @@ export async function loadMoreResourcesAction(query: unknown, cursor: unknown): 
   const parsedQuery = feedQuerySchema.safeParse(query);
   const after = validCursor(cursor);
   if (!parsedQuery.success || !after) return END;
+  if (parsedQuery.data.text && !(await checkRateLimit("search", { ip: await clientIp() }))) return END;
 
   const page = await findResources(parsedQuery.data, { cursor: after });
   return { cards: await renderCardEntries(page.items), nextCursor: page.nextCursor };

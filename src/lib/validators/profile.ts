@@ -64,7 +64,7 @@ function optionalText(max: number, tooLong: Parameters<typeof message>[0], multi
     .transform((value) => (value === "" ? null : value));
 }
 
-export const profileSchema = z.object({
+export const profileSchema = z.strictObject({
   displayName: displayNameSchema,
   username: usernameSchema,
   bio: optionalText(BIO_MAX_LENGTH, "bioTooLong", true),

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getReputationProvider } from "@/server/safety/reputation";
 import { botUserAgent } from "@/server/safety/safe-fetch";
 import { createAdminClient } from "@/server/supabase/admin";
 import type { Database } from "@/types/database";
@@ -28,8 +29,13 @@ export type LinkCheckSummary = Record<LinkCheckOutcome, number> & {
   checked: number;
   /** Links that are broken after this run's check. */
   broken: number;
+  /** Links the reputation service newly flagged (hidden and sent to the moderators). */
+  flagged: number;
   errors: number;
 };
+
+/** Safe Browsing accepts up to 500 URLs per lookup. */
+const REPUTATION_BATCH = 500;
 
 function siteOf(url: string) {
   try {
@@ -56,7 +62,7 @@ export async function runLinkCheckJob(startedAt = Date.now()): Promise<LinkCheck
 
   const { data: due, error } = await admin
     .from("resources")
-    .select("id, url")
+    .select("id, url, final_url, reputation_status")
     .eq("status", "published")
     .or(`last_link_check_at.is.null,last_link_check_at.lt."${dueBefore}"`)
     .order("last_link_check_at", { ascending: true, nullsFirst: true })
@@ -70,9 +76,36 @@ export async function runLinkCheckJob(startedAt = Date.now()): Promise<LinkCheck
     failure: 0,
     unknown: 0,
     broken: 0,
+    flagged: 0,
     errors: 0,
   };
   const agent = botUserAgent();
+
+  // The reputation service is asked again about every due link (and where it leads): a site can turn
+  // malicious after it was shared. A newly flagged link is hidden and goes to the moderators.
+  const reputation = getReputationProvider();
+  for (let start = 0; start < due.length; start += REPUTATION_BATCH) {
+    const batch = due.slice(start, start + REPUTATION_BATCH);
+    const urls = batch.flatMap((resource) => [resource.url, ...(resource.final_url ? [resource.final_url] : [])]);
+    const verdicts = await reputation.check(urls);
+    for (const resource of batch) {
+      const found = [resource.url, resource.final_url]
+        .filter((url) => url !== null)
+        .map((url) => verdicts.get(url) ?? "unknown");
+      const verdict = found.includes("flagged") ? "flagged" : found.every((value) => value === "safe") ? "safe" : null;
+      if (!verdict || verdict === resource.reputation_status) continue;
+      const { error: recordError } = await admin.rpc("record_reputation", {
+        resource_id: resource.id,
+        reputation: verdict,
+      });
+      if (recordError) {
+        summary.errors++;
+        console.error("Reputation not saved", { resourceId: resource.id, code: recordError.code });
+      } else if (verdict === "flagged") {
+        summary.flagged++;
+      }
+    }
+  }
 
   await forEachByKey(
     due,

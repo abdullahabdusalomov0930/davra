@@ -10,11 +10,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { routes } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/client";
+import type { ConfirmationLink } from "@/lib/auth-links";
+import { confirmEmailAction } from "@/server/actions/auth";
 
 import { ResendConfirmationForm } from "./resend-confirmation";
-
-export type ConfirmationLink = { tokenHash: string; type: "email" | "signup" } | { code: string } | null;
 
 /**
  * Confirms the address only when the person presses the button. Mail scanners open links in
@@ -28,13 +27,8 @@ export function ConfirmEmail({ link }: { link: ConfirmationLink }) {
   async function confirm() {
     if (!link) return;
     setState("pending");
-    const supabase = createClient();
-    const { error } =
-      "code" in link
-        ? await supabase.auth.exchangeCodeForSession(link.code)
-        : await supabase.auth.verifyOtp({ token_hash: link.tokenHash, type: link.type });
-
-    if (error) {
+    const result = await confirmEmailAction(link).catch(() => ({ ok: false as const }));
+    if (!result.ok) {
       setState("failed");
       return;
     }

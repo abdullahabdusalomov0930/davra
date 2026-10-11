@@ -2,7 +2,7 @@ import "server-only";
 
 import type { ActionResult } from "@/lib/action-result";
 import { createClient } from "@/lib/supabase/server";
-import type { BlockedDomainData, TopicData, TopicInput } from "@/lib/validators";
+import type { BlockedDomainData, BlockedTermData, SettingsData, TopicData, TopicInput } from "@/lib/validators";
 import type { Database } from "@/types/database";
 
 type Enums = Database["public"]["Enums"];
@@ -28,9 +28,28 @@ async function finish(
   return data && data.length > 0 ? { ok: true } : { ok: false, error: "forbidden" };
 }
 
-export async function setResourceStatus(id: string, status: Enums["resource_status"]) {
+function rpcError(error: DbError, context: string): ActionResult<never> {
+  if (error.message === "reason_required") return { ok: false, error: "reasonRequired" };
+  if (error.message === "evidence_not_preserved") return { ok: false, error: "evidenceNotPreserved" };
+  if (error.code === "P0002") return { ok: false, error: "notFound" };
+  if (error.code === "23505") return { ok: false, error: "alreadyRequested" };
+  return moderationError(error, context);
+}
+
+/** Runs one moderation function (see 20261012090200_moderator_tools.sql) as the staff member. */
+async function rpc(query: PromiseLike<{ error: DbError | null }>, context: string): Promise<ActionResult> {
+  const { error } = await query;
+  return error ? rpcError(error, context) : { ok: true };
+}
+
+export type Moderation = { reason: string; rule?: string | null };
+
+export async function moderateResource(id: string, status: Enums["resource_status"], { reason, rule }: Moderation) {
   const supabase = await createClient();
-  return finish(supabase.from("resources").update({ status }).eq("id", id).select("id"), "resource status");
+  return rpc(
+    supabase.rpc("moderate_resource", { resource_id: id, new_status: status, reason, rule: rule ?? undefined }),
+    "resource status",
+  );
 }
 
 export async function setResourceLinkStatus(id: string, linkStatus: Enums["link_status"]) {
@@ -41,29 +60,100 @@ export async function setResourceLinkStatus(id: string, linkStatus: Enums["link_
   );
 }
 
-export async function setCommentStatus(id: string, status: Enums["comment_status"]) {
+export async function moderateComment(id: string, status: Enums["comment_status"], { reason, rule }: Moderation) {
   const supabase = await createClient();
-  return finish(supabase.from("comments").update({ status }).eq("id", id).select("id"), "comment status");
+  return rpc(
+    supabase.rpc("moderate_comment", { comment_id: id, new_status: status, reason, rule: rule ?? undefined }),
+    "comment status",
+  );
 }
 
-export async function setReportStatus(id: string, status: Enums["report_status"]) {
+/** Admins delete for good; content under a severe report only once its evidence is preserved. */
+export async function deleteContent(targetType: "resource" | "comment", id: string, { reason }: Moderation) {
   const supabase = await createClient();
-  return finish(supabase.from("reports").update({ status }).eq("id", id).select("id"), "report status");
+  return rpc(supabase.rpc("delete_content", { target_type: targetType, target_id: id, reason }), "delete content");
 }
 
-export async function setRemovalRequestStatus(id: string, status: Enums["report_status"]) {
+/** `days`: 1, 7 or 30; null for a permanent ban (admins); 0 lifts the ban. */
+export async function banUser(id: string, days: number | null, { reason, rule }: Moderation) {
   const supabase = await createClient();
-  return finish(supabase.from("removal_requests").update({ status }).eq("id", id).select("id"), "removal request");
+  return rpc(
+    // The generated types cannot express a nullable argument; null means "permanent".
+    supabase.rpc("set_user_ban", { user_id: id, ban_days: days as number, reason, rule: rule ?? undefined }),
+    "ban",
+  );
 }
 
-export async function setUserBanned(id: string, banned: boolean) {
+export async function warnUser(id: string, { reason, rule }: Moderation) {
   const supabase = await createClient();
-  return finish(supabase.from("profiles").update({ is_banned: banned }).eq("id", id).select("id"), "ban");
+  return rpc(supabase.rpc("warn_user", { user_id: id, reason, rule: rule ?? undefined }), "warning");
 }
 
-export async function setUserRole(id: string, role: Enums["user_role"]) {
+export async function setUserRole(id: string, role: Enums["user_role"], { reason }: Moderation) {
   const supabase = await createClient();
-  return finish(supabase.from("profiles").update({ role }).eq("id", id).select("id"), "role");
+  return rpc(supabase.rpc("set_user_role", { user_id: id, new_role: role, reason }), "role");
+}
+
+/** `level` null gives the user back to the automatic rules. */
+export async function setTrustLevel(id: string, level: number | null, { reason }: Moderation) {
+  const supabase = await createClient();
+  return rpc(supabase.rpc("set_trust_level", { user_id: id, level: level as number, reason }), "trust level");
+}
+
+export type ReportDecision = "take_down" | "resolve" | "dismiss";
+
+/** Decides every open report about one item (see handle_reports). */
+export async function handleReports(
+  targetType: Exclude<Enums["report_target"], "broken_link">,
+  targetId: string,
+  decision: ReportDecision,
+  { reason, rule }: Moderation,
+) {
+  const supabase = await createClient();
+  return rpc(
+    supabase.rpc("handle_reports", {
+      target_type: targetType,
+      target_id: targetId,
+      decision,
+      reason,
+      rule: rule ?? undefined,
+    }),
+    "reports",
+  );
+}
+
+export async function handleAppeal(id: string, accept: boolean, { reason }: Moderation) {
+  const supabase = await createClient();
+  return rpc(supabase.rpc("handle_appeal", { appeal_id: id, accept, response: reason }), "appeal");
+}
+
+export async function handleRemovalRequest(id: string, status: "resolved" | "dismissed", { reason }: Moderation) {
+  const supabase = await createClient();
+  return rpc(supabase.rpc("handle_removal_request", { request_id: id, new_status: status, reason }), "removal request");
+}
+
+export type PendingActionKind = "permanent_ban" | "delete_resource" | "delete_comment";
+
+/** Moderators ask an admin to ban permanently or delete (two-step severe actions). */
+export async function requestAction(kind: PendingActionKind, targetId: string, { reason }: Moderation) {
+  const supabase = await createClient();
+  return rpc(supabase.rpc("request_action", { kind, target_id: targetId, reason }), "request action");
+}
+
+export async function decidePendingAction(id: string, approve: boolean, note: string | null) {
+  const supabase = await createClient();
+  return rpc(
+    supabase.rpc("decide_pending_action", { action_id: id, approve, note: note ?? undefined }),
+    "decide action",
+  );
+}
+
+export async function setSevereIncidentStatus(id: string, status: "preserved" | "closed", notes: string | null) {
+  const supabase = await createClient();
+  return finish(
+    supabase.from("severe_incidents").update({ status, notes }).eq("id", id).select("id"),
+    "severe incident",
+  );
 }
 
 /**
@@ -86,32 +176,6 @@ export async function decideLinkStatus(resourceId: string, linkStatus: "ok" | "b
   if (error) return moderationError(error, "link reports");
   // Neither the resource nor a report changed: not staff, or nothing to decide.
   return updated.ok || closed.length > 0 ? { ok: true } : updated;
-}
-
-/**
- * "Confirm" a report: takes the reported content down (hides the resource or comment, bans the
- * user) and marks the report resolved, which also counts against the author's trust (D17).
- */
-export async function resolveReportWithAction(reportId: string): Promise<ActionResult> {
-  const supabase = await createClient();
-  const { data: report, error } = await supabase
-    .from("reports")
-    .select("target_type, target_id")
-    .eq("id", reportId)
-    .maybeSingle();
-  if (error) return moderationError(error, "report lookup");
-  if (!report) return { ok: false, error: "notFound" };
-
-  const taken =
-    report.target_type === "resource" || report.target_type === "broken_link"
-      ? await setResourceStatus(report.target_id, "hidden")
-      : report.target_type === "comment"
-        ? await setCommentStatus(report.target_id, "hidden")
-        : await setUserBanned(report.target_id, true);
-  // The content may already be gone (deleted by its author); the report can still be closed.
-  if (!taken.ok && taken.error !== "forbidden") return taken;
-
-  return setReportStatus(reportId, "resolved");
 }
 
 // ---------------------------------------------------------------------------
@@ -151,7 +215,9 @@ export async function deleteTopic(id: string): Promise<ActionResult> {
 
 export async function addBlockedDomain(data: BlockedDomainData): Promise<ActionResult<"domain" | "reason">> {
   const supabase = await createClient();
-  const { error } = await supabase.from("blocked_domains").insert({ domain: data.domain, reason: data.reason });
+  const { error } = await supabase
+    .from("blocked_domains")
+    .insert({ domain: data.domain, reason: data.reason, category: data.category });
   if (error?.code === "23505") return { ok: false, error: "domainExists" };
   return error ? moderationError(error, "domain insert") : { ok: true };
 }
@@ -161,4 +227,29 @@ export async function removeBlockedDomain(domain: string): Promise<ActionResult>
   const { data, error } = await supabase.from("blocked_domains").delete().eq("domain", domain).select("domain");
   if (error) return moderationError(error, "domain delete");
   return data.length > 0 ? { ok: true } : { ok: false, error: "forbidden" };
+}
+
+export async function addBlockedTerm(data: BlockedTermData): Promise<ActionResult<"term" | "category">> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("blocked_terms").insert({ term: data.term, category: data.category });
+  if (error?.code === "23505") return { ok: false, error: "termExists" };
+  return error ? moderationError(error, "term insert") : { ok: true };
+}
+
+export async function removeBlockedTerm(term: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("blocked_terms").delete().eq("term", term).select("term");
+  if (error) return moderationError(error, "term delete");
+  return data.length > 0 ? { ok: true } : { ok: false, error: "forbidden" };
+}
+
+export async function updateSettings(data: SettingsData): Promise<ActionResult<keyof SettingsData>> {
+  const supabase = await createClient();
+  const entries = Object.entries(data) as [keyof SettingsData, string | number][];
+  for (const [key, value] of entries) {
+    const { data: rows, error } = await supabase.from("app_settings").update({ value }).eq("key", key).select("key");
+    if (error) return moderationError(error, "settings");
+    if (rows.length === 0) return { ok: false, error: "forbidden" };
+  }
+  return { ok: true };
 }

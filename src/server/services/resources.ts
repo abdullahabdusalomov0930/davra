@@ -23,7 +23,8 @@ export const CARD_COLUMNS = `
   author:profiles!resources_author_id_fkey (username, display_name)
 ` as const;
 
-const DETAIL_COLUMNS = `${CARD_COLUMNS}, topic_id, for_whom, author_review, updated_at` as const;
+const DETAIL_COLUMNS =
+  `${CARD_COLUMNS}, topic_id, for_whom, author_review, updated_at, reputation_status, unvetted_domain` as const;
 
 /** A resource the current visitor may see (RLS: published, or their own, or staff), or null. */
 export const getResourceBySlug = cache(async (slug: string) => {

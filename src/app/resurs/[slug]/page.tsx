@@ -13,6 +13,7 @@ import { RatingsSection } from "@/components/ratings/ratings-section";
 import { BrokenLinkButton } from "@/components/reports/broken-link-button";
 import { ReportButton } from "@/components/reports/report-button";
 import { StaffResourceToolbar } from "@/components/admin/staff-resource-toolbar";
+import { AppealButton } from "@/components/notifications/appeal-button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { DeleteResourceButton } from "@/components/resources/delete-resource-button";
 import { ResourceActions, type ResourceViewer } from "@/components/resources/resource-actions";
@@ -27,6 +28,9 @@ import { metaDescription, openGraphBase } from "@/lib/seo";
 import { isValidSlug } from "@/lib/slugify";
 import { breadcrumbList, learningResourceData } from "@/lib/structured-data";
 import { getViewer, getViewerProfile } from "@/server/auth/session";
+import { listAppealedTargets } from "@/server/services/notifications";
+import { getSettings } from "@/server/services/settings";
+import { needsInterstitial, OUTBOUND_REL } from "@/lib/outbound";
 import { findRelatedResources } from "@/server/services/feed";
 import { isFollowing } from "@/server/services/follows";
 import { getViewerInteractions } from "@/server/services/interactions";
@@ -87,6 +91,12 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
   ]);
   const viewerProfile = viewer ? await getViewerProfile() : null;
   const isStaff = Boolean(viewerProfile && !viewerProfile.is_banned && viewerProfile.role !== "user");
+  const isAuthor = Boolean(viewer && resource.author_id === viewer.id);
+  const settings = await getSettings();
+  const canAppeal =
+    isAuthor &&
+    (resource.status === "hidden" || resource.status === "rejected") &&
+    !(await listAppealedTargets()).has(`resource:${resource.id}`);
   const isOwner = viewer?.id === resource.author_id;
   const TypeIcon = RESOURCE_TYPE_ICONS[resource.type];
 
@@ -150,8 +160,19 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
           }}
         />
       )}
-      <ResourceStatusAlert status={resource.status} linkStatus={resource.link_status} />
-      {isStaff && <StaffResourceToolbar resourceId={resource.id} status={resource.status} />}
+      <ResourceStatusAlert
+        status={resource.status}
+        linkStatus={resource.link_status}
+        appeal={canAppeal ? <AppealButton targetType="resource" targetId={resource.id} /> : undefined}
+      />
+      {isStaff && (
+        <StaffResourceToolbar
+          resourceId={resource.id}
+          status={resource.status}
+          domain={resource.domain}
+          isAdmin={viewerProfile?.role === "admin"}
+        />
+      )}
 
       <article className="grid gap-8 rounded-2xl border bg-card p-6 text-card-foreground sm:p-8">
         <header className="grid gap-5">
@@ -177,11 +198,18 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
 
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild size="lg">
-              <a href={resource.url} target="_blank" rel="noopener noreferrer ugc nofollow">
-                {t("openLink")}
-                <ExternalLinkIcon aria-hidden />
-                <span className="sr-only">{t("opensInNewTab")}</span>
-              </a>
+              {needsInterstitial(resource, settings.interstitial_mode) ? (
+                <Link href={routes.outbound(resource.slug)} rel="nofollow">
+                  {t("openLink")}
+                  <ExternalLinkIcon aria-hidden />
+                </Link>
+              ) : (
+                <a href={resource.url} target="_blank" rel={OUTBOUND_REL}>
+                  {t("openLink")}
+                  <ExternalLinkIcon aria-hidden />
+                  <span className="sr-only">{t("opensInNewTab")}</span>
+                </a>
+              )}
             </Button>
             {resource.status === "published" && (
               <ResourceActions
@@ -280,9 +308,22 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
 
       <RatingsSection
         resource={resource}
-        viewer={!viewer ? { kind: "guest" } : isOwner ? { kind: "author" } : { kind: "member", id: viewer.id }}
+        viewer={
+          !viewer
+            ? { kind: "guest" }
+            : isOwner
+              ? { kind: "author" }
+              : viewerProfile?.is_banned
+                ? { kind: "banned" }
+                : { kind: "member", id: viewer.id }
+        }
       />
-      <CommentsSection resource={resource} viewerId={viewer?.id ?? null} isStaff={isStaff} />
+      <CommentsSection
+        resource={resource}
+        viewerId={viewer?.id ?? null}
+        isStaff={isStaff}
+        viewerBanned={Boolean(viewerProfile?.is_banned)}
+      />
 
       {relatedCards.length > 0 && (
         <section aria-labelledby="related-title" className="mt-4">

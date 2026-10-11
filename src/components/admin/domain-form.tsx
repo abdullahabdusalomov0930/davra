@@ -10,11 +10,18 @@ import { Field } from "@/components/forms/field";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { useErrorMessage } from "@/components/forms/use-error-message";
 import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
 import { callAction } from "@/lib/action-result";
-import { type BlockedDomainData, type BlockedDomainInput, blockedDomainSchema } from "@/lib/validators";
+import {
+  type BlockedDomainData,
+  type BlockedDomainInput,
+  blockedDomainSchema,
+  DOMAIN_CATEGORIES,
+} from "@/lib/validators";
 import { addDomainAction } from "@/server/actions/moderation";
 
-export function DomainForm() {
+/** `defaultDomain`: filled in from "Domenni bloklash" on a queue item. */
+export function DomainForm({ defaultDomain = "" }: { defaultDomain?: string }) {
   const t = useTranslations("Admin");
   const tAction = useTranslations("ActionErrors");
   const errorMessage = useErrorMessage();
@@ -22,7 +29,7 @@ export function DomainForm() {
 
   const form = useForm<BlockedDomainInput, unknown, BlockedDomainData>({
     resolver: zodResolver(blockedDomainSchema),
-    defaultValues: { domain: "", reason: "" },
+    defaultValues: { domain: defaultDomain, reason: "", category: "spam" },
   });
   const { errors, isSubmitting } = form.formState;
 
@@ -39,7 +46,7 @@ export function DomainForm() {
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid items-start gap-3 sm:grid-cols-[1fr_2fr_auto]">
+    <form onSubmit={onSubmit} noValidate className="grid items-start gap-3 sm:grid-cols-[1fr_1fr_2fr_auto]">
       <Field label={t("domains.domain")} error={errorMessage(errors.domain)}>
         {(control) => (
           <Input
@@ -49,6 +56,17 @@ export function DomainForm() {
             spellCheck={false}
             {...form.register("domain")}
           />
+        )}
+      </Field>
+      <Field label={t("settings.category")} error={errorMessage(errors.category)}>
+        {(control) => (
+          <NativeSelect {...control} {...form.register("category")}>
+            {DOMAIN_CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {t(`domainCategories.${category}`)}
+              </option>
+            ))}
+          </NativeSelect>
         )}
       </Field>
       <Field label={t("domains.reason")} error={errorMessage(errors.reason)}>

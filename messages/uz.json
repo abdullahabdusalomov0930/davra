@@ -81,7 +81,7 @@
   "Validation": {
     "required": "Bu maydonni toʻldiring.",
     "emailInvalid": "Email manzilini toʻgʻri kiriting.",
-    "passwordTooShort": "Parol kamida 8 ta belgidan iborat boʻlsin.",
+    "passwordTooShort": "Parol kamida 10 ta belgidan iborat boʻlsin.",
     "passwordTooLong": "Parol 72 ta belgidan oshmasin.",
     "displayNameRequired": "Ismingizni kiriting.",
     "displayNameTooLong": "Ism 60 ta belgidan oshmasin.",
@@ -132,7 +132,17 @@
     "textContact": "Telefon raqamlari va Telegram yoki WhatsApp guruhlariga taklif havolalarini qoʻshmang.",
     "textTooManyLinks": "Havolalar soni cheklangan: sarlavha va qisqa maydonlarda havola boʻlmasin, matnda koʻpi bilan bitta.",
     "textOnlyLink": "Faqat havola emas, oʻz soʻzlaringiz bilan ham yozing.",
-    "textDuplicate": "Siz yaqinda juda oʻxshash resurs qoʻshgansiz. Bir resursni qayta-qayta joylamang."
+    "textDuplicate": "Siz yaqinda juda oʻxshash resurs qoʻshgansiz. Bir resursni qayta-qayta joylamang.",
+    "moderationReasonRequired": "Sababini yozing (kamida 3 ta belgi).",
+    "moderationReasonTooLong": "Sabab 500 ta belgidan oshmasin.",
+    "appealTooShort": "Kamida 10 ta belgi: nima uchun qaror notoʻgʻri deb oʻylaysiz?",
+    "appealTooLong": "1000 ta belgidan oshmasin.",
+    "termFormat": "Soʻz yoki ibora kiriting: harflar va raqamlar, oxirida * boʻlishi mumkin.",
+    "settingRange": "0,5 dan 20 gacha son kiriting.",
+    "passwordCommon": "Bu parol juda oddiy yoki keng tarqalgan. Boshqasini tanlang.",
+    "passwordPersonal": "Parolda foydalanuvchi nomi yoki emailingiz boʻlmasin.",
+    "deleteUsernameMismatch": "Foydalanuvchi nomingizni aynan yozing.",
+    "deleteWrongPassword": "Parol notoʻgʻri."
   },
   "AuthErrors": {
     "invalidCredentials": "Email yoki parol notoʻgʻri.",
@@ -144,7 +154,8 @@
     "linkInvalid": "Havola notoʻgʻri yoki muddati oʻtgan.",
     "signupDisabled": "Roʻyxatdan oʻtish vaqtincha yopiq.",
     "network": "Internet bilan bogʻlanib boʻlmadi. Ulanishni tekshirib, qayta urinib koʻring.",
-    "unknown": "Kutilmagan xatolik yuz berdi. Qayta urinib koʻring."
+    "unknown": "Kutilmagan xatolik yuz berdi. Qayta urinib koʻring.",
+    "captchaFailed": "Bot emasligingizni tasdiqlab boʻlmadi. Sahifani yangilab, qayta urinib koʻring."
   },
   "ActionErrors": {
     "unauthorized": "Avval hisobingizga kiring.",
@@ -161,7 +172,15 @@
     "alreadyReportedLink": "Siz bu havola haqida allaqachon xabar bergansiz. Moderatorlar uni tekshiradi.",
     "topicInUse": "Bu mavzuda resurslar bor, shuning uchun uni oʻchirib boʻlmaydi.",
     "slugTaken": "Bu manzil band. Boshqasini tanlang.",
-    "domainExists": "Bu domen roʻyxatda allaqachon bor."
+    "domainExists": "Bu domen roʻyxatda allaqachon bor.",
+    "reasonRequired": "Sababini yozing.",
+    "evidenceNotPreserved": "Avval jiddiy holatning dalillarini saqlangan deb belgilang.",
+    "alreadyRequested": "Bu soʻrov allaqachon yuborilgan va admin tasdigʻini kutmoqda.",
+    "termExists": "Bu soʻz roʻyxatda allaqachon bor.",
+    "alreadyAppealed": "Siz bu qaror ustidan allaqachon eʼtiroz bildirgansiz.",
+    "nothingToAppeal": "Bu qaror ustidan eʼtiroz bildirib boʻlmaydi.",
+    "reauthRequired": "Xavfsizlik uchun bu amaldan oldin hisobingizga qayta kiring.",
+    "captchaFailed": "Bot emasligingizni tasdiqlab boʻlmadi. Sahifani yangilab, qayta urinib koʻring."
   },
   "Auth": {
     "signInTitle": "Kirish",
@@ -171,7 +190,7 @@
     "emailLabel": "Email",
     "emailPlaceholder": "ism@misol.uz",
     "passwordLabel": "Parol",
-    "passwordHint": "Kamida 8 ta belgi.",
+    "passwordHint": "Kamida 10 ta belgi. Oddiy va keng tarqalgan parollar qabul qilinmaydi.",
     "showPassword": "Parolni koʻrsatish",
     "hidePassword": "Parolni yashirish",
     "displayNameLabel": "Ismingiz",
@@ -239,7 +258,20 @@
     "viewProfile": "Profilni koʻrish",
     "accountTitle": "Hisob",
     "accountEmail": "Email",
-    "signOut": "Hisobdan chiqish"
+    "signOut": "Hisobdan chiqish",
+    "dataTitle": "Maʼlumotlaringiz",
+    "exportText": "Siz yozgan va tanlagan hamma narsaning nusxasi: profil, resurslar, izohlar, baholar, yoqtirish va saqlashlar, obunalar, shikoyatlar, eʼtirozlar va bildirishnomalar (JSON fayl).",
+    "exportButton": "Maʼlumotlarimni yuklab olish",
+    "exportDone": "Fayl yuklab olindi.",
+    "deleteTitle": "Hisobni oʻchirish",
+    "deleteText": "Hisobingiz va u bilan birga resurslaringiz, izohlaringiz, baholaringiz, yoqtirish va saqlashlaringiz, obunalaringiz butunlay oʻchiriladi. Bu amalni ortga qaytarib boʻlmaydi. Siz yuborgan shikoyatlar ismsiz qoladi.",
+    "deleteButton": "Hisobni oʻchirish",
+    "deleteDialogTitle": "Hisobingizni butunlay oʻchirasizmi?",
+    "deleteUsernameLabel": "Tasdiqlash uchun foydalanuvchi nomingizni yozing: {username}",
+    "deletePasswordLabel": "Parolingiz",
+    "deleteSubmit": "Ha, hisobni oʻchirish",
+    "deleteCancel": "Bekor qilish",
+    "deleted": "Hisobingiz oʻchirildi."
   },
   "ResourceType": {
     "course": "Kurs",
@@ -282,6 +314,7 @@
     "authorReviewTitle": "Ulashgan odamning fikri",
     "sharedBy": "Ulashgan",
     "date": "{year}-yil {day}-{month}",
+    "dateTime": "{year}-yil {day}-{month}, {time}",
     "updated": "Tahrirlangan: {date}",
     "ratingTitle": "Baho",
     "rating": "Oʻrtacha baho: {rating} ({count, plural, other {# ta baho}})",
@@ -322,7 +355,7 @@
     "newSubtitle": "Foydali havolani ulashing va u nimani oʻrgatishini oʻz soʻzlaringiz bilan yozing.",
     "editTitle": "Resursni tahrirlash",
     "editSubtitle": "Matnni tahrirlash kartani tekshiruvga qaytarmaydi. Havolani almashtirsangiz, karta yana tekshiruvdan oʻtadi.",
-    "reviewNotice": "Yangi aʼzolarning resurslari moderator tasdiqlagach hammaga koʻrinadi. Bir nechta resursingiz tasdiqlangach, keyingilari darhol chiqadi.",
+    "reviewNotice": "Matn va havolalar avtomatik tekshiriladi; shubhali postlar eʼlon qilinishidan oldin moderator tekshiruvidan oʻtadi.",
     "bannedText": "Hisobingiz bloklangan, shuning uchun resurs qoʻsha olmaysiz.",
     "bannedEditText": "Hisobingiz bloklangan, shuning uchun resursni tahrirlay olmaysiz.",
     "sectionLink": "Havola",
@@ -356,7 +389,8 @@
     "createdPublished": "Resurs eʼlon qilindi",
     "createdPending": "Resurs yuborildi. Moderator tasdiqlagach hammaga koʻrinadi.",
     "saved": "Oʻzgarishlar saqlandi",
-    "savedPending": "Saqlandi. Havola oʻzgargani uchun resurs yana tekshiruvga yuborildi."
+    "savedPending": "Saqlandi. Havola oʻzgargani uchun resurs yana tekshiruvga yuborildi.",
+    "newMemberNotice": "Yangi foydalanuvchilarning postlari eʼlon qilinishidan oldin moderator tekshiruvidan oʻtadi."
   },
   "Feed": {
     "tabsLabel": "Saralash",
@@ -408,7 +442,8 @@
     "allResults": "Barcha resurslar",
     "emptyTitle": "Hech narsa topilmadi",
     "emptyText": "Boshqa soʻz bilan qidirib koʻring yoki filtrlarni olib tashlang.",
-    "emptyCta": "Filtrlarni tozalash"
+    "emptyCta": "Filtrlarni tozalash",
+    "rateLimited": "Juda koʻp qidiruv soʻrovi yuborildi. Bir daqiqadan keyin qayta urinib koʻring."
   },
   "Interactions": {
     "like": "Yoqdi",
@@ -503,7 +538,12 @@
     "emptyCta": "Lentaga oʻtish"
   },
   "ReportReason": {
+    "severe": "Jiddiy xavf: bolalar xavfsizligi, terrorizm yoki tahdid",
+    "illegal": "Noqonuniy kontent yoki tovar",
+    "pirated": "Qaroqchilik (ruxsatsiz nusxa)",
+    "scam_phishing": "Firibgarlik yoki fishing",
     "spam": "Spam yoki reklama",
+    "harassment": "Haqorat, taʼqib yoki nafrat",
     "wrong_info": "Notoʻgʻri maʼlumot",
     "inappropriate": "Nomaqbul kontent",
     "copyright": "Mualliflik huquqi buzilgan",
@@ -533,7 +573,8 @@
     "cancel": "Bekor qilish",
     "sent": "Shikoyatingiz yuborildi. Rahmat!",
     "signIn": "Shikoyat qilish uchun hisobingizga kiring",
-    "copyrightHint": "Huquq egasimisiz? Olib tashlash soʻrovi formasi hisobsiz ham ishlaydi."
+    "copyrightHint": "Huquq egasimisiz? Olib tashlash soʻrovi formasi hisobsiz ham ishlaydi.",
+    "severeHint": "“Jiddiy xavf” tanlansa, kontent darhol yashiriladi va faqat administratorlarga koʻrinadi. Uni faqat haqiqatan jiddiy holatlarda tanlang."
   },
   "BrokenLink": {
     "button": "Havola ishlamayapti",
@@ -583,38 +624,12 @@
           ]
         },
         {
-          "title": "Qaroqchilik kontenti taqiqlanadi",
-          "paragraphs": [
-            "Mualliflik huquqi bilan himoyalangan materiallarning ruxsatsiz nusxalariga havola bermang: pullik kurslarning “sliv”lari, kitoblarning noqonuniy PDF fayllari, dastur va filmlarning buzilgan versiyalari mumkin emas."
-          ],
-          "items": [
-            "Resurs pullik boʻlsa, uni “Pullik” deb belgilang va rasmiy sahifasiga havola bering.",
-            "Huquq egalari hisobsiz ham kontentni olib tashlash soʻrovi formasi orqali murojaat qilishi mumkin."
-          ]
-        },
-        {
           "title": "Sifatli kartalar",
           "items": [
             "Sarlavha resursning haqiqiy nomini aytsin: faqat KATTA HARFLAR, ortiqcha emoji va reklama uslubidagi undovlardan foydalanmang.",
             "Mavzu, tur, til, narx va darajani toʻgʻri tanlang — boshqalar resursni shular boʻyicha topadi.",
             "Bir resursni qayta qoʻshmang: {appName} bir xil havolani aniqlaydi va mavjud kartani koʻrsatadi.",
             "Qisqartirilgan havolalar (bit.ly va shunga oʻxshash) qabul qilinmaydi — toʻliq manzilni bering."
-          ]
-        },
-        {
-          "title": "Spam va reklama",
-          "paragraphs": [
-            "{appName} reklama maydoni emas. Oʻz kanalingiz yoki kursingizni ulashishingiz mumkin, lekin faqat u haqiqatan foydali boʻlsa va buni sharhda ochiq aytsangiz."
-          ],
-          "items": [
-            "Bir havolani qayta-qayta yoki bir necha hisobdan ulashish, izohlarda reklama qilish, yoqtirish va baholarni sunʼiy koʻpaytirish taqiqlanadi.",
-            "Yangi aʼzolarning kartalari moderator tekshiruvidan keyin chiqadi; kuniga ulashish, izoh va shikoyatlar soni cheklangan."
-          ]
-        },
-        {
-          "title": "Hurmat va xavfsizlik",
-          "paragraphs": [
-            "Boshqalarni haqorat qilmang, kamsitmang va qoʻrqitmang. Birovning shaxsiy maʼlumotlarini (telefon, manzil, hujjatlar) eʼlon qilmang. Zoʻravonlik, kattalar uchun moʻljallangan kontent va noqonuniy faoliyatga havolalar mumkin emas."
           ]
         },
         {
@@ -626,11 +641,103 @@
           ]
         },
         {
+          "id": "spam",
+          "title": "Spam va reklama",
+          "paragraphs": [
+            "{appName} reklama maydoni emas. Oʻz kanalingiz yoki kursingizni ulashishingiz mumkin, lekin faqat u haqiqatan foydali boʻlsa va buni sharhda ochiq aytsangiz."
+          ],
+          "items": [
+            "Mumkin emas: bir havolani qayta-qayta yoki bir necha hisobdan ulashish, izohlarda reklama, “kanalimga obuna boʻling” kabi chaqiriqlar, telefon raqami va Telegram/WhatsApp guruh havolalari.",
+            "Mumkin emas: yoqtirish va baholarni sunʼiy koʻpaytirish (bir necha hisob, kelishilgan “ovoz berish”)."
+          ]
+        },
+        {
+          "id": "scam_phishing",
+          "title": "Firibgarlik va fishing",
+          "items": [
+            "Mumkin emas: “tez boyib keting”, “uydan turib pul ishlang”, “kafolatlangan daromad” kabi vaʼdalar, piramida va “investitsiya” sxemalari.",
+            "Mumkin emas: login, parol, karta yoki SMS kodini soʻraydigan soxta sahifalar, mashhur saytlarga oʻxshatib yozilgan manzillar."
+          ]
+        },
+        {
+          "id": "pirated",
+          "title": "Qaroqchilik",
+          "paragraphs": ["Mualliflik huquqi bilan himoyalangan materiallarning ruxsatsiz nusxalariga havola bermang."],
+          "items": [
+            "Mumkin emas: pullik kurslarning “sliv”lari, kitoblarning noqonuniy PDF fayllari, dastur va filmlarning buzilgan versiyalari, torrent va fayl almashish saytlaridagi nusxalar.",
+            "Resurs pullik boʻlsa, uni “Pullik” deb belgilang va rasmiy sahifasiga havola bering."
+          ]
+        },
+        {
+          "id": "illegal",
+          "title": "Noqonuniy kontent va tovarlar",
+          "items": [
+            "Mumkin emas: giyohvand moddalar, qurol, soxta hujjatlar savdosi, qimor va stavka saytlari, xakerlik xizmatlari va boshqa noqonuniy faoliyatga havolalar."
+          ]
+        },
+        {
+          "id": "harassment",
+          "title": "Haqorat, taʼqib va nafrat",
+          "items": [
+            "Mumkin emas: boshqalarni haqorat qilish, soʻkinish, millati, dini, jinsi yoki boshqa belgisi boʻyicha kamsitish, qoʻrqitish va taʼqib qilish."
+          ]
+        },
+        {
+          "id": "inappropriate",
+          "title": "Kattalar uchun va nomaqbul kontent",
+          "items": [
+            "Mumkin emas: shahvoniy kontent, zoʻravonlikni koʻrsatish yoki targʻib qilish, oʻquvga aloqasi yoʻq shok kontent."
+          ]
+        },
+        {
+          "id": "personal_data",
+          "title": "Boshqalarning shaxsiy maʼlumotlari",
+          "items": [
+            "Mumkin emas: birovning telefon raqami, manzili, hujjatlari, fotosuratlari yoki yozishmalarini uning roziligisiz eʼlon qilish."
+          ]
+        },
+        {
+          "id": "wrong_info",
+          "title": "Notoʻgʻri maʼlumot",
+          "items": [
+            "Kartada resurs haqida toʻgʻri yozing: bepul deb belgilangan resurs pullik boʻlmasin, til va daraja toʻgʻri tanlansin."
+          ]
+        },
+        {
+          "id": "copyright",
+          "title": "Mualliflik huquqi",
+          "items": [
+            "Boshqa saytlardagi matnni koʻchirib qoʻymang; sharhni oʻzingiz yozing.",
+            "Huquq egalari hisobsiz ham kontentni olib tashlash soʻrovi formasi orqali murojaat qilishi mumkin."
+          ]
+        },
+        {
+          "id": "unsafe_link",
+          "title": "Xavfli havolalar",
+          "items": [
+            "Mumkin emas: zararli dastur, fishing yoki firibgarlik sahifalariga havolalar, qisqartirilgan havolalar (bit.ly va shunga oʻxshash) va manzilini yashiradigan yoʻnaltirishlar.",
+            "Havolalar avtomatik tekshiriladi va har hafta qayta tekshiriladi; xavfli deb topilgani yashiriladi."
+          ]
+        },
+        {
+          "id": "severe",
+          "title": "Jiddiy xavf",
+          "paragraphs": [
+            "Bolalar xavfsizligiga tahdid, terrorizm va zoʻravon ekstremizm, haqiqiy tahdidlar darhol yashiriladi, dalillar saqlanadi va hisob bloklanadi. Bunday kontentni koʻrsangiz, “Shikoyat” tugmasida “Jiddiy xavf”ni tanlang."
+          ]
+        },
+        {
+          "id": "moderation",
           "title": "Shikoyat va moderatsiya",
           "paragraphs": [
-            "Qoidani buzgan karta, izoh yoki profilni koʻrsangiz, “Shikoyat” tugmasini bosing; havola ochilmasa — “Havola ishlamayapti”. Moderatorlar shikoyatlarni koʻrib chiqadi va kontentni yashirishi, rad etishi yoki hisobni bloklashi mumkin. Har bir moderatsiya harakati jurnalga yoziladi."
+            "Matn va havolalar ulashishdan oldin avtomatik tekshiriladi; shubhalilari moderator tekshiruvidan oʻtadi. Yangi aʼzolarning resurslari va havolali izohlari ham avval tekshiriladi.",
+            "Qoidani buzgan karta, izoh yoki profilni koʻrsangiz, “Shikoyat” tugmasini bosing; havola ochilmasa — “Havola ishlamayapti”. Bir nechta foydalanuvchi shikoyat qilsa, kontent moderator koʻrib chiqqunicha avtomatik yashiriladi."
           ],
-          "items": ["Shikoyat qilgan kishining ismi boshqa foydalanuvchilarga koʻrsatilmaydi."]
+          "items": [
+            "Moderator kontentni yashirishi, rad etishi, ogohlantirishi yoki hisobni 1, 7 yoki 30 kunga yoxud muddatsiz bloklashi mumkin. Har bir qarorning sababi sizga bildirishnomada koʻrsatiladi va jurnalga yoziladi.",
+            "Qaror notoʻgʻri deb hisoblasangiz, har bir qaror ustidan bir marta eʼtiroz bildirishingiz mumkin.",
+            "Shikoyat qilgan kishining ismi boshqa foydalanuvchilarga koʻrsatilmaydi. Asossiz shikoyatlar koʻp boʻlsa, ularning taʼsiri kamayadi."
+          ]
         }
       ]
     },
@@ -700,8 +807,10 @@
           "items": [
             "Hisob: email manzil, foydalanuvchi nomi, koʻrsatiladigan ism va parol. Parol faqat xeshlangan holda autentifikatsiya xizmatida saqlanadi — biz uni koʻra olmaymiz.",
             "Profil (ixtiyoriy): oʻzingiz haqingizda qisqacha, universitet va yoʻnalish. Profil rasmi yuklanmaydi: ismingizning bosh harflari koʻrsatiladi.",
-            "Faoliyat: siz qoʻshgan resurslar, baholar, sharhlar, izohlar, yoqtirishlar, saqlanganlar, obunalar va shikoyatlar.",
-            "Kontentni olib tashlash soʻrovlari: yuboruvchining ismi, emaili va soʻrov matni. Suiisteʼmolning oldini olish uchun IP manzilning oʻzi emas, undan hisoblangan qaytarib boʻlmaydigan kalitli xesh saqlanadi.",
+            "Faoliyat: siz qoʻshgan resurslar, baholar, sharhlar, izohlar, yoqtirishlar, saqlanganlar, obunalar, shikoyatlar, eʼtirozlar va sizga yuborilgan bildirishnomalar.",
+            "Moderatsiya: ishonch darajangiz, ogohlantirishlar va bloklar (sababi bilan). Avtomatik tekshiruv rad etgan yoki ushlab qolgan matnning qisqa parchasi va sababi moderatorlar uchun 180 kun saqlanadi.",
+            "Xavfsizlik: kirish urinishlari, roʻyxatdan oʻtish va parolni tiklash soʻrovlari hamda cheklovlar uchun IP manzil va email manzilning oʻzi emas, ulardan hisoblangan qaytarib boʻlmaydigan kalitli xesh saqlanadi va 30 kundan keyin oʻchiriladi.",
+            "Kontentni olib tashlash soʻrovlari: yuboruvchining ismi, emaili va soʻrov matni; IP manzil xeshi 30 kundan keyin oʻchiriladi.",
             "Texnik maʼlumotlar: xavfsizlik va xatolarni tuzatish uchun hosting provayderi soʻrovlar jurnalini (vaqt, sahifa, IP manzil) qisqa muddat saqlaydi."
           ]
         },
@@ -733,13 +842,16 @@
             "Supabase — maʼlumotlar bazasi va autentifikatsiya (serverlar Yevropa Ittifoqida, Frankfurtda).",
             "Vercel — sayt hostingi.",
             "Email yuborish xizmati — tasdiqlash va parolni tiklash xatlari uchun.",
-            "Google Safe Browsing — yangi qoʻshilgan havolalar firibgarlik va zararli dasturlar roʻyxatida yoʻqligini tekshirish uchun (yoqilgan boʻlsa). Unga faqat havolaning oʻzi yuboriladi, siz haqingizda maʼlumot yuborilmaydi."
+            "Google Safe Browsing — yangi qoʻshilgan havolalar firibgarlik va zararli dasturlar roʻyxatida yoʻqligini tekshirish uchun (yoqilgan boʻlsa). Unga faqat havolaning oʻzi yuboriladi, siz haqingizda maʼlumot yuborilmaydi.",
+            "Cloudflare Turnstile — roʻyxatdan oʻtishda va yangi aʼzolarning postlarida bot emasligingizni tekshirish uchun (yoqilgan boʻlsa). Cloudflare oʻz maxfiylik siyosatiga koʻra brauzeringiz haqidagi texnik maʼlumotlarni qayta ishlaydi."
           ]
         },
         {
           "title": "Saqlash muddati va oʻchirish",
           "paragraphs": [
-            "Maʼlumotlar hisobingiz mavjud ekan saqlanadi. Kartalaringiz, baholaringiz va izohlaringizni istalgan vaqtda oʻzingiz oʻchira olasiz. Hisobingizni butunlay oʻchirish yoki maʼlumotlaringiz nusxasini olish uchun bizga murojaat qiling."
+            "Maʼlumotlar hisobingiz mavjud ekan saqlanadi. Kartalaringiz, baholaringiz va izohlaringizni istalgan vaqtda oʻzingiz oʻchira olasiz.",
+            "Sozlamalar sahifasida maʼlumotlaringiz nusxasini (JSON fayl) yuklab olishingiz va hisobingizni butunlay oʻchirishingiz mumkin. Hisob oʻchirilganda profil, resurslar, izohlar, baholar, yoqtirish, saqlash va obunalar oʻchiriladi; siz yuborgan shikoyatlar ismsiz qoladi; moderatorlar harakatlari jurnalida amal saqlanadi, lekin kim bajargani koʻrsatilmaydi.",
+            "Jiddiy xavfli kontent (masalan, bolalar xavfsizligiga tahdid) haqida shikoyat kelsa, uning nusxasi qonuniy majburiyatlarni bajarish uchun hisob oʻchirilgandan keyin ham faqat administratorlarga koʻrinadigan holda saqlanishi mumkin."
           ]
         },
         {
@@ -751,7 +863,8 @@
         {
           "title": "Huquqlaringiz",
           "paragraphs": [
-            "Oʻzingiz haqingizdagi maʼlumotlarni koʻrish, tuzatish va oʻchirishni talab qilish huquqiga egasiz. Profil maʼlumotlarini sozlamalar sahifasida oʻzingiz oʻzgartira olasiz."
+            "Oʻzingiz haqingizdagi maʼlumotlarni koʻrish, tuzatish, nusxasini olish va oʻchirishni talab qilish huquqiga egasiz. Profil maʼlumotlarini sozlamalar sahifasida oʻzingiz oʻzgartira olasiz, maʼlumotlaringizni yuklab olishingiz va hisobni oʻchirishingiz mumkin.",
+            "Bu siyosat qoralama: unda Oʻzbekiston Respublikasining shaxsga doir maʼlumotlar toʻgʻrisidagi qonuni talablariga (jumladan, maʼlumotlarni saqlash joyiga) muvofiqlik huquqshunos tomonidan hali tekshirilmagan."
           ]
         }
       ]
@@ -768,14 +881,23 @@
       "links": "Havolalar",
       "users": "Foydalanuvchilar",
       "topics": "Mavzular",
-      "domains": "Domenlar"
+      "domains": "Domenlar",
+      "appeals": "Eʼtirozlar",
+      "requests": "Soʻrovlar",
+      "severe": "Jiddiy holatlar",
+      "audit": "Jurnal",
+      "settings": "Sozlamalar",
+      "security": "Xavfsizlik"
     },
     "counts": {
       "pending": "Tekshiruvdagi resurslar",
       "pendingComments": "Tekshiruvdagi izohlar",
       "reports": "Ochiq shikoyatlar",
       "removals": "Olib tashlash soʻrovlari",
-      "brokenLinks": "Ishlamayotgan havolalar"
+      "brokenLinks": "Ishlamayotgan havolalar",
+      "appeals": "Ochiq eʼtirozlar",
+      "severe": "Jiddiy holatlar",
+      "requests": "Tasdiq kutayotgan soʻrovlar"
     },
     "auditTitle": "Soʻnggi amallar",
     "auditEmpty": "Hali moderatsiya amallari yoʻq.",
@@ -793,7 +915,22 @@
       "topic_delete": "Mavzu oʻchirildi",
       "blocked_domain_insert": "Domen bloklandi",
       "blocked_domain_update": "Domen tahrirlandi",
-      "blocked_domain_delete": "Domen blokdan chiqarildi"
+      "blocked_domain_delete": "Domen blokdan chiqarildi",
+      "user_trust": "Ishonch darajasi",
+      "user_warn": "Ogohlantirish",
+      "appeal_status": "Eʼtiroz",
+      "severe_incident_status": "Jiddiy holat",
+      "setting_update": "Sozlama",
+      "resource_auto_hide": "Avtomatik yashirildi",
+      "comment_auto_hide": "Izoh avtomatik yashirildi",
+      "resource_delete": "Resurs oʻchirildi",
+      "comment_delete": "Izoh oʻchirildi",
+      "action_request": "Admin tasdigʻi soʻraldi",
+      "action_approve": "Soʻrov tasdiqlandi",
+      "action_reject": "Soʻrov rad etildi",
+      "resource_reputation_hide": "Xavfli havola yashirildi",
+      "blocked_term_insert": "Soʻz bloklandi",
+      "blocked_term_delete": "Soʻz blokdan chiqarildi"
     },
     "unknownActor": "Nomaʼlum",
     "empty": "Bu yerda hozircha hech narsa yoʻq.",
@@ -818,7 +955,9 @@
       "hideText": "Karta hamma uchun yopiladi; muallif uni yashirilgan deb koʻradi.",
       "rejectTitle": "Resursni rad etasizmi?",
       "rejectText": "Karta eʼlon qilinmaydi; muallif uni rad etilgan deb koʻradi.",
-      "newAuthor": "Yangi aʼzo"
+      "newAuthor": "Yangi aʼzo",
+      "approveTitle": "Resursni tasdiqlaysizmi?",
+      "restoreTitle": "Resursni qayta eʼlon qilasizmi?"
     },
     "reports": {
       "reportsTab": "Shikoyatlar",
@@ -827,14 +966,29 @@
       "banUser": "Foydalanuvchini bloklash",
       "resolve": "Hal qilindi",
       "dismiss": "Rad etish",
-      "takeDownTitle": "Kontentni yashirib, shikoyatni yopasizmi?",
-      "takeDownText": "Resurs yoki izoh yashiriladi (foydalanuvchi bloklanadi) va shikoyat tasdiqlangan deb belgilanadi — bu muallifning ishonch darajasiga taʼsir qiladi.",
+      "takeDownTitle": "Kontentni yashirib, shikoyatlarni yopasizmi?",
+      "takeDownText": "Kontent yashiriladi va shikoyatlar tasdiqlangan deb belgilanadi — bu muallifning ishonch darajasini pasaytiradi.",
       "targetGone": "Kontent oʻchirilgan",
       "targetResource": "Resurs",
       "targetComment": "Izoh",
       "targetUser": "Foydalanuvchi",
       "removalDone": "Bajarildi (olib tashlandi)",
-      "removalDismiss": "Rad etish"
+      "removalDismiss": "Rad etish",
+      "priority": {
+        "severe": "Jiddiy",
+        "hidden": "Avtomatik yashirilgan",
+        "urgent": "Shoshilinch",
+        "normal": "Oddiy"
+      },
+      "weight": "Vazn: {weight} / {threshold}",
+      "reporters": "{count, plural, other {# ta shikoyat}}",
+      "severeNotice": "Jiddiy holat. Kontent yashirilgan va nusxasi dalil sifatida saqlangan. Havolani ochmang; oʻchirishdan oldin admin dalillarni saqlangan deb belgilashi kerak.",
+      "resolveTitle": "Shikoyatlarni hal qilingan deb yopasizmi?",
+      "dismissTitle": "Shikoyatlarni rad etasizmi?",
+      "dismissText": "Avtomatik yashirilgan kontent qayta eʼlon qilinadi.",
+      "removalDoneTitle": "Soʻrov bajarildi deb belgilaysizmi?",
+      "removalDismissTitle": "Soʻrovni rad etasizmi?",
+      "userActions": "Foydalanuvchini bloklash yoki ogohlantirish uchun uning sahifasini oching."
     },
     "links": {
       "intro": "Havolalar avtomatik tekshiriladi: har bir havola haftada bir marta. Ketma-ket ikki marta ochilmagan havola “ishlamayapti” deb belgilanadi va “Mashhur” lentasidan chiqariladi. Saytning 403 yoki 429 javobi hisobga olinmaydi.",
@@ -866,10 +1020,25 @@
       "unban": "Blokdan chiqarish",
       "banned": "Bloklangan",
       "banTitle": "Foydalanuvchini bloklaysizmi?",
-      "banText": "U saytni koʻra oladi, lekin hech narsa yoza, yoqtira yoki ulasha olmaydi.",
+      "banText": "Foydalanuvchining eʼlon qilingan resurslari va izohlari yashiriladi. U saytni koʻra oladi, lekin hech narsa yoza, yoqtira yoki shikoyat qila olmaydi.",
       "role": "Rol",
       "you": "siz",
-      "joined": "Qoʻshilgan"
+      "joined": "Qoʻshilgan",
+      "banUntil": "{date} gacha bloklangan",
+      "banPermanent": "Muddatsiz bloklangan",
+      "banLengths": {
+        "1": "1 kun",
+        "7": "7 kun",
+        "30": "30 kun",
+        "permanent": "Muddatsiz"
+      },
+      "banHint": "Muddatsiz blokni moderator faqat soʻrov sifatida yuboradi; admin tasdiqlaydi.",
+      "unbanTitle": "Blokdan chiqarasizmi?",
+      "unbanText": "Blok sabab yashirilgan kontent qayta eʼlon qilinadi.",
+      "warn": "Ogohlantirish",
+      "warnTitle": "Foydalanuvchini ogohlantirasizmi?",
+      "warnText": "Foydalanuvchi bildirishnoma oladi.",
+      "roleTitle": "Rolni oʻzgartirasizmi?"
     },
     "topics": {
       "newTopic": "Yangi mavzu",
@@ -907,7 +1076,10 @@
       "hideLabel": "Izohni yashirish",
       "showLabel": "Izohni qayta koʻrsatish",
       "approve": "Eʼlon qilish",
-      "on": "Resurs:"
+      "on": "Resurs:",
+      "publishTitle": "Izohni eʼlon qilasizmi?",
+      "hideTitle": "Izohni yashirasizmi?",
+      "showTitle": "Izohni qayta koʻrsatasizmi?"
     },
     "holdReasons": {
       "title": "Avtomatik tekshiruv:",
@@ -933,6 +1105,220 @@
         "body": "izoh matni",
         "url": "havola"
       }
+    },
+    "auditReason": "Sabab: {reason}",
+    "auditSystem": "Tizim",
+    "auditAll": "Butun jurnal",
+    "auditOlder": "Oldingilari",
+    "moderation": {
+      "reasonLabel": "Sabab",
+      "reasonHint": "Sabab muallifga koʻrsatiladi va jurnalga yoziladi. Ichki izohlarni yozmang.",
+      "ruleLabel": "Qoida",
+      "ruleNone": "Tanlanmagan",
+      "choiceLabel": "Muddat",
+      "submit": "Tasdiqlash",
+      "cancel": "Bekor qilish",
+      "approveReason": "Qoidalarga mos.",
+      "restoreReason": "Qayta koʻrib chiqildi: qoidabuzarlik yoʻq.",
+      "dismissReason": "Qoidabuzarlik topilmadi.",
+      "acceptReason": "Eʼtirozingiz asosli, qaror bekor qilindi.",
+      "rejectAppealReason": "Qaror oʻz kuchida qoladi.",
+      "unbanReason": "Blok muddatidan oldin bekor qilindi."
+    },
+    "trust": {
+      "0": "0 · yangi",
+      "1": "1 · oddiy",
+      "2": "2 · ishonchli",
+      "3": "3 · moderator",
+      "auto": "Avtomatik",
+      "label": "Ishonch darajasi",
+      "manual": "qoʻlda",
+      "title": "Ishonch darajasini oʻzgartirish",
+      "text": "Qoʻlda qoʻyilgan daraja avtomatik qoidalar bilan oʻzgarmaydi, toki “Avtomatik” tanlanmaguncha."
+    },
+    "state": {
+      "auto_hidden": "Shikoyatlar sabab avtomatik yashirilgan",
+      "severe": "Jiddiy shikoyat",
+      "author_banned": "Muallif bloklangan",
+      "reputation_flagged": "Xavfli havola"
+    },
+    "reputation": {
+      "safe": "Safe Browsing: xavfsiz",
+      "unknown": "Safe Browsing: tekshirilmagan",
+      "flagged": "Safe Browsing: xavfli"
+    },
+    "author": {
+      "trust": "Daraja {level}",
+      "history": "{published} eʼlon · {hidden} yashirilgan · {rejected} rad · {confirmed} tasdiqlangan shikoyat"
+    },
+    "finalUrl": "Yakuniy manzil: {url}",
+    "content": {
+      "delete": "Oʻchirish",
+      "deleteTitle": "Butunlay oʻchirasizmi?",
+      "deleteText": "Kontent qaytarib boʻlmaydigan tarzda oʻchiriladi.",
+      "deleteRequest": "Oʻchirishni soʻrash",
+      "deleteRequestText": "Moderator oʻchira olmaydi: soʻrov adminga yuboriladi.",
+      "requested": "Soʻrov adminga yuborildi",
+      "blockDomain": "Domenni bloklash"
+    },
+    "appeals": {
+      "empty": "Ochiq eʼtiroz yoʻq.",
+      "from": "{name} eʼtirozi",
+      "target": {
+        "resource": "Resurs",
+        "comment": "Izoh",
+        "ban": "Blok"
+      },
+      "accept": "Qabul qilish",
+      "reject": "Rad etish",
+      "acceptTitle": "Eʼtirozni qabul qilasizmi?",
+      "acceptText": "Kontent qayta eʼlon qilinadi yoki blok olib tashlanadi.",
+      "rejectTitle": "Eʼtirozni rad etasizmi?",
+      "decision": "Qaror sababi: {reason}",
+      "noDecision": "Avvalgi qaror sababi yozilmagan."
+    },
+    "requests": {
+      "empty": "Tasdiq kutayotgan soʻrov yoʻq.",
+      "kind": {
+        "permanent_ban": "Muddatsiz blok",
+        "delete_resource": "Resursni oʻchirish",
+        "delete_comment": "Izohni oʻchirish"
+      },
+      "by": "{name} soʻragan",
+      "approve": "Tasdiqlash",
+      "reject": "Rad etish",
+      "approveTitle": "Soʻrovni tasdiqlaysizmi?",
+      "rejectTitle": "Soʻrovni rad etasizmi?",
+      "note": "Izoh",
+      "adminOnly": "Soʻrovlarni faqat admin tasdiqlaydi.",
+      "approveNote": "Admin tasdiqladi."
+    },
+    "severe": {
+      "empty": "Jiddiy holatlar yoʻq.",
+      "notice": "Oʻchirishdan oldin dalillarni saqlang. Quyida kontentning shikoyat paytidagi nusxasi turibdi. Havolalarni ochmang: faqat domen va nusxa olinadigan manzil koʻrsatiladi. Huquqiy xabar berish majburiyatlari boʻyicha advokat bilan maslahatlashing (docs/INCIDENT_RESPONSE.md).",
+      "status": {
+        "open": "Ochiq",
+        "preserved": "Dalillar saqlangan",
+        "closed": "Yopilgan"
+      },
+      "author": "Muallif ID: {id}",
+      "reported": "Birinchi shikoyat: {date}",
+      "reports": "Shikoyatlar",
+      "snapshot": "Saqlangan nusxa",
+      "copyUrl": "Manzilni nusxalash",
+      "copied": "Nusxalandi",
+      "preserve": "Dalillar saqlandi",
+      "close": "Yopish",
+      "preserveTitle": "Dalillar saqlanganini tasdiqlaysizmi?",
+      "closeTitle": "Holatni yopasizmi?"
+    },
+    "settings": {
+      "title": "Sozlamalar",
+      "threshold": "Avtomatik yashirish chegarasi",
+      "thresholdHint": "Turli foydalanuvchilar shikoyatlarining umumiy vazni (yangi aʼzo 0,25–0,5, oddiy 1, ishonchli 1,5, moderator 3).",
+      "thresholdUrgent": "Noqonuniy kontent va firibgarlik uchun chegara",
+      "interstitial": "Tashqi sayt ogohlantirishi",
+      "interstitialModes": {
+        "off": "Hech qachon",
+        "new_domains": "Davrada yangi va tasdiqlanmagan saytlar uchun",
+        "unknown": "Xavfsizligi tasdiqlanmagan barcha saytlar uchun"
+      },
+      "save": "Saqlash",
+      "saved": "Sozlamalar saqlandi",
+      "termsTitle": "Bloklangan soʻzlar",
+      "termsHint": "Fayldagi boshlangʻich roʻyxatlarga qoʻshimcha. “soʻz”, “soʻz*” (shu bilan boshlanadigan) yoki “ikki soʻz”. Oddiy soʻzlarga toʻqnash kelmasligini tekshiring.",
+      "term": "Soʻz yoki ibora",
+      "category": "Toifa",
+      "add": "Qoʻshish",
+      "remove": "Olib tashlash",
+      "termsEmpty": "Qoʻshimcha soʻz yoʻq.",
+      "categories": {
+        "profanity": "Soʻkinish",
+        "hate": "Nafrat",
+        "sexual": "Shahvoniy",
+        "drugs_weapons": "Giyohvand va qurol savdosi",
+        "scam": "Firibgarlik",
+        "gambling": "Qimor"
+      }
+    },
+    "domainCategories": {
+      "shortener": "Qisqartiruvchi",
+      "adult": "Kattalar uchun",
+      "gambling": "Qimor",
+      "piracy": "Qaroqchilik",
+      "scam": "Firibgarlik",
+      "malware": "Zararli dastur",
+      "spam": "Spam",
+      "other": "Boshqa"
+    },
+    "security": {
+      "intro": "Oxirgi 24 soat ichida koʻp muvaffaqiyatsiz kirish urinishi (10+) yoki koʻp yangi hisob (3+) boʻlgan manzillar. IP manzillar kalitli xesh koʻrinishida: bir xil manzil bir xil kod bilan chiqadi, lekin manzilning oʻzi saqlanmaydi.",
+      "empty": "Shubhali faollik topilmadi.",
+      "failed": "{count, plural, other {# ta muvaffaqiyatsiz kirish}}",
+      "signUps": "{count, plural, other {# ta yangi hisob}}"
     }
+  },
+  "Rules": {
+    "spam": "Spam va reklama",
+    "scam_phishing": "Firibgarlik va fishing",
+    "pirated": "Qaroqchilik",
+    "illegal": "Noqonuniy kontent va tovarlar",
+    "harassment": "Haqorat, taʼqib va nafrat",
+    "inappropriate": "Kattalar uchun va nomaqbul kontent",
+    "personal_data": "Boshqalarning shaxsiy maʼlumotlari",
+    "wrong_info": "Notoʻgʻri maʼlumot",
+    "copyright": "Mualliflik huquqi",
+    "unsafe_link": "Xavfli havola",
+    "severe": "Jiddiy xavf",
+    "other": "Boshqa"
+  },
+  "Notifications": {
+    "title": "Bildirishnomalar",
+    "navLabel": "Bildirishnomalar",
+    "unread": "{count, plural, =0 {Yangi bildirishnoma yoʻq} other {# ta yangi bildirishnoma}}",
+    "empty": "Hozircha bildirishnoma yoʻq. Moderatorlar qarorlari va ogohlantirishlar shu yerda chiqadi.",
+    "intro": "Moderatorlar qarorlari, ogohlantirishlar va eʼtirozlaringizga javoblar.",
+    "kind": {
+      "content_hidden": "{target, select, resource {Resursingiz} comment {Izohingiz} other {Kontentingiz}} yashirildi",
+      "content_rejected": "{target, select, resource {Resursingiz} comment {Izohingiz} other {Kontentingiz}} rad etildi",
+      "content_restored": "{target, select, resource {Resursingiz} comment {Izohingiz} other {Kontentingiz}} qayta eʼlon qilindi",
+      "banned": "Hisobingiz bloklandi",
+      "unbanned": "Hisobingiz blokdan chiqarildi",
+      "warning": "Moderator ogohlantirishi",
+      "appeal_accepted": "Eʼtirozingiz qabul qilindi",
+      "appeal_rejected": "Eʼtirozingiz rad etildi"
+    },
+    "rule": "Qoida: {rule}",
+    "reason": "Sabab: {reason}",
+    "until": "{date} gacha",
+    "openTarget": "Ochish",
+    "rulesLink": "Qoidalarni oʻqish",
+    "appealed": "Eʼtiroz yuborilgan"
+  },
+  "Appeal": {
+    "button": "Eʼtiroz bildirish",
+    "title": "Eʼtiroz bildirish",
+    "description": "Qaror notoʻgʻri deb hisoblasangiz, sababini tushuntiring. Har bir qaror ustidan bir marta eʼtiroz bildirish mumkin; javob bildirishnomalarda chiqadi.",
+    "label": "Nima uchun qaror notoʻgʻri?",
+    "placeholder": "Masalan: bu bepul rasmiy kurs, reklama emas.",
+    "submit": "Yuborish",
+    "cancel": "Bekor qilish",
+    "sent": "Eʼtirozingiz yuborildi. Javob bildirishnomalarda chiqadi."
+  },
+  "Banned": {
+    "title": "Hisobingiz bloklangan",
+    "until": "Blok {date} da tugaydi.",
+    "permanent": "Blok muddatsiz.",
+    "reason": "Sabab: {reason}",
+    "text": "Saytni koʻra olasiz, lekin resurs ulasha, izoh yoza, yoqtira yoki shikoyat qila olmaysiz."
+  },
+  "Outbound": {
+    "metaTitle": "Tashqi saytga oʻtish",
+    "title": "Siz tashqi saytga oʻtyapsiz",
+    "text": "{appName} bu saytni hali yaxshi bilmaydi: u bizda birinchi marta ulashilgan va xavfsizligi tasdiqlanmagan. Manzilga eʼtibor bering, parol yoki karta maʼlumotlaringizni kiritmang.",
+    "site": "Sayt",
+    "address": "Toʻliq manzil",
+    "continue": "Davom etish",
+    "back": "Kartaga qaytish"
   }
 }

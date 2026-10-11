@@ -26,9 +26,18 @@ export const routes = {
   /** Sign-in that returns to `path` afterwards (for actions guests cannot take). */
   signInTo: (path: string) => `/kirish?next=${encodeURIComponent(path)}`,
   removalRequest: "/removal-request",
+  notifications: "/bildirishnomalar",
+  /** "You are leaving Davra" page before a link to a site Davra does not know yet. */
+  outbound: (slug: string) => `/tashqi/${slug}`,
   admin: "/admin",
   adminResources: "/admin/resurslar",
   adminComments: "/admin/izohlar",
+  adminAppeals: "/admin/etirozlar",
+  adminRequests: "/admin/sorovlar",
+  adminSevere: "/admin/jiddiy",
+  adminSettings: "/admin/sozlamalar",
+  adminAudit: "/admin/jurnal",
+  adminSecurity: "/admin/xavfsizlik",
   adminReports: "/admin/shikoyatlar",
   adminLinks: "/admin/havolalar",
   adminUsers: "/admin/foydalanuvchilar",
@@ -40,7 +49,14 @@ export const routes = {
  * Pages that need a signed-in user. The proxy redirects guests before rendering starts (a real 307,
  * no loading skeleton); each page still calls requireViewer() itself.
  */
-const protectedPrefixes = [routes.settings, routes.newResource, routes.saved, routes.following, routes.admin] as const;
+const protectedPrefixes = [
+  routes.settings,
+  routes.newResource,
+  routes.saved,
+  routes.following,
+  routes.admin,
+  routes.notifications,
+] as const;
 const protectedPatterns = [/^\/resurs\/[^/]+\/tahrirlash\/?$/] as const;
 
 export function isProtectedPath(pathname: string): boolean {

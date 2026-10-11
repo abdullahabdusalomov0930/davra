@@ -1,0 +1,12 @@
+#!/bin/sh
+# Blocks commits that contain likely secrets. Enable once per clone with `pnpm hooks:install`
+# (sets core.hooksPath to .githooks). Findings show file:line and the rule, never the value.
+set -e
+
+# Dependency-free scanner for the staged files (scripts/check-secrets.ts).
+pnpm exec tsx scripts/check-secrets.ts
+
+# gitleaks has many more rules (config: .gitleaks.toml); used only when it is installed.
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --redact --verbose --no-banner
+fi

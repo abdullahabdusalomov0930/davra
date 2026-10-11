@@ -31,3 +31,16 @@ export function getCronSecret(): string | undefined {
 export function getSafeBrowsingKey(): string | undefined {
   return process.env.SAFE_BROWSING_API_KEY?.trim() || undefined;
 }
+
+/** Cloudflare Turnstile secret; optional. Without it (or without the site key) the check is skipped. */
+export function getTurnstileSecret(): string | undefined {
+  return process.env.TURNSTILE_SECRET_KEY?.trim() || undefined;
+}
+
+/**
+ * Optional hardening (security addendum 5.1): admin actions need a sign-in in the last 15 minutes.
+ * Off unless REQUIRE_RECENT_LOGIN_FOR_ADMIN is "true".
+ */
+export function requiresRecentLoginForAdmin(): boolean {
+  return process.env.REQUIRE_RECENT_LOGIN_FOR_ADMIN?.trim() === "true";
+}

@@ -7,10 +7,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authErrorKey } from "@/lib/auth-errors";
-import { absoluteUrl, routes } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/client";
 import { emailSchema } from "@/lib/validators";
+import { resendConfirmationAction } from "@/server/actions/auth";
 
 const COOLDOWN_SECONDS = 60;
 
@@ -29,15 +27,14 @@ function useResendConfirmation() {
 
   async function send(email: string) {
     setPending(true);
-    const { error } = await createClient().auth.resend({
-      type: "signup",
-      email,
-      options: { emailRedirectTo: absoluteUrl(routes.confirmEmail) },
-    });
+    const result = await resendConfirmationAction(email).catch(() => ({
+      ok: false as const,
+      error: "network" as const,
+    }));
     setPending(false);
 
-    if (error) {
-      toast.error(tError(authErrorKey(error)));
+    if (!result.ok) {
+      toast.error(tError(result.error ?? "unknown"));
       return;
     }
     toast.success(t("resent"));

@@ -6,7 +6,10 @@ import { z } from "@/lib/zod";
 import type { ActionResult } from "@/lib/action-result";
 import { normalizeUrl } from "@/lib/url-normalize";
 import { type ResourceInput, resourceSchema } from "@/lib/validators";
-import { getViewer } from "@/server/auth/session";
+import { getViewer, getViewerProfile } from "@/server/auth/session";
+import { verifyTurnstile } from "@/server/auth/turnstile";
+import { checkRateLimit } from "@/server/rate-limit";
+import { clientIp } from "@/server/request";
 import {
   createResource,
   deleteResource,
@@ -37,9 +40,21 @@ export async function checkResourceUrlAction(rawUrl: string, excludeId?: string)
     : { status: "ok", url: normalized.url };
 }
 
-export async function createResourceAction(input: ResourceInput): Promise<ResourceResult> {
+/**
+ * `captchaToken`: Cloudflare Turnstile for new members (trust level 0), when configured. New links
+ * are also limited per IP address (D74), on top of the per-user limit in the database.
+ */
+export async function createResourceAction(
+  input: ResourceInput,
+  captchaToken?: string | null,
+): Promise<ResourceResult> {
   const viewer = await getViewer();
   if (!viewer) return { ok: false, error: "unauthorized" };
+  const ip = await clientIp();
+  if (!(await checkRateLimit("linkSubmission", { ip }))) return { ok: false, error: "rateLimited" };
+  if ((await getViewerProfile())?.trust_level === 0 && !(await verifyTurnstile(captchaToken, ip))) {
+    return { ok: false, error: "captchaFailed" };
+  }
 
   const parsed = resourceSchema.safeParse(input);
   if (!parsed.success) {

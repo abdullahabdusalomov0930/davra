@@ -12,10 +12,9 @@ import { SubmitButton } from "@/components/forms/submit-button";
 import { useErrorMessage } from "@/components/forms/use-error-message";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
-import { type AuthErrorKey, authErrorKey } from "@/lib/auth-errors";
-import { absoluteUrl, routes } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/client";
+import type { AuthErrorKey } from "@/lib/auth-errors";
 import { type ResetRequestInput, resetRequestSchema } from "@/lib/validators";
+import { requestPasswordResetAction } from "@/server/actions/auth";
 
 export function ResetRequestForm() {
   const t = useTranslations("Auth");
@@ -32,11 +31,12 @@ export function ResetRequestForm() {
 
   const onSubmit = form.handleSubmit(async ({ email }) => {
     setFormError(null);
-    const { error } = await createClient().auth.resetPasswordForEmail(email, {
-      redirectTo: absoluteUrl(routes.newPassword),
-    });
-    if (error) {
-      setFormError(authErrorKey(error));
+    const result = await requestPasswordResetAction({ email }).catch(() => ({
+      ok: false as const,
+      error: "network" as const,
+    }));
+    if (!result.ok) {
+      setFormError(result.error ?? "unknown");
       return;
     }
     // Same answer whether or not the address has an account.
