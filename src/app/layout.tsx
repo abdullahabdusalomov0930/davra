@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -23,6 +23,16 @@ const inter = Inter({
   display: "swap",
 });
 
+// Headings (D77): Source Serif 4 with its optical-size axis, so large titles get the display cut. It
+// draws oʻ/gʻ (U+02BB) and ʼ (U+02BC) as real letters (Literata, tried first, gives U+02BB no width)
+// and covers Cyrillic, so titles written in Cyrillic keep the same face.
+const serif = Source_Serif_4({
+  subsets: ["latin"],
+  axes: ["opsz"],
+  variable: "--font-heading",
+  display: "swap",
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata");
   const title = t("title", { appName: APP_NAME });
@@ -40,8 +50,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafcfc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f161c" },
+    { media: "(prefers-color-scheme: light)", color: "#fbf7ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#14100d" },
   ],
 };
 
@@ -51,7 +61,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
-    <html lang={locale} className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang={locale} className={`${inter.variable} ${serif.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
           <ThemeProvider nonce={nonce}>

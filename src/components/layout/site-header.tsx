@@ -1,4 +1,4 @@
-import { BellIcon, BookOpenIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ArrowRightIcon, BellIcon, PlusIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -12,6 +12,7 @@ import { MobileNav } from "./mobile-nav";
 import { mainNavItems } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
 import { BanNotice } from "./ban-notice";
+import { Logo } from "./logo";
 import { type HeaderUser, UserMenu } from "./user-menu";
 
 export async function SiteHeader() {
@@ -34,78 +35,92 @@ export async function SiteHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4">
-        <Link
-          href="/"
-          className="mr-2 flex items-center gap-2 font-semibold tracking-tight"
-          aria-label={t("homeLabel", { appName: APP_NAME })}
-        >
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <BookOpenIcon className="size-4" aria-hidden />
-          </span>
-          <span className="text-lg">{APP_NAME}</span>
-        </Link>
-
-        <nav aria-label={t("mainNav")} className="hidden items-center gap-1 md:flex">
-          {mainNavItems.map((item) => (
+    <>
+      {!user && (
+        // A dark strip above the header, like a press note: what is new this week.
+        <aside aria-label={t("announcementLabel")} className="dark bg-night text-night-foreground">
+          <p className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-1.5 px-4 py-2 text-center text-[13px] font-medium">
+            {t("announcement")}
             <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              href={routes.weekly}
+              className="group inline-flex items-center gap-1 text-primary underline-offset-4 hover:underline"
             >
-              {t(item.labelKey)}
+              {t("announcementLink")}
+              <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
             </Link>
-          ))}
-        </nav>
+          </p>
+        </aside>
+      )}
+      <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
+        <div className="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4">
+          <Link
+            href="/"
+            className="group/logo mr-4 flex items-center rounded-full"
+            aria-label={t("homeLabel", { appName: APP_NAME })}
+          >
+            <Logo />
+          </Link>
 
-        <div className="ml-auto flex items-center gap-1">
-          <Button asChild variant="ghost" size="icon" className="md:hidden">
-            <Link href={routes.search} aria-label={t("search")}>
-              <SearchIcon aria-hidden />
-            </Link>
-          </Button>
-          <ThemeToggle />
-          {user ? (
-            <>
-              <Button asChild size="sm" className="mx-1">
-                <Link href={routes.newResource}>
-                  <PlusIcon aria-hidden />
-                  <span className="sr-only sm:not-sr-only">{t("share")}</span>
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="icon" className="relative">
-                <Link
-                  href={routes.notifications}
-                  aria-label={`${tNotifications("navLabel")}: ${tNotifications("unread", { count: unread })}`}
-                >
-                  <BellIcon aria-hidden />
-                  {unread > 0 && (
-                    <span
-                      aria-hidden
-                      className="absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-4 font-semibold text-white"
-                    >
-                      {unread > 9 ? "9+" : unread}
-                    </span>
-                  )}
-                </Link>
-              </Button>
-              <UserMenu user={user} />
-            </>
-          ) : (
-            <div className="hidden items-center gap-2 md:flex">
-              <Button asChild variant="ghost">
-                <Link href={routes.signIn}>{t("login")}</Link>
-              </Button>
-              <Button asChild>
-                <Link href={routes.signUp}>{t("signup")}</Link>
-              </Button>
-            </div>
-          )}
-          <MobileNav signedIn={Boolean(user)} />
+          <nav aria-label={t("mainNav")} className="hidden items-center gap-0.5 md:flex">
+            {mainNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-full px-3.5 py-2 text-[15px] font-medium text-foreground/80 transition-colors hover:bg-foreground/5 hover:text-foreground"
+              >
+                {t(item.labelKey)}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="ml-auto flex items-center gap-1.5">
+            <Button asChild variant="ghost" size="icon" className="md:hidden">
+              <Link href={routes.search} aria-label={t("search")}>
+                <SearchIcon aria-hidden />
+              </Link>
+            </Button>
+            <ThemeToggle />
+            {user ? (
+              <>
+                <Button asChild className="mx-1">
+                  <Link href={routes.newResource}>
+                    <PlusIcon aria-hidden />
+                    <span className="sr-only sm:not-sr-only">{t("share")}</span>
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="icon" className="relative">
+                  <Link
+                    href={routes.notifications}
+                    aria-label={`${tNotifications("navLabel")}: ${tNotifications("unread", { count: unread })}`}
+                  >
+                    <BellIcon aria-hidden />
+                    {unread > 0 && (
+                      <span
+                        aria-hidden
+                        className="absolute top-0.5 right-0.5 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-4 font-semibold text-primary-foreground"
+                      >
+                        {unread > 9 ? "9+" : unread}
+                      </span>
+                    )}
+                  </Link>
+                </Button>
+                <UserMenu user={user} />
+              </>
+            ) : (
+              <div className="hidden items-center gap-2 md:flex">
+                <Button asChild variant="outline">
+                  <Link href={routes.signIn}>{t("login")}</Link>
+                </Button>
+                <Button asChild>
+                  <Link href={routes.signUp}>{t("signup")}</Link>
+                </Button>
+              </div>
+            )}
+            <MobileNav signedIn={Boolean(user)} />
+          </div>
         </div>
-      </div>
-      {ban && profile && <BanNotice ban={ban} userId={appealed?.has(`ban:${profile.id}`) ? undefined : profile.id} />}
-    </header>
+        {ban && profile && <BanNotice ban={ban} userId={appealed?.has(`ban:${profile.id}`) ? undefined : profile.id} />}
+      </header>
+    </>
   );
 }

@@ -1,14 +1,16 @@
-import { FilterIcon, LayersIcon, ShieldCheckIcon } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { ListTabs } from "@/components/feed/list-tabs";
+import { CommunitySection, StatsSection, TopicsMarquee } from "@/components/home/closing-sections";
+import { FeaturesSection } from "@/components/home/features-section";
+import { Hero } from "@/components/home/hero";
+import { ProblemSection } from "@/components/home/problem-section";
+import { StepsSection, TrustRow } from "@/components/home/steps-section";
 import { renderCardEntries } from "@/components/feed/card-entries";
 import { ResourceList } from "@/components/feed/resource-list";
 import { EmptyState } from "@/components/layout/empty-state";
 import { JsonLd } from "@/components/seo/json-ld";
-import { Button } from "@/components/ui/button";
 import { firstParam } from "@/lib/auth-links";
 import { routes } from "@/lib/routes";
 import { absoluteUrl, openGraphBase } from "@/lib/seo";
@@ -17,6 +19,7 @@ import { type FeedQuery, SEARCH_PARAMS, SORT_PARAM_VALUES } from "@/lib/validato
 import { getViewer } from "@/server/auth/session";
 import { loadMoreResourcesAction } from "@/server/actions/feed";
 import { findResources } from "@/server/services/feed";
+import { getTopics } from "@/server/services/topics";
 
 const NEWEST_HREF = routes.newest;
 
@@ -58,85 +61,66 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
     getViewer(),
     findResources(query, { cursor: firstParam(params[SEARCH_PARAMS.cursor]) }),
   ]);
-
-  const values = [
-    { icon: FilterIcon, title: t("valueSearchTitle"), text: t("valueSearchText") },
-    { icon: LayersIcon, title: t("valueStructuredTitle"), text: t("valueStructuredText") },
-    { icon: ShieldCheckIcon, title: t("valueQualityTitle"), text: t("valueQualityText") },
-  ];
+  // Guests get the landing page above the feed; its pictures use the first cards of the list.
+  const showLanding = !viewer;
+  const topics = showLanding ? await getTopics() : [];
+  const featured = page.items;
 
   return (
-    <div className="mx-auto max-w-6xl px-4">
+    <>
       <JsonLd data={await websiteData()} />
-      {!viewer && (
+      {showLanding && (
         <>
-          <section className="pt-10 pb-8 sm:pt-14">
-            <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-balance sm:text-5xl">{t("heroTitle")}</h1>
-            <p className="mt-4 max-w-2xl text-base text-pretty text-muted-foreground sm:text-lg">{t("heroSubtitle")}</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link href={routes.search}>{t("ctaBrowse")}</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href={routes.newResource}>{t("ctaShare")}</Link>
-              </Button>
-            </div>
-          </section>
-
-          <section aria-labelledby="values-title" className="pb-10">
-            <h2 id="values-title" className="sr-only">
-              {t("valuesTitle", { appName: APP_NAME })}
-            </h2>
-            <ul className="grid gap-4 sm:grid-cols-3">
-              {values.map(({ icon: Icon, title, text }) => (
-                <li key={title} className="rounded-xl border bg-card p-5">
-                  <Icon className="size-5 text-primary" aria-hidden />
-                  <h3 className="mt-3 font-semibold">{title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{text}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <Hero featured={featured.slice(0, 2)} topics={topics.slice(0, 4)} />
+          <ProblemSection />
+          <FeaturesSection resources={featured} />
+          <TrustRow />
+          <StepsSection resources={featured.slice(3)} />
+          <StatsSection topicCount={topics.length} />
+          <TopicsMarquee topics={topics} />
+          <CommunitySection resources={page.items} />
         </>
       )}
 
-      <section aria-labelledby="feed-title" className={viewer ? "py-10" : "pb-16"}>
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          {viewer ? (
-            <h1 id="feed-title" className="text-2xl font-semibold tracking-tight">
-              {t("feedTitle")}
-            </h1>
-          ) : (
-            <h2 id="feed-title" className="text-xl font-semibold">
-              {t("feedTitle")}
-            </h2>
-          )}
-          <ListTabs
-            label={tFeed("tabsLabel")}
-            tabs={[
-              { href: routes.home, label: tFeed("popular"), active: sort === "popular" },
-              { href: NEWEST_HREF, label: tFeed("newest"), active: sort === "newest" },
-              ...(viewer ? [{ href: routes.following, label: tFeed("following"), active: false }] : []),
-            ]}
-          />
-        </div>
+      <section aria-labelledby="feed-title" className={showLanding ? "border-t border-border/70" : undefined}>
+        <div className="frame px-4 py-14 sm:px-8 lg:px-12">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            {viewer ? (
+              <h1 id="feed-title" className="text-4xl font-medium tracking-tight sm:text-5xl">
+                {t("feedTitle")}
+              </h1>
+            ) : (
+              <h2 id="feed-title" className="text-4xl font-medium sm:text-5xl">
+                {t("feedTitle")}
+              </h2>
+            )}
+            <ListTabs
+              label={tFeed("tabsLabel")}
+              tabs={[
+                { href: routes.home, label: tFeed("popular"), active: sort === "popular" },
+                { href: NEWEST_HREF, label: tFeed("newest"), active: sort === "newest" },
+                ...(viewer ? [{ href: routes.following, label: tFeed("following"), active: false }] : []),
+              ]}
+            />
+          </div>
 
-        {page.items.length > 0 ? (
-          <ResourceList
-            key={sort}
-            initialCards={await renderCardEntries(page.items)}
-            initialCursor={page.nextCursor}
-            loadMore={loadMoreResourcesAction.bind(null, query)}
-            baseHref={sort === "newest" ? NEWEST_HREF : routes.home}
-          />
-        ) : (
-          <EmptyState
-            title={t("emptyTitle")}
-            description={t("emptyText")}
-            action={{ href: routes.newResource, label: t("emptyCta") }}
-          />
-        )}
+          {page.items.length > 0 ? (
+            <ResourceList
+              key={sort}
+              initialCards={await renderCardEntries(page.items)}
+              initialCursor={page.nextCursor}
+              loadMore={loadMoreResourcesAction.bind(null, query)}
+              baseHref={sort === "newest" ? NEWEST_HREF : routes.home}
+            />
+          ) : (
+            <EmptyState
+              title={t("emptyTitle")}
+              description={t("emptyText")}
+              action={{ href: routes.newResource, label: t("emptyCta") }}
+            />
+          )}
+        </div>
       </section>
-    </div>
+    </>
   );
 }

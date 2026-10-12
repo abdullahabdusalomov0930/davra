@@ -48,6 +48,9 @@ export async function signInWithForm(page: Page, email: string, next = "/", pass
 /** WCAG 2.1 A/AA checks by axe-core; any violation fails the test with its rule and elements. */
 export async function expectNoAxeViolations(page: Page) {
   await page.waitForLoadState("networkidle");
+  // Check the page as it looks once still: entrance and scroll animations fade text in, and axe would
+  // otherwise measure contrast halfway through a fade. Reduced motion shows every element's final state.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   const summary = results.violations.map(
     (violation) =>

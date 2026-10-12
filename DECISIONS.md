@@ -770,3 +770,21 @@ comments, ratings, likes, saves, follows, appeals and notifications. Reports the
 name, the audit log keeps actions without the actor, and severe-incident evidence is kept (no foreign
 key), as the privacy policy says. Removing everything rather than anonymizing cards is the simpler and
 more private choice for an MVP; cards others found useful are lost with the account.
+
+### D77. Visual identity: cream, ink and orange; a serif for headings; quiet motion
+
+The temporary teal look is replaced by a warm editorial style, after the owner chose cloaked.com as the
+reference: a cream background, ink text, a burnt-orange primary (#c9450e, the brightest orange that
+still gives white text 4.8:1) and warm near-black for dark bands, the footer and dark mode. The bright
+orange (#ff5a1f, `--brand`) is for shapes and the logo only; on cream it is 2.9:1, too low for text.
+Headings use Source Serif 4 with its optical-size axis, body text stays Inter. Literata was tried
+first and dropped because it gives oʻ/gʻ (U+02BB) no width, so the mark lands on the next letter;
+Newsreader, Fraunces and most display serifs lack U+02BB entirely. The logo is a ring with an
+off-centre opening ("davra" is a circle of people), also used as the motif in pictures.
+
+The landing page for guests (hero with search, a dark "problem" band, features, steps, numbers,
+topics and an invitation) is built from real data: cards, topics and authors from the database; the
+pictures are product mock-ups in HTML, not photos, because the CSP allows no remote images and there
+are no uploads (D63). Motion is CSS only: entrance and scroll-driven fades, floating cards, turning
+rings and a topics marquee, all off under `prefers-reduced-motion`, and the still state is the final
+state, so nothing is hidden when an animation does not run. axe checks the still page.
