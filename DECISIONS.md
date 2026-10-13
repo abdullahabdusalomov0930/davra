@@ -810,11 +810,14 @@ because the handwriting font has no arrow characters.
 
 The logo is a die-cut sticker: four rounded squares on white, tilted −6° in the interface and upright
 in app icons. Its colours (mustard #d9a400, orange #f07a3a, purple #7b5cf0, green #2e9e6b, clockwise
-from the top left) are also the "magnet dots": where the grid lines cross near a mouse pointer, dots
-appear, are pushed away from it and take the colour of the logo square in the same corner, so the
-logo forms around the pointer. The effect is a canvas under the page (it never takes the pointer and is
-not read out), runs only for a mouse or pen on a device that can hover, never under
-`prefers-reduced-motion` or forced colours, and stops drawing between moves. Share images use the
+from the top left) are also the "magnet dots": the paper has a faint dot wherever its lines cross (part
+of the CSS background, so it scrolls exactly with the grid and shows on every device), and near a mouse
+pointer coloured dots rise from them, are pushed away from it and take the colour of the logo square in
+the same corner, so the logo forms around the pointer. The faint dots were added after the owner asked
+for the dot field to be visible across the page, as on the design canvas. The moving part is a canvas
+under the page (it never takes the pointer and is not read out), runs only for a mouse or pen on a
+device that can hover, never under `prefers-reduced-motion` or forced colours, and stops drawing
+between moves. Share images use the
 same paper, sticker and Unbounded (Latin and Cyrillic files in src/assets/fonts, OFL).
 
 ### D79. Launch content and importing from GitHub Actions
@@ -833,3 +836,14 @@ default), so the owner needs no local setup. It reuses the migrations workflow's
 reads the project's secret API key from the Management API at run time and the key is masked in the log;
 a `SUPABASE_SECRET_KEY` repository secret, if present, takes precedence. Workflow inputs reach the shell
 only through environment variables.
+
+### D80. Fuller legal texts
+
+At the owner's request the legal pages were filled out: the terms gained prohibited actions, account
+deletion, external links and governing law (the legislation of the Republic of Uzbekistan); the privacy
+policy gained who processes the data, the basis (consent at sign-up, which now links the privacy policy
+too), where the data is stored, children and changes to the policy; the rules gained profile rules.
+Every page shows the contact section. The texts still carry the "Loyiha matni" banner: they have not
+been reviewed by a lawyer, and whether storing Uzbek citizens' data in Frankfurt meets the personal data
+law remains open (SECURITY.md). The contact address comes from `NEXT_PUBLIC_CONTACT_EMAIL`; until it is
+set, the pages say it will be published.

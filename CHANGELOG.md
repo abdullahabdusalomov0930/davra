@@ -5,6 +5,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Design and content — Dotted paper, fuller legal pages
+
+#### Changed
+
+- The squared paper now has a faint dot at every line crossing, on every device; near a mouse pointer
+  the magnet dots rise from them in the logo's colours.
+- Legal pages filled out (DECISIONS.md D80): prohibited actions, account deletion, external links and
+  governing law in the terms; operator, legal basis, storage location, children and policy changes in
+  the privacy policy; profile rules in the community rules. All three show the contact section, and the
+  sign-up notice links the privacy policy as well.
+
 ### Content — Launch set of 102 resources
 
 #### Added
