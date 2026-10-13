@@ -23,7 +23,10 @@
     "share": "Resurs qoʻshish",
     "saved": "Saqlanganlar",
     "following": "Obunalarim",
-    "moderation": "Moderatsiya"
+    "moderation": "Moderatsiya",
+    "announcementLabel": "Yangiliklar",
+    "announcement": "Har hafta talabalar eng yuqori baholagan resurslar — bitta roʻyxatda.",
+    "announcementLink": "Roʻyxatni koʻrish"
   },
   "Theme": {
     "toggle": "Rang rejimini almashtirish",
@@ -38,14 +41,19 @@
     "terms": "Foydalanish shartlari",
     "privacy": "Maxfiylik siyosati",
     "removal": "Kontentni olib tashlash soʻrovi",
-    "copyright": "© {year} {appName}"
+    "copyright": "© {year} {appName}",
+    "siteNav": "Sayt boʻlimlari"
   },
   "Home": {
-    "heroTitle": "Eng foydali oʻquv resurslari — bir joyda",
+    "heroTitle": "Eng foydali oʻquv resurslari — <hl>bir joyda</hl>",
+    "heroLead": "Kanallarni varaqlab vaqt yoʻqotmang.",
     "heroSubtitle": "Talabalar kurslar, YouTube kanallari, kitoblar va vositalarni oʻzbek tilidagi qisqa sharhlar bilan ulashadi. Oʻqish uchun roʻyxatdan oʻtish shart emas.",
-    "ctaBrowse": "Resurslarni koʻrish",
-    "ctaShare": "Resurs ulashish",
-    "valuesTitle": "Nega aynan {appName}?",
+    "searchLabel": "Resurslarni qidirish",
+    "searchPlaceholder": "Masalan: Python, IELTS yoki oliy matematika",
+    "searchSubmit": "Qidirish",
+    "topicsLabel": "Mashhur mavzular",
+    "topicsLead": "Mashhur:",
+    "valuesTitle": "{appName} bilan kerakli resurs doim qoʻl ostida.",
     "valueSearchTitle": "Tez topasiz",
     "valueSearchText": "Mavzu, daraja, til va narx boʻyicha filtrlang — kanallarni varaqlab oʻtirish shart emas.",
     "valueStructuredTitle": "Tushunarli kartalar",
@@ -55,7 +63,78 @@
     "emptyTitle": "Hozircha resurslar yoʻq",
     "emptyText": "Birinchi resursni siz qoʻshing — boshqa talabalar sizga rahmat aytadi.",
     "emptyCta": "Resurs qoʻshish",
-    "feedTitle": "Resurslar lentasi"
+    "feedTitle": "Resurslar lentasi",
+    "visual": {
+      "sharedTitle": "Yangi ulashildi",
+      "filtersTitle": "Filtrlar",
+      "filterLevel": "Daraja",
+      "filterLanguage": "Til",
+      "filterPrice": "Narx",
+      "matchLabel": "Mos keldi",
+      "phoneTitle": "Eng yaxshilari"
+    },
+    "problem": {
+      "title": "Foydali resurslar <hl>tarqoq</hl>, vaqt esa <hl>cheklangan.</hl>",
+      "text": "Yaxshi kurs qaysidir Telegram kanalida, kerakli kitob kimningdir xabarida, eng tushunarli video esa reklamalar orasida qolib ketadi. Har safar qidiruvni noldan boshlaysiz.",
+      "more": "Batafsil",
+      "scatteredTitle": "Tarqoq havolalar",
+      "scatteredText": "Kurslar, kanallar va kitoblar oʻnlab chatlar, guruhlar va saytlarga sochilib ketgan — kerak boʻlganda topib boʻlmaydi.",
+      "outdatedTitle": "Eskirgan yoki ishlamaydi",
+      "outdatedText": "Bir yil oldin maqtalgan kurs bugun eskirgan, havola esa ochilmasligi mumkin — buni bilmasdan vaqt sarflaysiz.",
+      "noiseTitle": "Reklama va shovqin",
+      "noiseText": "Pullik reklama, spam va «tekin kurs» vaʼdalari orasidan haqiqatan foydalisini ajratish soatlab vaqt oladi.",
+      "link1": "t.me/kurslar_arxivi/1842",
+      "link2": "youtube.com/playlist?list=…",
+      "link3": "drive.google.com/…/kitob.pdf",
+      "deadUrl": "kurslar.example/darslik-2019",
+      "deadTitle": "Sahifa topilmadi",
+      "deadNote": "Kurs 2019-yildan beri yangilanmagan",
+      "noiseAds": "Reklama",
+      "noiseSpam": "Spam",
+      "noiseFree": "«Tekin kurs»",
+      "noiseYou": "Siz",
+      "answerTitle": "Muammo hammaga tanish. Yechimi esa oddiy.",
+      "answerText": "{appName}da talabalar oʻzlari sinab koʻrgan resurslarni ulashadi: har birida nimani oʻrgatishi, kimga mosligi va baholar bor. Siz esa vaqtingizni oʻqishga sarflaysiz.",
+      "tryLead": "Hoziroq sinab koʻring: nimani oʻrganmoqchisiz?",
+      "tryLabel": "Mavzu boʻyicha qidirish"
+    },
+    "trust": {
+      "label": "{appName} haqida qisqacha",
+      "moderated": "Moderatorlar nazoratida",
+      "checked": "Havolalar har hafta tekshiriladi",
+      "free": "Bepul va reklamasiz",
+      "uzbek": "Oʻzbek tilidagi sharhlar"
+    },
+    "steps": {
+      "title": "Qanday ishlaydi?",
+      "findTitle": "Toping",
+      "findText": "Mavzu, daraja, til va narx boʻyicha filtrlang yoki shunchaki yozib qidiring — lotin va kirill yozuvi farq qilmaydi.",
+      "findQuery": "python",
+      "rateTitle": "Baholang va saqlang",
+      "rateText": "Foydali boʻlsa, baho va qisqa fikr qoldiring, keyinroq qaytish uchun saqlab qoʻying.",
+      "savedChip": "Saqlangan",
+      "shareTitle": "Ulashing",
+      "shareText": "Oʻzingiz sinab koʻrgan resursni ulashing: havola tekshiriladi, karta esa boshqa talabalarga yoʻl koʻrsatadi.",
+      "shareUrl": "https://…",
+      "shareButton": "Ulashish",
+      "shareToast": "Havola tekshirildi"
+    },
+    "stats": {
+      "title": "{appName} raqamlarda",
+      "priceValue": "0 soʻm",
+      "priceLabel": "{appName}dan foydalanish narxi: reklamasiz va obunasiz",
+      "topicsLabel": "mavzu boʻyicha tartiblangan resurslar",
+      "checkValue": "7 kun",
+      "checkLabel": "ichida har bir havola qayta tekshiriladi"
+    },
+    "topics": {
+      "title": "Har bir fan uchun — oʻz davrasi",
+      "text": "Dasturlashdan tillargacha: mavzuni tanlang va shu sohada talabalar eng koʻp tavsiya qilgan resurslarni koʻring."
+    },
+    "community": {
+      "title": "Bilim ulashadigan talabalar davrasiga qoʻshiling",
+      "text": "Roʻyxatdan oʻting: resurslarni saqlang, baholang va oʻzingiz bilgan eng yaxshi manbalarni boshqalarga ulashing."
+    }
   },
   "NotFound": {
     "metaTitle": "Sahifa topilmadi",

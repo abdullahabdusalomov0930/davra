@@ -5,6 +5,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Design — New look inspired by cloaked.com
+
+#### Changed
+
+- New visual identity (DECISIONS.md D77): cream and ink with a burnt-orange accent, warm dark bands
+  and dark mode, Source Serif 4 headings with Inter text, pill buttons and fields, larger rounded
+  cards, a ring logo and new app icons.
+- Header with a weekly-top note for guests, a dark footer with a large wordmark.
+- Guest home page rebuilt as a landing page: hero with a search field and real cards over the ring
+  motif, a dark band on why good material is hard to find (cards that open with "+"), features with
+  filter and phone mock-ups, promises, "Qanday ishlaydi?", orange number tiles, a moving row of
+  topics and an invitation with the authors' avatars, then the feed.
+- Gentle motion (entrance, scroll fades, floating cards, turning rings, marquee), switched off for
+  people who prefer reduced motion.
+
 ### Security addendum X2–X5 — Trust, reports, moderation, link and app security
 
 #### Added

@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: PageProps<"/resurs/[slug]">):
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="grid gap-2">
-      <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">{title}</h2>
+      <h2 className="font-sans text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">{title}</h2>
       {children}
     </section>
   );
