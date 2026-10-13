@@ -180,18 +180,19 @@
   body {
     @apply paper text-foreground;
   }
-  /* The red margin line of a notebook page, a little left of the page column. Painted under every
-     block, so sections with their own background cover it. Hidden where the column fills the screen. */
+  /* The red margin line of a notebook page, just left of the 72rem page column. Painted under every
+     block, so sections with their own background cover it. Shown only where the screen leaves room for
+     it beside the column, so it never runs through text. */
   body::before {
     content: "";
     position: fixed;
     inset-block: 0;
-    left: max(1.5rem, calc(50% - 34.5rem));
+    left: calc(50% - 37.25rem);
     z-index: -1;
     width: 2px;
     background: var(--margin-line);
     pointer-events: none;
-    @media (width < 64rem) {
+    @media (width < 78rem) {
       display: none;
     }
   }

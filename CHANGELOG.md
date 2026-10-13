@@ -5,6 +5,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Content — Launch set of 102 resources
+
+#### Added
+
+- `data/launch-resources.csv`: 102 learning resources across all twelve topics (seven or more each),
+  with Uzbek summaries, including Uzbek sources such as Mohirdev, cbu.uz, stat.uz, data.gov.uz and
+  El-yurt umidi (DECISIONS.md D79).
+- "Import resources" GitHub Actions workflow: imports a CSV from the repository into production from the
+  Actions tab, as a dry run by default.
+
+#### Fixed
+
+- The notebook margin line no longer runs through text on pages narrower than the landing page; it
+  sits just outside the page column and only appears where there is room for it.
+
 ### Design — "Daftar" notebook look, sticker logo and magnet dots
 
 #### Changed
