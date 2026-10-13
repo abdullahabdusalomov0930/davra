@@ -174,7 +174,7 @@ export default async function ResourcePage({ params }: PageProps<"/resurs/[slug]
         />
       )}
 
-      <article className="grid gap-8 rounded-2xl border bg-card p-6 text-card-foreground sm:p-8">
+      <article className="grid gap-8 rounded-2xl border-2 border-foreground bg-card p-6 text-card-foreground shadow-hard sm:p-8">
         <header className="grid gap-5">
           <div className="flex items-start gap-4">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-foreground">

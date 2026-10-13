@@ -28,10 +28,10 @@ export function ChoiceChips({ legend, options, registration, error }: ChoiceChip
           <label
             key={value}
             className={cn(
-              "inline-flex cursor-pointer items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors select-none hover:bg-muted hover:text-foreground dark:bg-input/30",
-              "has-checked:border-primary has-checked:bg-primary has-checked:text-primary-foreground",
+              "inline-flex cursor-pointer items-center gap-1.5 rounded-[0.625rem] border-2 border-dashed border-foreground/45 bg-card px-3 py-1.5 text-sm font-medium text-muted-foreground transition select-none hover:border-foreground hover:text-foreground",
+              "has-checked:border-solid has-checked:border-foreground has-checked:bg-marker has-checked:text-ink has-checked:shadow-hard-sm",
               "has-focus-visible:ring-3 has-focus-visible:ring-ring/50",
-              error && "border-destructive/60",
+              error && "border-destructive",
             )}
           >
             <input type="radio" value={value} className="sr-only" {...registration} />

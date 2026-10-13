@@ -5,6 +5,28 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Design — "Daftar" notebook look, sticker logo and magnet dots
+
+#### Changed
+
+- New look (DECISIONS.md D78): squared notebook paper with a red margin line, ink outlines and hard
+  shadows, a blue pen for links and notes, a yellow highlighter for the main action; Unbounded headings,
+  Onest text and Mali handwritten notes. Dark mode is the same notebook at night.
+- New logo: four coloured squares on a white sticker; new app icons and share images (squared paper,
+  sticker, Unbounded titles and a four-colour strip).
+- Landing page redrawn: post-it notes with real cards and tape, a highlighted title, handwritten
+  margin notes, numbered reasons, post-it figures, dashed topic chips. Cards, buttons, fields, tabs,
+  menus and dialogs across the site follow the same style.
+
+#### Added
+
+- "Magnet dots": with a mouse, dots appear where the grid lines cross near the pointer, move away
+  from it and take the logo's four colours. Off on touch screens and for reduced motion.
+
+#### Fixed
+
+- The default share image showed the message key instead of the home page title.
+
 ### Design — New look inspired by cloaked.com
 
 #### Changed

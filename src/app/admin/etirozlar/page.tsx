@@ -32,7 +32,10 @@ export default async function AdminAppealsPage() {
         const date = new Date(appeal.created_at);
         const type = appeal.target_type as "resource" | "comment" | "ban";
         return (
-          <li key={appeal.id} className="grid gap-3 rounded-2xl border bg-card p-5 text-sm">
+          <li
+            key={appeal.id}
+            className="grid gap-3 rounded-2xl border-2 border-foreground bg-card p-5 text-sm shadow-hard-sm"
+          >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="flex flex-wrap items-center gap-2">
                 <Badge>{t(`appeals.target.${type}`)}</Badge>

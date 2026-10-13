@@ -110,7 +110,10 @@ export default async function AdminReportsPage({ searchParams }: PageProps<"/adm
             {requests.map((request) => {
               const date = new Date(request.created_at);
               return (
-                <li key={request.id} className="grid gap-3 rounded-2xl border bg-card p-5 text-sm">
+                <li
+                  key={request.id}
+                  className="grid gap-3 rounded-2xl border-2 border-foreground bg-card p-5 text-sm shadow-hard-sm"
+                >
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <a
                       href={request.resource_url}
@@ -181,7 +184,10 @@ export default async function AdminReportsPage({ searchParams }: PageProps<"/adm
             const decide = (decision: string) =>
               handleReportsAction.bind(null, group.targetType, group.targetId, decision);
             return (
-              <li key={group.key} className="grid gap-3 rounded-2xl border bg-card p-5 text-sm">
+              <li
+                key={group.key}
+                className="grid gap-3 rounded-2xl border-2 border-foreground bg-card p-5 text-sm shadow-hard-sm"
+              >
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant={PRIORITY_VARIANT[group.priority]}>{t(`reports.priority.${group.priority}`)}</Badge>
                   <span className="text-xs text-muted-foreground">

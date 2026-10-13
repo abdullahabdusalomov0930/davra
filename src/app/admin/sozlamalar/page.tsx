@@ -24,14 +24,20 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="grid gap-8">
-      <section aria-labelledby="settings-title" className="grid gap-4 rounded-2xl border bg-card p-5">
+      <section
+        aria-labelledby="settings-title"
+        className="grid gap-4 rounded-2xl border-2 border-foreground bg-card p-5 shadow-hard-sm"
+      >
         <h2 id="settings-title" className="text-lg font-semibold">
           {t("settings.title")}
         </h2>
         <SettingsForm values={settings} />
       </section>
 
-      <section aria-labelledby="terms-title" className="grid gap-4 rounded-2xl border bg-card p-5">
+      <section
+        aria-labelledby="terms-title"
+        className="grid gap-4 rounded-2xl border-2 border-foreground bg-card p-5 shadow-hard-sm"
+      >
         <div className="grid gap-1">
           <h2 id="terms-title" className="text-lg font-semibold">
             {t("settings.termsTitle")}

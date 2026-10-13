@@ -12,5 +12,5 @@ export const contentType = "image/png";
 export default async function Image() {
   const t = await getTranslations({ locale: defaultLocale, namespace: "Home" });
   const tMeta = await getTranslations({ locale: defaultLocale, namespace: "Metadata" });
-  return renderShareImage({ title: t("heroTitle"), subtitle: tMeta("description") });
+  return renderShareImage({ title: t.markup("heroTitle", { hl: (chunks) => chunks }), subtitle: tMeta("description") });
 }

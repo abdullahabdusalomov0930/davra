@@ -5,7 +5,7 @@ export function ResourceGridSkeleton({ count = 6 }: { count?: number }) {
   return (
     <ul aria-hidden className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: count }, (_, index) => (
-        <li key={index} className="grid gap-3 rounded-2xl border bg-card p-5">
+        <li key={index} className="grid gap-3 rounded-[1.125rem] border-2 border-foreground/25 bg-card p-5">
           <div className="flex gap-3">
             <Skeleton className="size-10 rounded-xl" />
             <div className="grid flex-1 gap-2">

@@ -39,7 +39,7 @@ export default async function AdminCommentsPage() {
         const created = new Date(comment.created_at);
         const newAuthor = now.getTime() - new Date(comment.author.created_at).getTime() < NEW_ACCOUNT_MS;
         return (
-          <li key={comment.id} className="grid gap-3 rounded-2xl border bg-card p-5">
+          <li key={comment.id} className="grid gap-3 rounded-2xl border-2 border-foreground bg-card p-5 shadow-hard-sm">
             <div className="flex flex-wrap items-start justify-between gap-3 text-xs text-muted-foreground">
               <p>
                 {t("comments.on")}{" "}

@@ -1,5 +1,5 @@
 import { cn } from "cn";
-import { ArrowRightIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 
 import { routes } from "@/lib/routes";
 import { SEARCH_PARAMS, SEARCH_QUERY_MAX } from "@/lib/validators";
@@ -14,8 +14,8 @@ type SearchPillProps = {
 };
 
 /**
- * A large rounded search field that submits to /qidiruv. A plain GET form, so it works before the page
- * has loaded its JavaScript.
+ * A large search field cut out of white paper, with an ink outline and a hard shadow; it submits to
+ * /qidiruv. A plain GET form, so it works before the page has loaded its JavaScript.
  */
 export function SearchPill({ id, label, placeholder, submitLabel, className }: SearchPillProps) {
   return (
@@ -25,9 +25,8 @@ export function SearchPill({ id, label, placeholder, submitLabel, className }: S
       role="search"
       aria-label={label}
       className={cn(
-        "group/search flex w-full max-w-xl items-center gap-1 rounded-full border border-border/80 bg-card p-1.5 pl-5",
-        "shadow-[0_24px_48px_-24px_rgb(28_20_16/0.35)] transition-shadow duration-300",
-        "focus-within:border-ring focus-within:shadow-[0_24px_48px_-20px_rgb(201_69_14/0.45)]",
+        "flex w-full max-w-xl items-center gap-1.5 rounded-2xl border-[2.5px] border-foreground bg-card p-2 pl-4 text-card-foreground shadow-hard-lg",
+        "transition-shadow duration-200 focus-within:ring-3 focus-within:ring-ring/50",
         className,
       )}
     >
@@ -42,14 +41,14 @@ export function SearchPill({ id, label, placeholder, submitLabel, className }: S
         placeholder={placeholder}
         autoComplete="off"
         maxLength={SEARCH_QUERY_MAX}
-        className="h-11 min-w-0 flex-1 bg-transparent px-2 text-base outline-none placeholder:text-muted-foreground [&::-webkit-search-cancel-button]:hidden"
+        className="h-11 min-w-0 flex-1 bg-transparent px-1.5 text-base outline-none placeholder:text-muted-foreground [&::-webkit-search-cancel-button]:hidden"
       />
       <button
         type="submit"
-        aria-label={submitLabel}
-        className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform duration-200 outline-none group-focus-within/search:scale-105 hover:scale-105 focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-ink bg-ink px-3.5 font-semibold text-marker transition-transform duration-150 outline-none hover:-rotate-2 focus-visible:ring-3 focus-visible:ring-ring/60 sm:px-5"
       >
-        <ArrowRightIcon className="size-5" aria-hidden />
+        <SearchIcon className="size-4.5 sm:hidden" aria-hidden />
+        <span className="sr-only sm:not-sr-only">{submitLabel}</span>
       </button>
     </form>
   );

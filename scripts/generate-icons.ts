@@ -63,8 +63,8 @@ async function main() {
   await write("src/app/apple-icon.png", await png(180, { radius: 0 }));
   await write("public/icons/icon-192.png", await png(192));
   await write("public/icons/icon-512.png", await png(512));
-  // Maskable: full bleed, the glyph inside the central safe zone (80 %).
-  await write("public/icons/maskable-512.png", await png(512, { inset: 0.3, radius: 0 }));
+  // Maskable: full bleed, the squares well inside the central safe zone (80 %).
+  await write("public/icons/maskable-512.png", await png(512, { inset: 0.25, radius: 0 }));
 }
 
 void main();

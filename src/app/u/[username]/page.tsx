@@ -75,7 +75,7 @@ export default async function ProfilePage({ params }: PageProps<"/u/[username]">
           bio: profile.bio,
         })}
       />
-      <article className="rounded-2xl border bg-card p-6 text-card-foreground sm:p-8">
+      <article className="rounded-2xl border-2 border-foreground bg-card p-6 text-card-foreground shadow-hard sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
           <UserAvatar name={profile.display_name} seed={profile.username} className="size-24 text-3xl" />
           <div className="min-w-0 flex-1">

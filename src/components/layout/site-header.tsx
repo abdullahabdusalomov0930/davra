@@ -37,13 +37,13 @@ export async function SiteHeader() {
   return (
     <>
       {!user && (
-        // A dark strip above the header, like a press note: what is new this week.
+        // An ink strip above the header, like a note pinned to the page: what is new this week.
         <aside aria-label={t("announcementLabel")} className="dark bg-night text-night-foreground">
           <p className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-1.5 px-4 py-2 text-center text-[13px] font-medium">
             {t("announcement")}
             <Link
               href={routes.weekly}
-              className="group inline-flex items-center gap-1 text-primary underline-offset-4 hover:underline"
+              className="group inline-flex items-center gap-1 font-semibold text-marker underline-offset-4 hover:underline"
             >
               {t("announcementLink")}
               <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
@@ -51,11 +51,11 @@ export async function SiteHeader() {
           </p>
         </aside>
       )}
-      <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4">
+      <header className="sticky top-0 z-40 border-b-2 border-foreground bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
+        <div className="frame flex h-[4.25rem] items-center gap-2 px-4 sm:px-8 lg:px-12">
           <Link
             href="/"
-            className="group/logo mr-4 flex items-center rounded-full"
+            className="group/logo mr-5 flex items-center rounded-xl"
             aria-label={t("homeLabel", { appName: APP_NAME })}
           >
             <Logo />
@@ -66,7 +66,7 @@ export async function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-full px-3.5 py-2 text-[15px] font-medium text-foreground/80 transition-colors hover:bg-foreground/5 hover:text-foreground"
+                className="rounded-lg px-3 py-1.5 text-[15px] font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 {t(item.labelKey)}
               </Link>
@@ -97,7 +97,7 @@ export async function SiteHeader() {
                     {unread > 0 && (
                       <span
                         aria-hidden
-                        className="absolute top-0.5 right-0.5 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-4 font-semibold text-primary-foreground"
+                        className="absolute top-0 right-0 flex min-w-4 items-center justify-center rounded-full border-[1.5px] border-background bg-primary px-1 text-[10px] leading-4 font-semibold text-primary-foreground"
                       >
                         {unread > 9 ? "9+" : unread}
                       </span>

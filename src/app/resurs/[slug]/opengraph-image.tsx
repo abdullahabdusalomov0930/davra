@@ -24,7 +24,11 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   ]);
 
   // Not public (pending, hidden, deleted): the site's own picture.
-  if (!resource) return renderShareImage({ title: tHome("heroTitle"), subtitle: tMeta("description") });
+  if (!resource)
+    return renderShareImage({
+      title: tHome.markup("heroTitle", { hl: (chunks) => chunks }),
+      subtitle: tMeta("description"),
+    });
 
   const average = averageRating(resource.ratings_sum, resource.ratings_count);
   return renderShareImage({

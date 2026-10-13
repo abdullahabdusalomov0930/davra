@@ -788,3 +788,31 @@ pictures are product mock-ups in HTML, not photos, because the CSP allows no rem
 are no uploads (D63). Motion is CSS only: entrance and scroll-driven fades, floating cards, turning
 rings and a topics marquee, all off under `prefers-reduced-motion`, and the still state is the final
 state, so nothing is hidden when an animation does not run. axe checks the still page.
+
+### D78. "Daftar": a squared notebook page, a sticker logo and magnet dots
+
+Replaces the look of D77 after the owner compared several directions on a design canvas and chose
+"B1 · Daftar". The page is squared paper (28px cells ruled in light blue, a red margin line left of the
+page column on wide screens) with ink outlines and hard offset shadows, like paper cut-outs. Colours:
+paper #fdfcf7 and ink #111111; a blue ballpoint (`--primary` #1f4fb8, white on it 7.3:1) for links,
+focus and handwritten notes; a yellow highlighter (`--marker` #ffe45c, ink on it 14.8:1) for the main
+action and for marked words; pastel post-it notes for pictures. Notes stay paper in dark mode (ink on
+pastel, via the fixed `--ink`/`--pen` tokens); dark mode itself is the same notebook at night (#121317,
+faint blue rules, chalk-white lines, a lighter pen #8fb0ff). On dark backgrounds a marked word is
+written in the marker colour instead of highlighted, because ink-on-yellow would leave the top of the
+letters on the dark page.
+
+Type: Unbounded for headings (round and wide, like letters drawn with a marker), Onest for text, Mali
+for handwritten notes in the margins of the landing page (not preloaded, it is used only there). All
+three have oʻ/gʻ (U+02BB) and ʼ (U+02BC) with real widths; Unbounded kerns ʻ close over the preceding
+o or g, a deliberate design of the face. Arrows and the pencil next to notes are small SVG doodles,
+because the handwriting font has no arrow characters.
+
+The logo is a die-cut sticker: four rounded squares on white, tilted −6° in the interface and upright
+in app icons. Its colours (mustard #d9a400, orange #f07a3a, purple #7b5cf0, green #2e9e6b, clockwise
+from the top left) are also the "magnet dots": where the grid lines cross near a mouse pointer, dots
+appear, are pushed away from it and take the colour of the logo square in the same corner, so the
+logo forms around the pointer. The effect is a canvas under the page (it never takes the pointer and is
+not read out), runs only for a mouse or pen on a device that can hover, never under
+`prefers-reduced-motion` or forced colours, and stops drawing between moves. Share images use the
+same paper, sticker and Unbounded (Latin and Cyrillic files in src/assets/fonts, OFL).

@@ -1,42 +1,63 @@
 /**
  * Brand colours as hex, for places CSS variables cannot reach: share images, app icons and the web
- * manifest. They match the light theme in globals.css (--primary, --background, …); change both together.
+ * manifest. They match the light theme in globals.css (--background, --foreground, …); change both together.
  */
 export const brandColors = {
-  /** The bright orange of the logo and large shapes (never small text: 2.9:1 on the background). */
-  brand: "#ff5a1f",
-  primary: "#c9450e",
-  primaryForeground: "#ffffff",
-  background: "#fbf7ef",
-  foreground: "#1c1410",
-  muted: "#6b5e55",
-  accent: "#fce9de",
-  accentForeground: "#8a2e07",
-  border: "#e7dfd1",
-  night: "#15100c",
+  /** The notebook paper (--background). */
+  paper: "#fdfcf7",
+  /** Ink (--foreground): text, outlines and hard shadows. */
+  ink: "#111111",
+  /** The blue ballpoint (--primary): links and handwritten notes. */
+  pen: "#1f4fb8",
+  /** The highlighter (--marker): the main action. Ink on it is 14.8:1. */
+  marker: "#ffe45c",
+  muted: "#4f4f4f",
+  /** The light blue rules of the squared paper (--grid). */
+  grid: "#dce6f2",
+  /** A yellow post-it note (--accent). */
+  postit: "#fff3a0",
 } as const;
 
 /**
- * The logo mark on a 24×24 grid: a ring ("davra" is Uzbek for a circle of people) whose opening sits
- * off-centre, filled with the even-odd rule so the opening stays transparent.
+ * The logo: four rounded squares on a white sticker ("davra" is a circle of people; here, four of them
+ * side by side). Colours go clockwise from the top left — mustard, orange, purple, green — and are the
+ * same tones the magnet dots in the background take around the cursor.
  */
-export const LOGO_MARK_PATH =
-  "M2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0Z M8.4 10.6a5.2 5.2 0 1 0 10.4 0a5.2 5.2 0 1 0-10.4 0Z";
+export const LOGO_COLORS = {
+  topLeft: "#d9a400",
+  topRight: "#f07a3a",
+  bottomRight: "#7b5cf0",
+  bottomLeft: "#2e9e6b",
+} as const;
+
+/** The sticker on a 42×42 grid: 5 units of white around two rows of 14.5-unit squares, 3 apart. */
+export const LOGO_GRID = 42;
+export const LOGO_STICKER_RADIUS = 14;
+export const LOGO_SQUARE_RADIUS = 7;
+export const LOGO_SQUARES = [
+  { x: 5, y: 5, size: 14.5, fill: LOGO_COLORS.topLeft },
+  { x: 22.5, y: 5, size: 14.5, fill: LOGO_COLORS.topRight },
+  { x: 5, y: 22.5, size: 14.5, fill: LOGO_COLORS.bottomLeft },
+  { x: 22.5, y: 22.5, size: 14.5, fill: LOGO_COLORS.bottomRight },
+] as const;
 
 /**
- * The app icon as standalone SVG: the mark in cream on a bright orange square. `inset` is the mark's
- * margin as a share of the size (maskable icons need a wider one), `radius` the corner rounding.
+ * The app icon as standalone SVG: the four squares on a white tile. `inset` is the empty margin around the
+ * squares as a share of the size (maskable icons need a wider one), `radius` the tile's corner rounding.
  */
-export function logoSvg({ size, inset = 0.2, radius = 0.24 }: { size: number; inset?: number; radius?: number }) {
+export function logoSvg({ size, inset = 5 / 42, radius = 1 / 3 }: { size: number; inset?: number; radius?: number }) {
   const round = (value: number) => Number(value.toFixed(3));
-  const offset = round(size * inset);
-  const scale = round((size * (1 - 2 * inset)) / 24);
+  // The squares keep their proportions from the 42-unit grid, scaled into the space the inset leaves.
+  const scale = (size * (1 - 2 * inset)) / (LOGO_GRID - 10);
+  const offset = size * inset - 5 * scale;
+  const squares = LOGO_SQUARES.map(
+    ({ x, y, size: side, fill }) =>
+      `<rect x="${round(offset + x * scale)}" y="${round(offset + y * scale)}" width="${round(side * scale)}" height="${round(side * scale)}" rx="${round(LOGO_SQUARE_RADIUS * scale)}" fill="${fill}"/>`,
+  );
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`,
-    `<rect width="${size}" height="${size}" rx="${round(size * radius)}" fill="${brandColors.brand}"/>`,
-    `<g transform="translate(${offset} ${offset}) scale(${scale})">`,
-    `<path d="${LOGO_MARK_PATH}" fill="${brandColors.background}" fill-rule="evenodd"/>`,
-    `</g>`,
+    `<rect width="${size}" height="${size}" rx="${round(size * radius)}" fill="#ffffff"/>`,
+    ...squares,
     `</svg>`,
   ].join("");
 }

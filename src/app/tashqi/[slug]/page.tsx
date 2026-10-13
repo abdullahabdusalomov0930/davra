@@ -32,7 +32,7 @@ export default async function OutboundPage({ params }: PageProps<"/tashqi/[slug]
       </div>
       <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
       <p className="text-pretty text-muted-foreground">{t("text", { appName: APP_NAME })}</p>
-      <dl className="grid gap-3 rounded-2xl border bg-card p-5 text-sm">
+      <dl className="grid gap-3 rounded-2xl border-2 border-foreground bg-card p-5 text-sm shadow-hard">
         <div className="grid gap-1">
           <dt className="text-muted-foreground">{t("site")}</dt>
           <dd className="text-lg font-semibold">{resource.domain}</dd>

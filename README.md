@@ -273,7 +273,7 @@ URLs, `sitemap.xml`, `robots.txt`, structured data and share images are all buil
 deployments tell crawlers to stay away.
 
 - Share images (Telegram, X, …) are drawn per resource by `src/app/resurs/[slug]/opengraph-image.tsx`
-  with the Inter fonts in `src/assets/fonts` (Latin with oʻ/gʻ, and Cyrillic).
+  with the Inter and Unbounded fonts in `src/assets/fonts` (Latin with oʻ/gʻ, and Cyrillic).
 - The web manifest makes "Add to home screen" work; its icons, the favicon and the Apple touch icon come
   from `pnpm icons`.
 - The legal pages (`/qoidalar`, `/shartlar`, `/maxfiylik`) are drafts marked as such until a lawyer has

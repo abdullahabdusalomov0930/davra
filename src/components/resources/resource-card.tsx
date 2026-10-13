@@ -36,16 +36,16 @@ export function ResourceCard({ resource, viewer, hideAuthor = false }: ResourceC
   const date = new Date(resource.published_at ?? resource.created_at);
 
   return (
-    <article className="group relative flex min-w-0 flex-col gap-3 rounded-[1.5rem] border border-border/80 bg-card p-5 text-card-foreground transition-all duration-300 focus-within:border-primary/60 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_24px_48px_-28px_rgb(28_20_16/0.35)] sm:p-6">
+    <article className="group relative flex min-w-0 flex-col gap-3 rounded-[1.125rem] border-2 border-foreground bg-card p-5 text-card-foreground shadow-hard transition duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-hard-lg sm:p-6">
       <div className="flex items-start gap-3">
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-foreground transition-transform duration-300 group-hover:-rotate-6">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl border-2 border-foreground bg-accent text-accent-foreground transition-transform duration-300 group-hover:-rotate-6">
           <TypeIcon className="size-5" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
           <h3 className="line-clamp-2 text-[1.05rem] leading-snug font-semibold text-balance">
             <Link
               href={routes.resource(resource.slug)}
-              className="outline-none after:absolute after:inset-0 after:rounded-[1.5rem] focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
+              className="outline-none after:absolute after:inset-0 after:rounded-[1.125rem] focus-visible:after:ring-3 focus-visible:after:ring-ring/60"
             >
               {resource.title}
             </Link>
@@ -78,14 +78,14 @@ export function ResourceCard({ resource, viewer, hideAuthor = false }: ResourceC
           </Badge>
         )}
         <Badge asChild>
-          <Link href={routes.topic(resource.topic.slug)} className="relative z-10 hover:bg-accent/70">
+          <Link href={routes.topic(resource.topic.slug)} className="relative z-10 hover:bg-marker hover:text-ink">
             {resource.topic.name_uz}
           </Link>
         </Badge>
         <ResourceTags language={resource.language} price={resource.price} level={resource.level} />
       </div>
 
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-border/70 pt-4 text-xs text-muted-foreground">
+      <div className="mt-auto flex items-center justify-between gap-3 border-t-2 border-dashed border-border pt-4 text-xs text-muted-foreground">
         {hideAuthor ? (
           <span />
         ) : (

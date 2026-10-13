@@ -71,7 +71,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
       <JsonLd data={await websiteData()} />
       {showLanding && (
         <>
-          <Hero featured={featured.slice(0, 2)} topics={topics.slice(0, 4)} />
+          <Hero featured={featured.slice(0, 3)} topics={topics.slice(0, 4)} />
           <ProblemSection />
           <FeaturesSection resources={featured} />
           <TrustRow />
@@ -82,15 +82,15 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
         </>
       )}
 
-      <section aria-labelledby="feed-title" className={showLanding ? "border-t border-border/70" : undefined}>
+      <section aria-labelledby="feed-title" className={showLanding ? "border-t-2 border-foreground" : undefined}>
         <div className="frame px-4 py-14 sm:px-8 lg:px-12">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             {viewer ? (
-              <h1 id="feed-title" className="text-4xl font-medium tracking-tight sm:text-5xl">
+              <h1 id="feed-title" className="text-[2rem] font-extrabold sm:text-[2.75rem]">
                 {t("feedTitle")}
               </h1>
             ) : (
-              <h2 id="feed-title" className="text-4xl font-medium sm:text-5xl">
+              <h2 id="feed-title" className="text-[2rem] font-extrabold sm:text-[2.75rem]">
                 {t("feedTitle")}
               </h2>
             )}

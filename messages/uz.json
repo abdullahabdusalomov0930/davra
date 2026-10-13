@@ -46,14 +46,16 @@
   },
   "Home": {
     "heroTitle": "Eng foydali oʻquv resurslari — <hl>bir joyda</hl>",
+    "heroNote": "Bugungi dars: vaqtni tejash",
     "heroLead": "Kanallarni varaqlab vaqt yoʻqotmang.",
     "heroSubtitle": "Talabalar kurslar, YouTube kanallari, kitoblar va vositalarni oʻzbek tilidagi qisqa sharhlar bilan ulashadi. Oʻqish uchun roʻyxatdan oʻtish shart emas.",
     "searchLabel": "Resurslarni qidirish",
     "searchPlaceholder": "Masalan: Python, IELTS yoki oliy matematika",
     "searchSubmit": "Qidirish",
     "topicsLabel": "Mashhur mavzular",
-    "topicsLead": "Mashhur:",
+    "topicsLead": "masalan",
     "valuesTitle": "{appName} bilan kerakli resurs doim qoʻl ostida.",
+    "valuesNote": "3 ta sabab",
     "valueSearchTitle": "Tez topasiz",
     "valueSearchText": "Mavzu, daraja, til va narx boʻyicha filtrlang — kanallarni varaqlab oʻtirish shart emas.",
     "valueStructuredTitle": "Tushunarli kartalar",
@@ -133,7 +135,8 @@
     },
     "community": {
       "title": "Bilim ulashadigan talabalar davrasiga qoʻshiling",
-      "text": "Roʻyxatdan oʻting: resurslarni saqlang, baholang va oʻzingiz bilgan eng yaxshi manbalarni boshqalarga ulashing."
+      "text": "Roʻyxatdan oʻting: resurslarni saqlang, baholang va oʻzingiz bilgan eng yaxshi manbalarni boshqalarga ulashing.",
+      "note": "bepul va reklamasiz"
     }
   },
   "NotFound": {
