@@ -139,6 +139,15 @@ The script uses `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SECRET_KEY` from `.env.
 it writes to. To import into the cloud project, put its values in `.env.local` temporarily, or run the
 command with them set in your shell.
 
+Without a local setup, use the **Import resources** workflow (GitHub → Actions → Import resources → Run
+workflow): pick a CSV file from the repository, the moderator or admin username, and leave "Only check the
+file" ticked for a first run; run it again unticked to write. It reads the project's secret key at run time
+with the `SUPABASE_ACCESS_TOKEN` and `SUPABASE_PROJECT_ID` secrets of the migrations workflow (or uses a
+`SUPABASE_SECRET_KEY` repository secret if you add one).
+
+`data/launch-resources.csv` is the launch set: 102 free or freemium learning resources across all twelve
+topics, with summaries in Uzbek and no personal review (the cards are shared in the staff member's name).
+
 | Column          | Required | Values                                                                      |
 | --------------- | -------- | --------------------------------------------------------------------------- |
 | `title`         | yes      | 3–120 characters, not all capitals                                          |

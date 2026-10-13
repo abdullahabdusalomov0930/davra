@@ -816,3 +816,20 @@ logo forms around the pointer. The effect is a canvas under the page (it never t
 not read out), runs only for a mouse or pen on a device that can hover, never under
 `prefers-reduced-motion` or forced colours, and stops drawing between moves. Share images use the
 same paper, sticker and Unbounded (Latin and Cyrillic files in src/assets/fonts, OFL).
+
+### D79. Launch content and importing from GitHub Actions
+
+The production site starts with a curated set of 102 resources (`data/launch-resources.csv`), at least
+seven per topic, chosen for students in Uzbekistan: mostly free international courses, references and
+tools, plus Uzbek sources (Mohirdev, cbu.uz, stat.uz, data.gov.uz, my.gov.uz, IT Park, OAK, El-yurt
+umidi, ZiyoNET). Summaries and "for whom" lines are written in Uzbek in our own words; there is no
+`author_review`, because the cards are shared in a staff member's name and a personal review would be
+invented. Every link was checked to exist before it went into the file (a web search, since the build
+environment cannot open arbitrary sites); after the import the weekly link checker (D56) keeps checking
+them, and dead links surface in the admin queue as usual.
+
+Imports into production run from the **Import resources** workflow (`workflow_dispatch` only, dry run by
+default), so the owner needs no local setup. It reuses the migrations workflow's secrets: the access token
+reads the project's secret API key from the Management API at run time and the key is masked in the log;
+a `SUPABASE_SECRET_KEY` repository secret, if present, takes precedence. Workflow inputs reach the shell
+only through environment variables.
