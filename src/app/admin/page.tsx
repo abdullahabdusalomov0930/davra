@@ -56,7 +56,7 @@ export default async function AdminOverviewPage() {
           <li key={href}>
             <Link
               href={href}
-              className="flex h-full flex-col gap-3 rounded-2xl border bg-card p-5 transition-colors hover:border-primary/50"
+              className="flex h-full flex-col gap-3 rounded-2xl border-2 border-foreground bg-card p-5 shadow-hard-sm transition-colors hover:border-primary/50"
             >
               <Icon className="size-5 text-primary" aria-hidden />
               <span className="text-3xl font-semibold tabular-nums">{format.number(value)}</span>

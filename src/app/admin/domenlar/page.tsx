@@ -24,7 +24,7 @@ export default async function AdminDomainsPage({ searchParams }: PageProps<"/adm
   return (
     <div className="grid gap-6">
       {isAdmin ? (
-        <section className="rounded-2xl border bg-card p-5">
+        <section className="rounded-2xl border-2 border-foreground bg-card p-5 shadow-hard-sm">
           <DomainForm defaultDomain={prefill} />
         </section>
       ) : (
@@ -37,7 +37,7 @@ export default async function AdminDomainsPage({ searchParams }: PageProps<"/adm
       {domains.length === 0 ? (
         <AdminEmpty text={t("empty")} />
       ) : (
-        <ul className="divide-y rounded-2xl border bg-card text-sm">
+        <ul className="divide-y rounded-2xl border-2 border-foreground bg-card text-sm shadow-hard-sm">
           {domains.map((domain) => (
             <li key={domain.domain} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
               <div className="min-w-0">

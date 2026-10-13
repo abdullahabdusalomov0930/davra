@@ -61,7 +61,10 @@ export default async function AdminResourcesPage({ searchParams }: PageProps<"/a
             const created = new Date(resource.created_at);
             const newAuthor = now.getTime() - new Date(resource.author.created_at).getTime() < NEW_ACCOUNT_MS;
             return (
-              <li key={resource.id} className="grid gap-3 rounded-2xl border bg-card p-5">
+              <li
+                key={resource.id}
+                className="grid gap-3 rounded-2xl border-2 border-foreground bg-card p-5 shadow-hard-sm"
+              >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <Link href={routes.resource(resource.slug)} className="font-semibold hover:underline">

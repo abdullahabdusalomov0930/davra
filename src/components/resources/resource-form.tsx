@@ -54,7 +54,10 @@ type Duplicate = { slug?: string };
 
 function FormSection({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section aria-labelledby={id} className="grid gap-5 rounded-2xl border bg-card p-5 text-card-foreground sm:p-6">
+    <section
+      aria-labelledby={id}
+      className="grid gap-5 rounded-2xl border-2 border-foreground bg-card p-5 text-card-foreground shadow-hard sm:p-6"
+    >
       <h2 id={id} className="text-lg font-semibold">
         {title}
       </h2>

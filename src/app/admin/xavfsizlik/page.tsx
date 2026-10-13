@@ -32,7 +32,7 @@ export default async function AdminSecurityPage() {
       {data.length === 0 ? (
         <AdminEmpty text={t("empty")} />
       ) : (
-        <ul className="divide-y rounded-2xl border bg-card text-sm">
+        <ul className="divide-y rounded-2xl border-2 border-foreground bg-card text-sm shadow-hard-sm">
           {data.map((row) => {
             const last = new Date(row.last_seen);
             return (

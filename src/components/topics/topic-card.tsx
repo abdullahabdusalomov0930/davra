@@ -11,7 +11,7 @@ export function TopicCard({ topic }: { topic: TopicWithCount }) {
   return (
     <Link
       href={routes.topic(topic.slug)}
-      className="group flex h-full flex-col gap-2 rounded-2xl border bg-card p-5 text-card-foreground transition-colors outline-none hover:border-primary/50 focus-visible:ring-3 focus-visible:ring-ring/50"
+      className="group flex h-full flex-col gap-2 rounded-2xl border-2 border-foreground bg-card p-5 text-card-foreground shadow-hard-sm transition duration-200 outline-none hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-hard focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <span className="flex items-center justify-between gap-2">
         <span className="font-semibold">{topic.name_uz}</span>

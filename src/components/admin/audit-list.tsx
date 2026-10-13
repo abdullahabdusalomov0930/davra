@@ -40,7 +40,7 @@ export async function AuditList({ entries }: { entries: AuditEntry[] }) {
   ]);
   if (entries.length === 0) return <p className="text-sm text-muted-foreground">{t("auditEmpty")}</p>;
   return (
-    <ul className="divide-y rounded-2xl border bg-card text-sm">
+    <ul className="divide-y rounded-2xl border-2 border-foreground bg-card text-sm shadow-hard-sm">
       {entries.map((entry) => {
         const key = `auditActions.${entry.action.replace(".", "_")}` as "auditActions.user_ban";
         const date = new Date(entry.created_at);

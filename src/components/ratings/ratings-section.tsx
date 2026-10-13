@@ -60,7 +60,7 @@ export async function RatingsSection({ resource, viewer }: RatingsSectionProps) 
   return (
     <section
       aria-labelledby="ratings-title"
-      className="grid gap-6 rounded-2xl border bg-card p-6 text-card-foreground sm:p-8"
+      className="grid gap-6 rounded-2xl border-2 border-foreground bg-card p-6 text-card-foreground shadow-hard sm:p-8"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="ratings-title" className="text-xl font-semibold tracking-tight">

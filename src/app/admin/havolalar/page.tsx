@@ -44,7 +44,7 @@ export default async function AdminLinksPage() {
               ) : (
                 <li
                   key={entry.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-4 text-sm"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-foreground bg-card p-4 text-sm shadow-hard-sm"
                 >
                   <span className="text-muted-foreground">{t("reports.targetGone")}</span>
                   {/* Nothing left to fix: the reports are just closed. */}
@@ -85,7 +85,7 @@ async function LinkRow({ resource, reports }: { resource: LinkQueueResource; rep
   const checkedAt = resource.last_link_check_at ? new Date(resource.last_link_check_at) : null;
 
   return (
-    <li className="grid gap-3 rounded-2xl border bg-card p-4 text-sm">
+    <li className="grid gap-3 rounded-2xl border-2 border-foreground bg-card p-4 text-sm shadow-hard-sm">
       <div className="min-w-0">
         <Link href={routes.resource(resource.slug)} className="font-medium hover:underline">
           {resource.title}

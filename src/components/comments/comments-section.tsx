@@ -47,7 +47,7 @@ export async function CommentsSection({
   return (
     <section
       aria-labelledby="comments-title"
-      className="grid gap-6 rounded-2xl border bg-card p-6 text-card-foreground sm:p-8"
+      className="grid gap-6 rounded-2xl border-2 border-foreground bg-card p-6 text-card-foreground shadow-hard sm:p-8"
     >
       <h2 id="comments-title" className="flex items-baseline gap-2 text-xl font-semibold tracking-tight">
         {t("title")}

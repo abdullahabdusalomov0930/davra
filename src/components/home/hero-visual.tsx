@@ -1,103 +1,79 @@
-import { ArrowUpRightIcon, StarIcon } from "lucide-react";
+import { StarIcon } from "lucide-react";
 import { getFormatter, getTranslations } from "next-intl/server";
 
-import { averageRating, RESOURCE_TYPE_ICONS } from "@/components/resources/resource-meta";
+import { averageRating } from "@/components/resources/resource-meta";
 import type { ResourceCardData } from "@/server/services/resources";
 
+import { CurvedArrow } from "./doodles";
 import { motion } from "./motion";
-import { Rings } from "./rings";
+
+/** Where each note sits, its colour and its tilt; the tape strip lands at a different spot on each. */
+const NOTES = [
+  { place: "top-0 left-[4%] w-[68%]", colour: "bg-postit-yellow", tilt: "-rotate-3", tape: "left-[36%] rotate-[4deg]" },
+  {
+    place: "top-[37%] right-0 w-[62%]",
+    colour: "bg-postit-pink",
+    tilt: "rotate-[4deg]",
+    tape: "left-[30%] -rotate-[5deg]",
+  },
+  {
+    place: "bottom-0 left-[12%] w-[60%]",
+    colour: "bg-postit-blue",
+    tilt: "-rotate-1",
+    tape: "left-[40%] rotate-[3deg]",
+  },
+] as const;
 
 /**
- * The hero's picture: a warm panel with the ring motif and real cards from the feed floating over it,
- * the way a product shot shows the app in use. Decorative (the same cards are in the feed below).
+ * The hero's picture: real cards from the feed as post-it notes taped to the page, with a pen arrow
+ * pointing at them. Decorative (the same cards are in the feed below). The notes are paper, so they keep
+ * ink on pastel in dark mode too.
  */
 export async function HeroVisual({ resources }: { resources: readonly ResourceCardData[] }) {
-  const [t, tType, tLevel, tLanguage, tPrice, format] = await Promise.all([
-    getTranslations("Home.visual"),
+  const [tType, tPrice, format] = await Promise.all([
     getTranslations("ResourceType"),
-    getTranslations("ResourceLevel"),
-    getTranslations("ResourceLanguage"),
     getTranslations("ResourcePrice"),
     getFormatter(),
   ]);
-  const [first, second] = resources;
   const rating = (resource: ResourceCardData) => {
     const average = averageRating(resource.ratings_sum, resource.ratings_count);
     return average === null ? null : format.number(average, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   };
 
   return (
-    <div
-      aria-hidden
-      className="relative isolate aspect-[1/1.02] w-full animate-rise overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_22%_18%,#ffd2b8_0%,transparent_55%),radial-gradient(circle_at_85%_90%,#ff7a45_0%,transparent_55%),linear-gradient(155deg,#fbe9dc_0%,#f6c4a4_55%,#f19a6c_100%)] shadow-[0_40px_80px_-40px_rgb(201_69_14/0.55)] select-none dark:bg-[radial-gradient(circle_at_22%_18%,#4a2a1a_0%,transparent_55%),radial-gradient(circle_at_85%_90%,#a8441a_0%,transparent_55%),linear-gradient(155deg,#2a1d16_0%,#3a2418_60%,#5a2a14_100%)]"
-      style={motion({ delay: 150 })}
-    >
-      <Rings className="absolute top-1/2 left-1/2 size-[118%] max-w-none -translate-x-1/2 -translate-y-1/2" />
-
-      {first && (
-        <div
-          className="absolute top-[9%] left-[7%] w-[min(19rem,74%)] animate-float rounded-2xl border border-white/60 bg-card/95 p-4 text-card-foreground shadow-[0_24px_48px_-24px_rgb(28_20_16/0.45)] backdrop-blur dark:border-white/10"
-          style={motion({ delay: 0 })}
-        >
-          <div className="flex items-start gap-3">
-            <TypeBadge type={first.type} />
-            <div className="min-w-0">
-              <p className="line-clamp-2 text-sm leading-snug font-semibold">{first.title}</p>
-              <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                {first.domain} · {tType(first.type)}
-              </p>
+    <div aria-hidden className="relative min-h-[27rem] w-full select-none sm:min-h-[31rem]">
+      {resources.slice(0, NOTES.length).map((resource, index) => {
+        const note = NOTES[index];
+        const score = rating(resource);
+        return (
+          <div key={resource.id} className={`absolute ${note.place}`}>
+            <div className="animate-float" style={motion({ delay: index * 1100 })}>
+              <div
+                className={`relative animate-rise px-5 pt-8 pb-5 text-ink shadow-[0_16px_24px_-14px_rgb(0_0_0/0.4)] sm:px-6 ${note.colour} ${note.tilt}`}
+                style={motion({ delay: 150 + index * 120 })}
+              >
+                <span className={`tape ${note.tape}`} />
+                <p className="font-hand text-[0.95rem] text-pen">
+                  {tType(resource.type)} · {tPrice(resource.price)}
+                </p>
+                <p className="mt-1.5 line-clamp-2 font-heading text-lg leading-snug font-bold sm:text-xl">
+                  {resource.title}
+                </p>
+                <p className="mt-3 flex min-w-0 items-center gap-1.5 text-sm">
+                  <span className="truncate">{resource.domain}</span>
+                  {score && (
+                    <span className="flex shrink-0 items-center gap-1 font-semibold">
+                      · <StarIcon className="size-3.5 fill-ink" />
+                      {score}
+                    </span>
+                  )}
+                </p>
+              </div>
             </div>
           </div>
-          <div className="mt-3 flex items-center justify-between text-xs">
-            <span className="rounded-full bg-accent px-2 py-0.5 font-medium text-accent-foreground">
-              {first.topic.name_uz}
-            </span>
-            {rating(first) && (
-              <span className="flex items-center gap-1 font-medium">
-                <StarIcon className="size-3.5 fill-amber-400 text-amber-400" />
-                {rating(first)}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
-
-      {first && (
-        <div
-          className="absolute top-[46%] right-[6%] flex animate-float items-center gap-2 rounded-full bg-card/95 py-2 pr-4 pl-2.5 text-xs font-medium text-card-foreground shadow-lg backdrop-blur"
-          style={motion({ delay: 1200 })}
-        >
-          <span className="relative flex size-2.5">
-            <span className="absolute inset-0 animate-pulse-ring rounded-full bg-brand" />
-            <span className="relative size-2.5 rounded-full bg-brand" />
-          </span>
-          {[tPrice(first.price), tLevel(first.level), tLanguage(first.language)].join(" · ")}
-        </div>
-      )}
-
-      {second && (
-        <div
-          className="absolute bottom-[7%] left-[9%] w-[min(17rem,70%)] animate-float rounded-2xl bg-night/90 p-4 text-night-foreground shadow-[0_24px_48px_-20px_rgb(0_0_0/0.6)] backdrop-blur"
-          style={motion({ delay: 2400 })}
-        >
-          <p className="font-heading text-lg leading-tight font-medium">{t("sharedTitle")}</p>
-          <div className="mt-3 flex items-center gap-2 rounded-full bg-white/10 py-1.5 pr-1.5 pl-3 text-xs">
-            <span className="min-w-0 flex-1 truncate">{second.title}</span>
-            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand text-white">
-              <ArrowUpRightIcon className="size-3.5" />
-            </span>
-          </div>
-        </div>
-      )}
+        );
+      })}
+      <CurvedArrow className="absolute top-[24%] -left-6 hidden h-20 w-28 text-primary sm:block md:-left-10" />
     </div>
-  );
-}
-
-function TypeBadge({ type }: { type: ResourceCardData["type"] }) {
-  const Icon = RESOURCE_TYPE_ICONS[type];
-  return (
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-      <Icon className="size-4.5" />
-    </span>
   );
 }

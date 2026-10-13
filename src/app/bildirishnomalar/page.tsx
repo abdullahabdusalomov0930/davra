@@ -73,7 +73,7 @@ export default async function NotificationsPage() {
             return (
               <li
                 key={item.id}
-                className={`grid gap-2 rounded-2xl border bg-card p-4 text-sm ${item.read_at ? "" : "border-primary/40"}`}
+                className={`grid gap-2 rounded-2xl border-2 border-foreground bg-card p-4 text-sm shadow-hard ${item.read_at ? "" : "border-primary/40"}`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="flex items-center gap-2 font-medium">

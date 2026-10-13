@@ -1,23 +1,44 @@
 import { cn } from "cn";
 
 import { APP_NAME } from "@/lib/config";
-import { LOGO_MARK_PATH } from "@/lib/brand";
+import { LOGO_GRID, LOGO_SQUARE_RADIUS, LOGO_SQUARES, LOGO_STICKER_RADIUS } from "@/lib/brand";
 
-/** The ring mark alone, in the bright brand orange. Decorative: the link around it carries the name. */
+/**
+ * The sticker: four coloured squares on white, stuck on a little crooked. Decorative: the link around it
+ * carries the name. It straightens up when the logo link is hovered.
+ */
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden className={cn("size-7 shrink-0 text-brand", className)}>
-      <path d={LOGO_MARK_PATH} fill="currentColor" fillRule="evenodd" />
+    <svg
+      viewBox={`0 0 ${LOGO_GRID} ${LOGO_GRID}`}
+      aria-hidden
+      className={cn(
+        "size-10 shrink-0 -rotate-6 drop-shadow-[0_4px_5px_rgb(0_0_0/0.22)] transition-transform duration-300 group-hover/logo:scale-105 group-hover/logo:rotate-0",
+        className,
+      )}
+    >
+      <rect
+        x="0.5"
+        y="0.5"
+        width={LOGO_GRID - 1}
+        height={LOGO_GRID - 1}
+        rx={LOGO_STICKER_RADIUS - 0.5}
+        fill="#ffffff"
+        stroke="#e3e3e3"
+      />
+      {LOGO_SQUARES.map(({ x, y, size, fill }) => (
+        <rect key={fill} x={x} y={y} width={size} height={size} rx={LOGO_SQUARE_RADIUS} fill={fill} />
+      ))}
     </svg>
   );
 }
 
-/** Mark and wordmark: the app name, lower case, in the heading serif. */
+/** Sticker and wordmark: the app name, lower case, in the heading face. */
 export function Logo({ className }: { className?: string }) {
   return (
-    <span className={cn("flex items-center gap-2", className)}>
-      <LogoMark className="transition-transform duration-500 group-hover/logo:rotate-[200deg]" />
-      <span className="font-heading text-[1.6rem] leading-none font-medium tracking-[-0.03em]">
+    <span className={cn("flex items-center gap-2.5", className)}>
+      <LogoMark />
+      <span className="font-heading text-[1.4rem] leading-none font-extrabold tracking-[-0.02em]">
         {APP_NAME.toLowerCase()}
       </span>
     </span>

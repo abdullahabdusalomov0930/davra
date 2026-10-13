@@ -7,7 +7,7 @@ export type ListTab = { href: string; label: string; active: boolean };
 export function ListTabs({ label, tabs }: { label: string; tabs: readonly ListTab[] }) {
   return (
     <nav aria-label={label}>
-      <ul className="inline-flex rounded-full border border-border/80 bg-card p-1 text-sm font-medium shadow-xs">
+      <ul className="inline-flex rounded-xl border-2 border-foreground bg-card p-1 text-sm font-semibold shadow-hard-sm">
         {tabs.map((tab) => (
           <li key={tab.href}>
             <Link
@@ -15,8 +15,8 @@ export function ListTabs({ label, tabs }: { label: string; tabs: readonly ListTa
               scroll={false}
               aria-current={tab.active ? "page" : undefined}
               className={cn(
-                "inline-flex h-9 items-center rounded-full px-4 text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
-                tab.active && "bg-foreground text-background hover:text-background",
+                "inline-flex h-9 items-center rounded-lg px-4 text-muted-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
+                tab.active && "bg-marker text-ink hover:bg-marker hover:text-ink",
               )}
             >
               {tab.label}

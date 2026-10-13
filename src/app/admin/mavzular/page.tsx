@@ -22,7 +22,10 @@ export default async function AdminTopicsPage() {
   return (
     <div className="grid gap-6">
       {isAdmin ? (
-        <section aria-labelledby="new-topic-title" className="grid gap-4 rounded-2xl border bg-card p-5">
+        <section
+          aria-labelledby="new-topic-title"
+          className="grid gap-4 rounded-2xl border-2 border-foreground bg-card p-5 shadow-hard-sm"
+        >
           <h2 id="new-topic-title" className="font-semibold">
             {t("topics.newTopic")}
           </h2>
@@ -37,7 +40,7 @@ export default async function AdminTopicsPage() {
 
       <ul className="grid gap-4">
         {topics.map((topic) => (
-          <li key={topic.id} className="grid gap-4 rounded-2xl border bg-card p-5">
+          <li key={topic.id} className="grid gap-4 rounded-2xl border-2 border-foreground bg-card p-5 shadow-hard-sm">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <Link href={routes.topic(topic.slug)} className="font-semibold hover:underline">
                 {topic.name_uz}

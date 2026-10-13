@@ -18,8 +18,8 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     start_url: "/",
     scope: "/",
     display: "standalone",
-    background_color: brandColors.background,
-    theme_color: brandColors.background,
+    background_color: brandColors.paper,
+    theme_color: brandColors.paper,
     categories: ["education"],
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

@@ -67,7 +67,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps<"/admin
       {users.length === 0 ? (
         <AdminEmpty text={t("empty")} />
       ) : (
-        <ul className="divide-y rounded-2xl border bg-card">
+        <ul className="divide-y rounded-2xl border-2 border-foreground bg-card shadow-hard-sm">
           {users.map((user) => {
             const self = user.id === viewer?.id;
             // Moderators can ban regular users only; admins anyone but themselves (the database decides).

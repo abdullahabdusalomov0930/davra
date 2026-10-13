@@ -12,12 +12,12 @@ export async function SiteFooter() {
   const linkClass = "text-night-foreground/75 transition-colors hover:text-night-foreground hover:underline";
 
   return (
-    <footer className="dark relative overflow-hidden bg-night text-night-foreground">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-16 pb-10 md:grid-cols-[1.4fr_1fr_1fr]">
+    <footer className="dark relative overflow-hidden border-t-2 border-foreground bg-night text-night-foreground">
+      <div className="frame grid gap-10 px-4 pt-16 pb-10 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr] lg:px-12">
         <div className="max-w-sm">
-          <p className="flex items-center gap-2 font-heading text-2xl font-medium tracking-tight">
-            <LogoMark className="size-6" />
-            {APP_NAME}
+          <p className="flex items-center gap-2.5 font-heading text-2xl font-extrabold tracking-[-0.02em]">
+            <LogoMark className="size-9" />
+            {APP_NAME.toLowerCase()}
           </p>
           <p className="mt-3 text-sm text-pretty text-night-foreground/75">{t("tagline")}</p>
         </div>
@@ -50,11 +50,11 @@ export async function SiteFooter() {
       <div
         aria-hidden
         data-wordmark={APP_NAME.toLowerCase()}
-        className="pointer-events-none mx-auto max-w-6xl px-4 font-heading text-[clamp(5rem,22vw,17rem)] leading-[0.8] font-medium tracking-[-0.05em] text-night-foreground/[0.07] select-none after:content-[attr(data-wordmark)]"
+        className="pointer-events-none frame px-4 font-heading text-[clamp(4.5rem,19vw,15rem)] leading-[0.85] font-extrabold tracking-[-0.04em] text-night-foreground/[0.07] select-none after:content-[attr(data-wordmark)] sm:px-8 lg:px-12"
       />
 
       <div className="border-t border-white/10">
-        <p className="mx-auto max-w-6xl px-4 py-5 text-xs text-night-foreground/75">
+        <p className="frame px-4 py-5 text-xs text-night-foreground/75 sm:px-8 lg:px-12">
           {t("copyright", { year: new Date().getFullYear(), appName: APP_NAME })}
         </p>
       </div>

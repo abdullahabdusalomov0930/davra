@@ -42,7 +42,10 @@ export default async function AdminRequestsPage() {
           {actions.map((action) => {
             const date = new Date(action.created_at);
             return (
-              <li key={action.id} className="grid gap-3 rounded-2xl border bg-card p-5 text-sm">
+              <li
+                key={action.id}
+                className="grid gap-3 rounded-2xl border-2 border-foreground bg-card p-5 text-sm shadow-hard-sm"
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="flex flex-wrap items-center gap-2">
                     <Badge variant="destructive">{t(`requests.kind.${action.kind as "permanent_ban"}`)}</Badge>
