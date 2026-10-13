@@ -14,8 +14,9 @@ const DOT = 2.5;
 const TONES = [LOGO_COLORS.bottomRight, LOGO_COLORS.bottomLeft, LOGO_COLORS.topRight, LOGO_COLORS.topLeft];
 
 /**
- * "Magnet dots" (DECISIONS.md D78): where the grid lines cross near the mouse pointer, dots appear, are
- * pushed away from it and take the four colours of the logo, one per corner. Pure decoration on a canvas
+ * "Magnet dots" (DECISIONS.md D78): the paper has a faint dot where its lines cross (globals.css). Near the
+ * mouse pointer, coloured dots rise from them, are pushed away from it and take the four colours of the
+ * logo, one per corner. Pure decoration on a canvas
  * under the page: it never takes the pointer and is not read out. It only runs for a mouse or a pen on a
  * device that can hover, and never for people who prefer less motion or use forced colours. Between
  * moves it stops drawing.

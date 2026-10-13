@@ -286,7 +286,7 @@
     "haveAccount": "Hisobingiz bormi?",
     "signUpLink": "Roʻyxatdan oʻting",
     "signInLink": "Kiring",
-    "termsNotice": "Hisob yaratish orqali <rules>hamjamiyat qoidalari</rules> va <terms>foydalanish shartlari</terms>ga rozilik bildirasiz.",
+    "termsNotice": "Hisob yaratish orqali <rules>hamjamiyat qoidalari</rules>, <terms>foydalanish shartlari</terms> va <privacy>maxfiylik siyosati</privacy>ga rozilik bildirasiz.",
     "checkEmailTitle": "Emailingizni tekshiring",
     "checkEmailText": "{email} manziliga tasdiqlash havolasini yubordik. Roʻyxatdan oʻtishni yakunlash uchun havolani bosing.",
     "checkEmailHint": "Xat kelmadimi? «Spam» papkasini tekshiring yoki havolani qayta yuboring.",
@@ -723,6 +723,13 @@
           ]
         },
         {
+          "title": "Profil",
+          "items": [
+            "Foydalanuvchi nomi, ism va bioda haqorat, reklama, havolalar yoki boshqa shaxs va tashkilotga taqlid boʻlmasin.",
+            "Oʻzingiz haqingizda haqiqiy maʼlumot yozing: universitet va yoʻnalishni oʻylab topmang."
+          ]
+        },
+        {
           "id": "spam",
           "title": "Spam va reklama",
           "paragraphs": [
@@ -831,7 +838,8 @@
         {
           "title": "Xizmat haqida",
           "paragraphs": [
-            "{appName} — talabalar oʻquv resurslariga havolalar va ular haqidagi sharhlarni ulashadigan bepul platforma. Resurslarning oʻzi uchinchi tomon saytlarida joylashgan: biz ularni saqlamaymiz va ularning mazmuni uchun javob bermaymiz."
+            "{appName} — talabalar oʻquv resurslariga havolalar va ular haqidagi sharhlarni ulashadigan platforma. Resurslarning oʻzi uchinchi tomon saytlarida joylashgan: biz ularni saqlamaymiz va ularning mazmuni uchun javob bermaymiz.",
+            "Hozir {appName}dan foydalanish bepul va saytda reklama yoʻq. Bu oʻzgarsa, oldindan saytda xabar beramiz."
           ]
         },
         {
@@ -854,15 +862,37 @@
           ]
         },
         {
+          "title": "Taqiqlangan harakatlar",
+          "items": [
+            "Saytni buzishga, uning zaif joylaridan foydalanishga yoki boshqalarning hisobiga kirishga urinish.",
+            "Avtomatik dasturlar (bot, skript) yordamida hisob ochish, kontent joylash, baho qoʻyish yoki saytni ommaviy yuklab olish.",
+            "Cheklovlar va blokni chetlab oʻtish, jumladan bloklangan hisob oʻrniga yangisini ochish.",
+            "Hamjamiyat qoidalarida taqiqlangan kontentni joylash."
+          ]
+        },
+        {
           "title": "Moderatsiya",
           "paragraphs": [
-            "Qoidalarga zid kontentni ogohlantirishsiz yashirish yoki olib tashlash, takroriy yoki jiddiy buzilishlarda esa hisobni bloklash huquqini saqlab qolamiz. Yangi aʼzolarning kartalari eʼlon qilinishidan oldin moderator tomonidan tekshiriladi."
+            "Qoidalarga zid kontentni ogohlantirishsiz yashirish yoki olib tashlash, takroriy yoki jiddiy buzilishlarda esa hisobni bloklash huquqini saqlab qolamiz. Yangi aʼzolarning kartalari eʼlon qilinishidan oldin moderator tomonidan tekshiriladi.",
+            "Har bir moderatsiya qarorining sababi sizga bildirishnomada koʻrsatiladi. Qaror notoʻgʻri deb hisoblasangiz, bir marta eʼtiroz bildirishingiz mumkin — tartibi hamjamiyat qoidalarida yozilgan."
           ]
         },
         {
           "title": "Mualliflik huquqi",
           "paragraphs": [
             "Huquqingiz buzilgan deb hisoblasangiz, kontentni olib tashlash soʻrovi formasini toʻldiring. Soʻrovni koʻrib chiqamiz va u asosli boʻlsa, kartani olib tashlaymiz."
+          ]
+        },
+        {
+          "title": "Tashqi havolalar",
+          "paragraphs": [
+            "Kartadagi havola sizni boshqa saytga olib boradi. Oʻtishdan oldin buni eslatuvchi sahifa koʻrsatiladi. Tashqi saytlarning mazmuni, xavfsizligi va maxfiylik siyosati uchun ularning egalari javob beradi; havolalarni muntazam tekshirib, xavfli yoki ishlamaydiganlarini yashiramiz."
+          ]
+        },
+        {
+          "title": "Hisobni oʻchirish",
+          "paragraphs": [
+            "Hisobingizni istalgan vaqtda sozlamalar sahifasida oʻchirishingiz mumkin. Qaysi maʼlumotlar oʻchirilishi va qaysilari qonuniy sabablarga koʻra saqlanishi maxfiylik siyosatida yozilgan."
           ]
         },
         {
@@ -876,6 +906,12 @@
           "paragraphs": [
             "Shartlarni yangilashimiz mumkin. Muhim oʻzgarishlar haqida saytda xabar beramiz; ulardan keyin saytdan foydalanishni davom ettirish yangi shartlarga rozilikni bildiradi."
           ]
+        },
+        {
+          "title": "Amaldagi qonunchilik",
+          "paragraphs": [
+            "Ushbu shartlarga Oʻzbekiston Respublikasi qonunchiligi qoʻllaniladi. Kelishmovchiliklarni avvalo muzokara yoʻli bilan hal qilishga harakat qilamiz: buning uchun pastdagi aloqa manziliga yozing."
+          ]
         }
       ]
     },
@@ -884,6 +920,12 @@
       "metaDescription": "{appName} qanday maʼlumotlarni yigʻadi, ulardan qanday foydalanadi va ularni qanday himoya qiladi.",
       "intro": "Bu siyosat {appName} qanday maʼlumotlarni yigʻishi, ulardan qanday foydalanishi va ularni qanday himoya qilishini tushuntiradi.",
       "sections": [
+        {
+          "title": "Maʼlumotlaringiz bilan kim ishlaydi",
+          "paragraphs": [
+            "Sayt va uning maʼlumotlar bazasini {appName} jamoasi boshqaradi va maʼlumotlaringizni shu siyosatda yozilgan maqsadlarda qayta ishlaydi. Maxfiylikka oid savol va soʻrovlaringizni pastdagi aloqa manziliga yuboring."
+          ]
+        },
         {
           "title": "Qanday maʼlumotlarni yigʻamiz",
           "items": [
@@ -913,6 +955,12 @@
           "paragraphs": ["Maʼlumotlaringizni sotmaymiz va reklama uchun uchinchi shaxslarga bermaymiz."]
         },
         {
+          "title": "Qaysi asosda",
+          "paragraphs": [
+            "Roʻyxatdan oʻtayotganda shu siyosat bilan tanishib, maʼlumotlaringizni qayta ishlashga rozilik bildirasiz. Maʼlumotlarni faqat xizmatni koʻrsatish, saytni xavfsiz saqlash va qonun talab qilgan hollarda ishlatamiz. Rozilikni hisobingizni oʻchirish orqali istalgan vaqtda qaytarib olishingiz mumkin."
+          ]
+        },
+        {
           "title": "Cookie fayllar va brauzer xotirasi",
           "paragraphs": [
             "Faqat zarur cookie fayllaridan foydalanamiz: tizimga kirganingizni eslab qolish uchun. Tanlagan rang mavzusi (yorugʻ yoki qorongʻi) brauzeringiz xotirasida saqlanadi. Analitika va reklama cookie fayllari ishlatilmaydi; kelajakda maxfiylikni hurmat qiladigan analitika qoʻshilsa, bu haqda shu sahifada va saytda alohida xabar beramiz."
@@ -926,6 +974,12 @@
             "Email yuborish xizmati — tasdiqlash va parolni tiklash xatlari uchun.",
             "Google Safe Browsing — yangi qoʻshilgan havolalar firibgarlik va zararli dasturlar roʻyxatida yoʻqligini tekshirish uchun (yoqilgan boʻlsa). Unga faqat havolaning oʻzi yuboriladi, siz haqingizda maʼlumot yuborilmaydi.",
             "Cloudflare Turnstile — roʻyxatdan oʻtishda va yangi aʼzolarning postlarida bot emasligingizni tekshirish uchun (yoqilgan boʻlsa). Cloudflare oʻz maxfiylik siyosatiga koʻra brauzeringiz haqidagi texnik maʼlumotlarni qayta ishlaydi."
+          ]
+        },
+        {
+          "title": "Maʼlumotlar qayerda saqlanadi",
+          "paragraphs": [
+            "Maʼlumotlar bazasi va autentifikatsiya Yevropa Ittifoqidagi serverlarda (Germaniya, Frankfurt), sayt esa Vercel infratuzilmasida ishlaydi. Maʼlumotlar ular orasida va brauzeringiz bilan faqat shifrlangan ulanish orqali uzatiladi."
           ]
         },
         {
@@ -943,10 +997,21 @@
           ]
         },
         {
+          "title": "Bolalar",
+          "paragraphs": [
+            "{appName} talabalar uchun moʻljallangan. 16 yoshga toʻlmagan boʻlsangiz, saytdan faqat ota-onangiz yoki vasiyingiz roziligi bilan foydalaning. Bolaning maʼlumotlari uning ota-onasi roziligisiz qoʻshilgan deb hisoblasangiz, bizga yozing — ularni oʻchiramiz."
+          ]
+        },
+        {
           "title": "Huquqlaringiz",
           "paragraphs": [
-            "Oʻzingiz haqingizdagi maʼlumotlarni koʻrish, tuzatish, nusxasini olish va oʻchirishni talab qilish huquqiga egasiz. Profil maʼlumotlarini sozlamalar sahifasida oʻzingiz oʻzgartira olasiz, maʼlumotlaringizni yuklab olishingiz va hisobni oʻchirishingiz mumkin.",
-            "Bu siyosat qoralama: unda Oʻzbekiston Respublikasining shaxsga doir maʼlumotlar toʻgʻrisidagi qonuni talablariga (jumladan, maʼlumotlarni saqlash joyiga) muvofiqlik huquqshunos tomonidan hali tekshirilmagan."
+            "Oʻzingiz haqingizdagi maʼlumotlarni koʻrish, tuzatish, nusxasini olish va oʻchirishni talab qilish huquqiga egasiz. Profil maʼlumotlarini sozlamalar sahifasida oʻzingiz oʻzgartira olasiz, maʼlumotlaringizni yuklab olishingiz va hisobni oʻchirishingiz mumkin. Boshqa soʻrovlar uchun pastdagi aloqa manziliga yozing."
+          ]
+        },
+        {
+          "title": "Siyosatdagi oʻzgarishlar",
+          "paragraphs": [
+            "Siyosatni yangilasak, sahifa tepasidagi sana oʻzgaradi. Muhim oʻzgarishlar haqida saytda oldindan xabar beramiz."
           ]
         }
       ]

@@ -103,6 +103,7 @@
   --night: #111111;
   --night-foreground: #fdfcf7;
   --grid: #dce6f2;
+  --grid-dot: #bfcadc;
   --margin-line: #f2a3a3;
   --tape: rgb(214 196 160 / 0.75);
   --postit-yellow: #fff3a0;
@@ -152,6 +153,7 @@
   --night: #0b0c0f;
   --night-foreground: #f5f5f0;
   --grid: rgb(143 176 255 / 9%);
+  --grid-dot: rgb(143 176 255 / 24%);
   --margin-line: rgb(242 163 163 / 30%);
   --tape: rgb(214 196 160 / 0.6);
   --chart-1: #8fb0ff;
@@ -212,13 +214,19 @@
   }
 }
 
-/* Squared paper: 28px cells ruled in --grid on --background. A section with the dark class gets the
- * night version of the same paper. */
+/* Squared paper: 28px cells ruled in --grid on --background, with a faint dot where the lines cross (the
+ * magnet dots rise from these near the pointer). A section with the dark class gets the night version. */
 @utility paper {
   background-color: var(--background);
   background-image:
+    radial-gradient(circle at 14px 14px, var(--grid-dot) 1.5px, transparent 2.1px),
     linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 28px 28px;
+  /* The dot layer's cells are shifted by half a cell so each dot sits on a crossing, not on a cell edge. */
+  background-position:
+    -13.5px -13.5px,
+    0 0,
+    0 0;
   @media (forced-colors: active) {
     background-image: none;
   }

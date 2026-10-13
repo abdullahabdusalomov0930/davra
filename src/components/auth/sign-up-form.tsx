@@ -146,6 +146,11 @@ export function SignUpForm() {
               {chunks}
             </Link>
           ),
+          privacy: (chunks) => (
+            <Link href={routes.privacy} className="underline underline-offset-2 hover:text-foreground">
+              {chunks}
+            </Link>
+          ),
         })}
       </p>
     </form>
