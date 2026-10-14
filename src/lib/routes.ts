@@ -27,7 +27,7 @@ export const routes = {
   signInTo: (path: string) => `/kirish?next=${encodeURIComponent(path)}`,
   removalRequest: "/removal-request",
   notifications: "/bildirishnomalar",
-  /** "You are leaving Davra" page before a link to a site Davra does not know yet. */
+  /** "You are leaving Davracha" page before a link to a site Davracha does not know yet. */
   outbound: (slug: string) => `/tashqi/${slug}`,
   admin: "/admin",
   adminResources: "/admin/resurslar",

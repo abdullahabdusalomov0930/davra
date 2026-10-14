@@ -21,6 +21,7 @@ import {
   removalRequestSchema,
 } from "@/lib/validators";
 import { submitRemovalRequestAction } from "@/server/actions/reports";
+import { APP_NAME } from "@/lib/config";
 
 export function RemovalRequestForm({ defaultUrl }: { defaultUrl?: string }) {
   const t = useTranslations("RemovalRequest");
@@ -61,7 +62,7 @@ export function RemovalRequestForm({ defaultUrl }: { defaultUrl?: string }) {
 
   return (
     <form onSubmit={onSubmit} noValidate className="grid gap-5">
-      <Field label={t("url")} hint={t("urlHint")} error={errorMessage(errors.resourceUrl)}>
+      <Field label={t("url")} hint={t("urlHint", { appName: APP_NAME })} error={errorMessage(errors.resourceUrl)}>
         {(control) => (
           <Input {...control} type="url" inputMode="url" placeholder="https://…" {...form.register("resourceUrl")} />
         )}

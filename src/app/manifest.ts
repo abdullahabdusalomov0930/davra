@@ -5,7 +5,7 @@ import { defaultLocale } from "@/i18n/config";
 import { brandColors } from "@/lib/brand";
 import { APP_NAME } from "@/lib/config";
 
-/** Web app manifest: "Add to home screen" opens Davra like an app. Icons come from `pnpm icons`. */
+/** Web app manifest: "Add to home screen" opens Davracha like an app. Icons come from `pnpm icons`. */
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const t = await getTranslations({ locale: defaultLocale, namespace: "Metadata" });
 

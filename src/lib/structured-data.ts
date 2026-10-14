@@ -36,7 +36,7 @@ type LearningResourceInput = {
   levelLabel?: string;
 };
 
-/** A shared resource: the external material, described on its Davra page. */
+/** A shared resource: the external material, described on its Davracha page. */
 export function learningResourceData(resource: LearningResourceInput) {
   const page = absoluteUrl(routes.resource(resource.slug));
   return {
@@ -53,7 +53,7 @@ export function learningResourceData(resource: LearningResourceInput) {
     about: { "@type": "Thing", name: resource.topic },
     ...(resource.publishedAt && { datePublished: resource.publishedAt }),
     dateModified: resource.updatedAt,
-    // The person who shared and reviewed it on Davra, not the material's creator.
+    // The person who shared and reviewed it on Davracha, not the material's creator.
     contributor: {
       "@type": "Person",
       name: resource.author.displayName,

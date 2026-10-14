@@ -1,6 +1,6 @@
 /**
  * When a link opens the "Siz tashqi saytga oʻtyapsiz" page first (security addendum 4, D73): never
- * for links known to be safe; for links to domains Davra had not seen before, shared by a member
+ * for links known to be safe; for links to domains Davracha had not seen before, shared by a member
  * below trust level 2 ("new_domains", the default), or for every link not known to be safe
  * ("unknown"); never when an admin turned it off.
  */

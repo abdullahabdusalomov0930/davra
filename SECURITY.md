@@ -1,6 +1,6 @@
 # Security
 
-How Davra defends itself and its users, what is not covered, how to report a vulnerability and how to
+How Davracha defends itself and its users, what is not covered, how to report a vulnerability and how to
 rotate keys. To report a problem, go straight to [Reporting a vulnerability](#reporting-a-vulnerability).
 
 Related documents:
@@ -16,7 +16,7 @@ Related documents:
 
 ## Threat model
 
-Davra lets students publish text and a link, nothing else: no files, no images, no avatars (initials
+Davracha lets students publish text and a link, nothing else: no files, no images, no avatars (initials
 only). That removes image and file moderation from the problem; what remains is below.
 
 | Threat                            | Examples                                                                                                                       | How it is handled                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Where in code                                                                                                                                                         |
@@ -99,7 +99,7 @@ only). That removes image and file moderation from the problem; what remains is 
 - Every outbound link: `target="_blank"`, `rel="noopener noreferrer nofollow ugc"`, and the real domain
   next to it (`src/lib/outbound.ts`).
 - `/tashqi/<slug>` ("Siz tashqi saytga oʻtyapsiz") opens first for links to domains that were new to
-  Davra when a member below level 2 shared them and whose reputation is not "safe". Admins choose off,
+  Davracha when a member below level 2 shared them and whose reputation is not "safe". Admins choose off,
   new domains (default) or every link not known to be safe (D73).
 - No embeds, previews, favicons or remote images: the CSP allows `img-src 'self' data:` only.
 - The weekly link check also asks the reputation service again; a newly flagged link is hidden, its
@@ -237,12 +237,12 @@ addresses and redirects into private networks with mocked DNS.
 - **Filters are imperfect.** The word lists are short starter lists. New slang, misspellings, other
   languages, text inside images on linked sites and context all get past them, and innocent texts are
   sometimes held. They reduce the moderators' work; they do not replace moderators and reports.
-- **Link checks see what Davra's server sees.** A site can show the server something else than a
+- **Link checks see what Davracha's server sees.** A site can show the server something else than a
   visitor, or change after it was approved; links are re-checked about once a week, not at every click.
   A site that does not answer at submit time is let through and left to the link checker.
 - **Safe Browsing and Turnstile work only when configured.** Without `SAFE_BROWSING_API_KEY` no
   reputation service is asked; without the Turnstile keys bots meet only the rate limits and e-mail
-  confirmation. Google's Safe Browsing API is meant for non-commercial use; if Davra earns money, check
+  confirmation. Google's Safe Browsing API is meant for non-commercial use; if Davracha earns money, check
   Google's terms (its commercial counterpart is Web Risk).
 - **Rate limits are per IP and per account.** Students behind one university or mobile network share
   an IP; someone with many addresses gets around per-IP limits. If the limiter's database call fails,
@@ -250,7 +250,7 @@ addresses and redirects into private networks with mocked DNS.
   `x-forwarded-for` as Vercel sets it; behind another proxy, adjust `src/server/request.ts`.
 - **Supabase Auth's own limits now count the server.** Sign-in runs on the server, so Supabase's per-IP
   limits see Vercel's addresses, not each student's (the concern noted in D32). If sign-ins fail with
-  "too many requests" under normal load, raise them in Supabase → Authentication → Rate Limits; Davra's
+  "too many requests" under normal load, raise them in Supabase → Authentication → Rate Limits; Davracha's
   own limits stay per student.
 - **No detection of coordinated accounts** (vote rings, sockpuppets) beyond the per-IP sign-up limit,
   report weights and `/admin/xavfsizlik`. A banned user can open a new account.
@@ -259,7 +259,7 @@ addresses and redirects into private networks with mocked DNS.
 - **No e-mail notifications.** Users see decisions only when they open `/bildirishnomalar`.
 - **Moderation is people.** Queues have no response-time guarantee; the guide is in
   `docs/MODERATION_GUIDE.md`.
-- **No history of edits.** Davra keeps the current version of a card or profile; an edit after approval
+- **No history of edits.** Davracha keeps the current version of a card or profile; an edit after approval
   is checked again but the old text is not kept (severe incidents are the exception).
 - **The audit log is not tamper-proof.** It lives in the same database; anyone with the secret key or
   dashboard access can change it. Retention for `audit_log` and `severe_incidents` is not set yet.
@@ -271,7 +271,7 @@ addresses and redirects into private networks with mocked DNS.
   `pnpm db:test` and `pnpm test:e2e` before merging schema or flow changes.
 - **Legal.** The terms, privacy policy and rules are drafts awaiting a lawyer. Uzbekistan's personal
   data law may require citizens' data to be stored in Uzbekistan, while the database is in Frankfurt
-  (D61). What Davra must report to authorities about severe content is not known yet
+  (D61). What Davracha must report to authorities about severe content is not known yet
   (`docs/INCIDENT_RESPONSE.md`).
 
 ## Reporting a vulnerability
@@ -305,7 +305,7 @@ production deployment → Redeploy).
    Preview), keep it marked sensitive, and redeploy.
 3. Check the site: sign in, share a card, open `/admin`.
 4. Back in API Keys, delete the old secret key. If the project still has the legacy `service_role`
-   and `anon` JWT keys enabled, disable them there too (Davra uses only the new keys).
+   and `anon` JWT keys enabled, disable them there too (Davracha uses only the new keys).
 5. Update `.env.local` on any machine that runs `pnpm import:resources`.
 
 The same key is the HMAC secret for rate-limit keys and for the IP and e-mail hashes in `auth_events`

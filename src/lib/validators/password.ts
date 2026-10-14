@@ -86,6 +86,9 @@ const COMMON_PASSWORDS = new Set([
   "samarqand123",
   "davra12345",
   "davradavra",
+  "davracha123",
+  "davracha2026",
+  "davrachadavracha",
 ]);
 
 /** Common, one repeated character, or a run like "abcdefghij" or "9876543210". */

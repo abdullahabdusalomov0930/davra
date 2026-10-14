@@ -847,3 +847,17 @@ Every page shows the contact section. The texts still carry the "Loyiha matni" b
 been reviewed by a lawyer, and whether storing Uzbek citizens' data in Frankfurt meets the personal data
 law remains open (SECURITY.md). The contact address comes from `NEXT_PUBLIC_CONTACT_EMAIL`; until it is
 set, the pages say it will be published.
+
+### D81. Renamed to Davracha
+
+The owner could not get a main domain for "Davra", so the product is now called **Davracha** ("a small
+circle"). The name lives in `APP_NAME` (src/lib/config.ts); every page, title, share image, the manifest
+and the wordmarks follow it. Texts that had the old name written out (the removal request page, an admin
+setting) now use `{appName}`, so a future rename stays a one-line change. "davracha" joins the reserved
+usernames (a new migration redefines `private.is_reserved_username`; the unit test now reads the newest
+migration that defines it) and the weak-password list. The wordmarks were resized for the longer word.
+Earlier entries in this file keep the old name: they record what was decided then. Internal identifiers
+that users never see stay as they are: the GitHub repository, the Supabase `project_id`, demo usernames
+such as `davra_admin` and the demo password. The owner sets the new domain in Vercel
+(`NEXT_PUBLIC_SITE_URL`), in Supabase Auth (Site URL and redirect URLs) and pastes the renamed email
+templates into the Supabase dashboard.

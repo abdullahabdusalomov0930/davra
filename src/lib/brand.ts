@@ -19,8 +19,8 @@ export const brandColors = {
 } as const;
 
 /**
- * The logo: four rounded squares on a white sticker ("davra" is a circle of people; here, four of them
- * side by side). Colours go clockwise from the top left — mustard, orange, purple, green — and are the
+ * The logo: four rounded squares on a white sticker ("davracha" is a small circle of people; here, four
+ * of them side by side). Colours go clockwise from the top left — mustard, orange, purple, green — and are the
  * same tones the magnet dots in the background take around the cursor.
  */
 export const LOGO_COLORS = {

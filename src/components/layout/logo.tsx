@@ -33,12 +33,15 @@ export function LogoMark({ className }: { className?: string }) {
   );
 }
 
-/** Sticker and wordmark: the app name, lower case, in the heading face. */
+/**
+ * Sticker and wordmark: the app name, lower case, in the heading face. On the narrowest phones (under
+ * 360px) only the sticker shows; the link around it keeps the name for screen readers.
+ */
 export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("flex items-center gap-2.5", className)}>
       <LogoMark />
-      <span className="font-heading text-[1.4rem] leading-none font-extrabold tracking-[-0.02em]">
+      <span className="hidden font-heading text-[1.2rem] leading-none font-extrabold tracking-[-0.02em] min-[22.5rem]:inline sm:text-[1.4rem]">
         {APP_NAME.toLowerCase()}
       </span>
     </span>

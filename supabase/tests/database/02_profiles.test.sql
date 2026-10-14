@@ -1,7 +1,7 @@
 -- Profiles: creation on sign-up, who may edit what, bans and roles.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(25);
+select plan(26);
 -- Staff actions need a reason (audit log, D71); these tests make them directly.
 select set_config('davra.reason', 'pgTAP', true);
 
@@ -99,6 +99,12 @@ select throws_ok(
   $$update public.profiles set username = 'moderator' where id = '00000000-0000-4000-8000-000000000001'$$,
   '23514', null,
   'reserved usernames cannot be taken later either'
+);
+
+select throws_ok(
+  $$update public.profiles set username = 'davracha' where id = '00000000-0000-4000-8000-000000000001'$$,
+  '23514', null,
+  'the product name is reserved too'
 );
 
 -- Guests --------------------------------------------------------------------

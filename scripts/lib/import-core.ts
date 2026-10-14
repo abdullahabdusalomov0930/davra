@@ -45,7 +45,7 @@ export type ImportSummary = { imported: number; duplicates: number; invalid: num
 /**
  * Imports resources as published cards by `authorId`. Every row is checked first with the same rules
  * as the "Resurs qoʻshish" form; if any row is invalid nothing is written. Links that are already on
- * Davra (in any status, compared like the form does) are skipped, so a file can be imported again.
+ * Davracha (in any status, compared like the form does) are skipped, so a file can be imported again.
  */
 export async function importRecords(
   admin: AdminClient,
@@ -87,7 +87,7 @@ export async function importRecords(
     return summary;
   }
 
-  // 2. Skip links that are already on Davra or repeated in the file.
+  // 2. Skip links that are already on Davracha or repeated in the file.
   const twins = [...new Set(valid.flatMap(({ data }) => urlTwins(data.url)))];
   const existing = new Set<string>();
   for (let start = 0; start < twins.length; start += 100) {
@@ -103,7 +103,7 @@ export async function importRecords(
   for (const { row, data } of valid) {
     if (urlTwins(data.url).some((url) => existing.has(url))) {
       summary.duplicates++;
-      log(`  row ${row}: already on Davra, skipped (${data.url})`);
+      log(`  row ${row}: already on Davracha, skipped (${data.url})`);
       continue;
     }
     existing.add(data.url);
@@ -142,7 +142,7 @@ async function insertResource(admin: AdminClient, data: ResourceData, authorId: 
     });
     if (!error) return "ok";
     if (error.code === "23505" && error.message.includes("resources_slug_key")) continue;
-    if (error.code === "23505") return "already on Davra (added meanwhile), skipped";
+    if (error.code === "23505") return "already on Davracha (added meanwhile), skipped";
     if (error.message === "blocked_domain") return `${messages.Validation.urlBlocked} (${data.url})`;
     return `insert failed (${error.code ?? error.message})`;
   }
