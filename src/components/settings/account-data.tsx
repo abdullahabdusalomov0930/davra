@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { callAction } from "@/lib/action-result";
 import { type DeleteAccountInput, deleteAccountSchema } from "@/lib/validators";
 import { deleteAccountAction, exportDataAction } from "@/server/actions/account";
+import { APP_NAME } from "@/lib/config";
 
 /** "Maʼlumotlarimni yuklab olish": the user's data as a JSON file. */
 export function ExportDataButton() {
@@ -43,7 +44,7 @@ export function ExportDataButton() {
     const url = URL.createObjectURL(new Blob([result.json], { type: "application/json" }));
     const link = document.createElement("a");
     link.href = url;
-    link.download = `davra-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `${APP_NAME.toLowerCase()}-${new Date().toISOString().slice(0, 10)}.json`;
     link.click();
     URL.revokeObjectURL(url);
     toast.success(t("exportDone"));

@@ -30,7 +30,7 @@ type DemoUser = {
 };
 
 const USERS: DemoUser[] = [
-  { email: "admin@example.com", username: "davra_admin", displayName: "Davra Admin", role: "admin" },
+  { email: "admin@example.com", username: "davra_admin", displayName: "Davracha Admin", role: "admin" },
   {
     email: "moderator@example.com",
     username: "dilnoza",

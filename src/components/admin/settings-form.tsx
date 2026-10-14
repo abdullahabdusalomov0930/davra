@@ -14,6 +14,7 @@ import { NativeSelect } from "@/components/ui/native-select";
 import { callAction } from "@/lib/action-result";
 import { INTERSTITIAL_MODES, type SettingsData, type SettingsInput, settingsSchema } from "@/lib/validators";
 import { updateSettingsAction } from "@/server/actions/moderation";
+import { APP_NAME } from "@/lib/config";
 
 /** Auto-hide thresholds and when links open the "you are leaving" page (admins). */
 export function SettingsForm({ values }: { values: SettingsInput }) {
@@ -69,7 +70,7 @@ export function SettingsForm({ values }: { values: SettingsInput }) {
           <NativeSelect {...control} {...form.register("interstitial_mode")}>
             {INTERSTITIAL_MODES.map((mode) => (
               <option key={mode} value={mode}>
-                {t(`interstitialModes.${mode}`)}
+                {t(`interstitialModes.${mode}`, { appName: APP_NAME })}
               </option>
             ))}
           </NativeSelect>

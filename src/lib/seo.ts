@@ -14,7 +14,7 @@ export function metaDescription(text: string, max = DESCRIPTION_MAX): string {
   return `${(end > max * 0.6 ? cut.slice(0, end) : cut).replace(/[\s.,;:—–-]+$/, "")}…`;
 }
 
-/** `/resurs/x` → `https://davra.uz/resurs/x`, for sitemaps and structured data. */
+/** `/resurs/x` → `https://<site>/resurs/x`, for sitemaps and structured data. */
 export function absoluteUrl(path: string): string {
   return new URL(path, getPublicEnv().NEXT_PUBLIC_SITE_URL).toString();
 }

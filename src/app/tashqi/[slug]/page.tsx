@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * "Siz tashqi saytga oʻtyapsiz": shown before links to sites Davra does not know yet (D73). Shows the
+ * "Siz tashqi saytga oʻtyapsiz": shown before links to sites Davracha does not know yet (D73). Shows the
  * real domain and the full address; nothing from the site is fetched or embedded.
  */
 export default async function OutboundPage({ params }: PageProps<"/tashqi/[slug]">) {

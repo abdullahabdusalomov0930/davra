@@ -247,11 +247,11 @@ otp_expiry = 3600
 # Uzbek templates that link to the app's own confirmation pages (token_hash flow). The same
 # templates must be pasted into the cloud project's dashboard (see README).
 [auth.email.template.confirmation]
-subject = "Davra: emailingizni tasdiqlang"
+subject = "Davracha: emailingizni tasdiqlang"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.email.template.recovery]
-subject = "Davra: parolni tiklash"
+subject = "Davracha: parolni tiklash"
 content_path = "./supabase/templates/recovery.html"
 
 # Uncomment to customize notification email template

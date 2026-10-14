@@ -50,7 +50,7 @@ export async function SiteFooter() {
       <div
         aria-hidden
         data-wordmark={APP_NAME.toLowerCase()}
-        className="pointer-events-none frame px-4 font-heading text-[clamp(4.5rem,19vw,15rem)] leading-[0.85] font-extrabold tracking-[-0.04em] text-night-foreground/[0.07] select-none after:content-[attr(data-wordmark)] sm:px-8 lg:px-12"
+        className="pointer-events-none frame px-4 font-heading text-[clamp(3rem,12.5vw,10rem)] leading-[0.85] font-extrabold tracking-[-0.04em] text-night-foreground/[0.07] select-none after:content-[attr(data-wordmark)] sm:px-8 lg:px-12"
       />
 
       <div className="border-t border-white/10">

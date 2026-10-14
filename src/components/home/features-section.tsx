@@ -11,7 +11,7 @@ import { motion } from "./motion";
 const RANK_COLOURS = ["bg-dot-yellow", "bg-dot-orange", "bg-dot-green", "bg-postit-blue"] as const;
 
 /**
- * "With Davra…": three numbered reasons on white cards, then two product pictures: the filters, and a
+ * "With Davracha…": three numbered reasons on white cards, then two product pictures: the filters, and a
  * phone with the best-rated cards. Pictures are decorative and use real labels and real cards.
  */
 export async function FeaturesSection({ resources }: { resources: readonly ResourceCardData[] }) {

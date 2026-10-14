@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-/** Lets search engines show a search box for Davra (sitelinks search box). */
+/** Lets search engines show a search box for Davracha (sitelinks search box). */
 async function websiteData() {
   const t = await getTranslations("Metadata");
   return {

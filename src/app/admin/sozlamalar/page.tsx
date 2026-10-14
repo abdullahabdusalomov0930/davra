@@ -16,7 +16,7 @@ export async function generateMetadata() {
   return { title: t("nav.settings") };
 }
 
-/** Admins: auto-hide thresholds, the "leaving Davra" page, extra words for the word filter. */
+/** Admins: auto-hide thresholds, the "leaving Davracha" page, extra words for the word filter. */
 export default async function AdminSettingsPage() {
   const staff = await getStaffProfile();
   if (staff?.role !== "admin") notFound();

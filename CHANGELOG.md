@@ -5,6 +5,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Rename — Davra is now Davracha
+
+#### Changed
+
+- The product is called **Davracha** everywhere users see it: header and footer wordmarks, page titles,
+  share images, the web manifest, emails and the legal and removal-request pages (DECISIONS.md D81).
+- "davracha" is a reserved username and a blocked weak password, like the old name.
+
 ### Design and content — Dotted paper, fuller legal pages
 
 #### Changed

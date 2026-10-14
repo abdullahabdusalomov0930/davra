@@ -18,6 +18,7 @@ describe("usernameSchema", () => {
   it("rejects reserved names in any case", () => {
     expect(firstError(usernameSchema.safeParse("Admin"))).toBe("usernameReserved");
     expect(firstError(usernameSchema.safeParse("davra"))).toBe("usernameReserved");
+    expect(firstError(usernameSchema.safeParse("Davracha"))).toBe("usernameReserved");
   });
 });
 
@@ -76,9 +77,16 @@ describe("profileSchema", () => {
 
 describe("RESERVED_USERNAMES", () => {
   it("matches the list the database enforces", async () => {
-    const { readFile } = await import("node:fs/promises");
-    const sql = await readFile("supabase/migrations/20261010150000_reserved_usernames.sql", "utf8");
-    const list = sql.match(/return name = any \(array\[([\s\S]*?)\]\)/)?.[1] ?? "";
+    const { readdir, readFile } = await import("node:fs/promises");
+    // The newest migration that (re)defines the function is the one in force.
+    const files = (await readdir("supabase/migrations")).sort().reverse();
+    let list = "";
+    for (const file of files) {
+      const sql = await readFile(`supabase/migrations/${file}`, "utf8");
+      if (!sql.includes("function private.is_reserved_username")) continue;
+      list = sql.match(/return name = any \(array\[([\s\S]*?)\]\)/)?.[1] ?? "";
+      break;
+    }
     const fromSql = [...list.matchAll(/'([a-z0-9_]+)'/g)].map((match) => match[1]).sort();
     expect(fromSql).toEqual([...RESERVED_USERNAMES].sort());
   });

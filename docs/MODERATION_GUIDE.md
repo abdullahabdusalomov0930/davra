@@ -1,6 +1,6 @@
 # Moderatorlar uchun qoʻllanma
 
-Davra moderatorlari va adminlari uchun: qanday qaror qabul qilish, qachon adminga oshirish va jiddiy
+Davracha moderatorlari va adminlari uchun: qanday qaror qabul qilish, qachon adminga oshirish va jiddiy
 kontent bilan nima qilish kerak. Qoidalarning oʻzi saytda: `/qoidalar`. Texnik tafsilotlar:
 [SECURITY.md](../SECURITY.md), favqulodda holatlar: [INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md).
 

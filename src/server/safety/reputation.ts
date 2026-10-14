@@ -4,7 +4,7 @@ import { getSafeBrowsingKey } from "@/server/env";
 
 /**
  * What a reputation service knows about links (security addendum 2.1). Behind an interface so another
- * service can replace Google Safe Browsing, and so Davra works without any (the default).
+ * service can replace Google Safe Browsing, and so Davracha works without any (the default).
  */
 export type Reputation = "safe" | "flagged" | "unknown";
 
@@ -42,7 +42,7 @@ export class SafeBrowsingProvider implements UrlReputationProvider {
           headers: { "content-type": "application/json" },
           signal: AbortSignal.timeout(this.timeoutMs),
           body: JSON.stringify({
-            client: { clientId: "davra", clientVersion: "1.0" },
+            client: { clientId: "davracha", clientVersion: "1.0" },
             threatInfo: {
               threatTypes: ["MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"],
               platformTypes: ["ANY_PLATFORM"],

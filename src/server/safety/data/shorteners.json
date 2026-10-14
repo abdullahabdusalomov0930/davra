@@ -1,5 +1,5 @@
 {
-  "_note": "Starter list, to be extended by the owner. Link shorteners hide where a link really goes, so Davra asks for the full address instead. A rule also covers subdomains. The admin-editable blocked_domains table holds the same kind of entries.",
+  "_note": "Starter list, to be extended by the owner. Link shorteners hide where a link really goes, so Davracha asks for the full address instead. A rule also covers subdomains. The admin-editable blocked_domains table holds the same kind of entries.",
   "domains": [
     "1drv.ms",
     "adf.ly",

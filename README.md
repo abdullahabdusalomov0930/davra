@@ -1,4 +1,4 @@
-# Davra
+# Davracha
 
 A focused network where Uzbek students share and discover useful learning resources, each as a
 structured card with a short review in Uzbek. Web MVP built with Next.js 16, Supabase and Tailwind CSS.
@@ -89,7 +89,7 @@ URLs must include `https://`. On Vercel, mark `SUPABASE_SECRET_KEY`, `CRON_SECRE
 `SAFE_BROWSING_API_KEY` and `TURNSTILE_SECRET_KEY` as sensitive; `NEXT_PUBLIC_*` values are compiled into the browser bundle anyway.
 After changing a variable, redeploy.
 
-Without `SAFE_BROWSING_API_KEY` links are still checked by Davra's own rules (shorteners, blocklists,
+Without `SAFE_BROWSING_API_KEY` links are still checked by Davracha's own rules (shorteners, blocklists,
 redirects, lookalike domains) but not against Google's list of phishing and malware sites; the server logs
 a warning once. To get a key: Google Cloud console → create a project → APIs & Services → enable "Safe
 Browsing API" → Credentials → Create credentials → API key, restricted to that API.
@@ -163,7 +163,7 @@ topics, with summaries in Uzbek and no personal review (the cards are shared in 
 
 UTF-8, comma-separated, with a header row (Excel's "CSV UTF-8" works). Every row is checked with the same
 rules as the "Resurs qoʻshish" form, and nothing is written if any row is invalid; the errors are listed
-by row. Links already on Davra are skipped, so the same file can be imported again safely.
+by row. Links already on Davracha are skipped, so the same file can be imported again safely.
 `supabase/seed/demo-resources.csv` is a complete example (its extra `shared_by` column is ignored).
 
 ## Deploying
@@ -186,14 +186,14 @@ by row. Links already on Davra are skipped, so the same file can be imported aga
 6. Once SMTP is set up (Supabase only allows editing templates then), Authentication → Emails →
    Templates: paste our Uzbek templates. They link to the app's own pages, where the address is confirmed
    only when the person presses a button (mail scanners cannot use up the link, other devices work):
-   - **Confirm signup** — subject `Davra: emailingizni tasdiqlang`, body `supabase/templates/confirmation.html`
-   - **Reset password** — subject `Davra: parolni tiklash`, body `supabase/templates/recovery.html`
+   - **Confirm signup** — subject `Davracha: emailingizni tasdiqlang`, body `supabase/templates/confirmation.html`
+   - **Reset password** — subject `Davracha: parolni tiklash`, body `supabase/templates/recovery.html`
 
    Until then the default English emails work too, as long as the link is opened in the browser that
    signed up or asked for the reset (on another device, the address is still confirmed; the person signs in).
 
 7. Apply the schema. This creates the tables, policies, triggers, the starting topics, the URL-shortener
-   blocklist and the pg_cron jobs. Davra stores no uploaded files: a project set up before the security
+   blocklist and the pg_cron jobs. Davracha stores no uploaded files: a project set up before the security
    addendum still has an `avatars` bucket, which the migration closes; delete it under Storage → avatars →
    Delete bucket.
    - **Automatically (recommended):** the `Supabase migrations` GitHub Action
@@ -217,7 +217,7 @@ by row. Links already on Davra are skipped, so the same file can be imported aga
    `packageManager`).
 2. Settings → Environment Variables: add every variable from the table above for **Production and
    Preview** (Preview deployments run the same build check). `NEXT_PUBLIC_SITE_URL` is the production
-   address without a trailing slash, e.g. `https://davra.uz`. Mark `SUPABASE_SECRET_KEY` and
+   address without a trailing slash, e.g. `https://davracha.uz`. Mark `SUPABASE_SECRET_KEY` and
    `CRON_SECRET` as sensitive.
 3. Deploy. Every push to a branch gets a preview deployment; `main` deploys to production.
 4. Settings → Domains: add your domain, then update `NEXT_PUBLIC_SITE_URL` and Supabase's Site URL and
@@ -339,7 +339,7 @@ pnpm db:types   # regenerate the TypeScript types
 
 ## Security
 
-How Davra protects itself and its users, its known limits, reporting a vulnerability and rotating keys:
+How Davracha protects itself and its users, its known limits, reporting a vulnerability and rotating keys:
 [SECURITY.md](SECURITY.md). Moderators: [docs/MODERATION_GUIDE.md](docs/MODERATION_GUIDE.md) (Uzbek).
 When something goes wrong: [docs/INCIDENT_RESPONSE.md](docs/INCIDENT_RESPONSE.md).
 

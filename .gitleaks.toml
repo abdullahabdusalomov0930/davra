@@ -4,7 +4,7 @@
 # Starts from gitleaks' default rules. Exceptions must stay narrow (one rule, one path or one value) and
 # say why. Checked on 2026-10-10: the git history and tracked files have no findings with the defaults,
 # and no local Supabase demo keys are committed, so none are allowlisted.
-title = "Davra"
+title = "Davracha"
 
 [extend]
 useDefault = true

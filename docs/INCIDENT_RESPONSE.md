@@ -36,7 +36,7 @@ aniqlang, advokat bilan foydalanuvchilarga va organlarga xabar berish tartibini 
 
 Child sexual abuse material, terrorism or violent extremism, credible threats of violence.
 
-Davra stores only text and a link, so the "content" is a card, comment or profile text and the address
+Davracha stores only text and a link, so the "content" is a card, comment or profile text and the address
 it points to. The first `severe` report hides it at once (also from search, feeds and the sitemap) and
 writes a frozen copy to `severe_incidents`: the text, the URL and final URL, the author id, timestamps
 and every severe report. Only admins can read that table; the content cannot be deleted while the
@@ -114,7 +114,7 @@ Many failed sign-ins or many new accounts from one address show up on `/admin/xa
 
 ## Data leak
 
-Personal data Davra holds: e-mail addresses (Supabase Auth), usernames, display names, optional bio,
+Personal data Davracha holds: e-mail addresses (Supabase Auth), usernames, display names, optional bio,
 university and field of study, what people posted, and hashed IP and e-mail values (30 days). Staff
 data adds moderation history, reports and severe-incident snapshots.
 

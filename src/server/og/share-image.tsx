@@ -33,7 +33,7 @@ const STAR =
 const STRIPE = [LOGO_COLORS.topLeft, LOGO_COLORS.topRight, LOGO_COLORS.bottomRight, LOGO_COLORS.bottomLeft];
 
 /**
- * The picture shown when a Davra link is shared: a page of the squared notebook with the sticker logo,
+ * The picture shown when a Davracha link is shared: a page of the squared notebook with the sticker logo,
  * the topic on a post-it and the title in the heading face. Drawn by Satori (a subset of CSS: flexbox
  * only, inline styles), so it does not use the site's components.
  */

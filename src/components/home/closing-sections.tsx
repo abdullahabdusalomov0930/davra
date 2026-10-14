@@ -18,7 +18,7 @@ const STAT_NOTES = [
   { colour: "bg-postit-pink", tilt: "-rotate-1", tape: "left-[44%] rotate-[2deg]" },
 ] as const;
 
-/** Three large notes: what Davra costs, how much it covers, how often links are checked. */
+/** Three large notes: what Davracha costs, how much it covers, how often links are checked. */
 export async function StatsSection({ topicCount }: { topicCount: number }) {
   const [t, format] = await Promise.all([getTranslations("Home.stats"), getFormatter()]);
   const tiles = [

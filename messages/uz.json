@@ -200,7 +200,7 @@
     "commentTooLong": "Izoh 500 ta belgidan oshmasin.",
     "reportReasonRequired": "Sababini tanlang.",
     "reportDetailsTooLong": "Izoh 500 ta belgidan oshmasin.",
-    "removalUrlInvalid": "Toʻliq havola kiriting, masalan: https://davra.uz/resurs/…",
+    "removalUrlInvalid": "Toʻliq havolani kiriting: u https:// bilan boshlanadi.",
     "removalNameLength": "Ismingizni kiriting (2–100 ta belgi).",
     "removalDetailsTooShort": "Kamida 20 ta belgi: nima uchun olib tashlash kerakligini yozing.",
     "removalDetailsTooLong": "2000 ta belgidan oshmasin.",
@@ -667,10 +667,10 @@
   },
   "RemovalRequest": {
     "title": "Kontentni olib tashlash soʻrovi",
-    "metaDescription": "Mualliflik huquqi yoki boshqa asosli sabab bilan Davra’dagi kartani olib tashlashni soʻrang.",
-    "intro": "Davra’da faqat havolalar va foydalanuvchilarning oʻz soʻzlari joylanadi. Agar karta mualliflik huquqingizni buzsa yoki boshqa asosli sabab bilan olib tashlanishi kerak boʻlsa, shu formani toʻldiring. Hisob shart emas.",
+    "metaDescription": "Mualliflik huquqi yoki boshqa asosli sabab bilan {appName}dagi kartani olib tashlashni soʻrang.",
+    "intro": "{appName}da faqat havolalar va foydalanuvchilarning oʻz soʻzlari joylanadi. Agar karta mualliflik huquqingizni buzsa yoki boshqa asosli sabab bilan olib tashlanishi kerak boʻlsa, shu formani toʻldiring. Hisob shart emas.",
     "url": "Sahifa yoki havola",
-    "urlHint": "Davra’dagi resurs sahifasi yoki u koʻrsatayotgan havola.",
+    "urlHint": "{appName}dagi resurs sahifasi yoki u koʻrsatayotgan havola.",
     "name": "Ismingiz yoki tashkilot nomi",
     "email": "Email",
     "emailHint": "Faqat sizga javob berish uchun; boshqalarga koʻrsatilmaydi.",
@@ -1367,7 +1367,7 @@
       "interstitial": "Tashqi sayt ogohlantirishi",
       "interstitialModes": {
         "off": "Hech qachon",
-        "new_domains": "Davrada yangi va tasdiqlanmagan saytlar uchun",
+        "new_domains": "{appName}da yangi va tasdiqlanmagan saytlar uchun",
         "unknown": "Xavfsizligi tasdiqlanmagan barcha saytlar uchun"
       },
       "save": "Saqlash",

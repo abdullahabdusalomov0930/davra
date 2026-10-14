@@ -8,7 +8,7 @@ import { SearchPill } from "./search-pill";
 
 /**
  * The night page: why finding good material is hard (three cards with a small picture each and the
- * explanation behind a "+"), then Davra's answer with a second search field.
+ * explanation behind a "+"), then Davracha's answer with a second search field.
  */
 export async function ProblemSection() {
   const t = await getTranslations("Home.problem");
@@ -56,7 +56,7 @@ export async function ProblemSection() {
         </ul>
 
         <div className="mt-24 grid reveal gap-10 md:grid-cols-2 md:items-end">
-          <div>
+          <div className="min-w-0">
             <h2 className="text-[2rem] leading-[1.12] font-extrabold text-balance sm:text-[2.6rem]">
               {t("answerTitle")}
             </h2>
@@ -64,7 +64,7 @@ export async function ProblemSection() {
               {t("answerText", { appName: APP_NAME })}
             </p>
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="mb-4 font-hand text-xl text-primary">{t("tryLead")}</p>
             <SearchPill
               id="problem-search"
