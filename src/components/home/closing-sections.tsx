@@ -73,10 +73,7 @@ export async function TopicsMarquee({ topics }: { topics: readonly Topic[] }) {
     ));
 
   return (
-    <section
-      aria-labelledby="topics-title"
-      className="overflow-hidden border-y-2 border-foreground bg-secondary/70 py-16"
-    >
+    <section aria-labelledby="topics-title" className="overflow-hidden py-16">
       <div className="frame px-4 sm:px-8 lg:px-12">
         <h2
           id="topics-title"

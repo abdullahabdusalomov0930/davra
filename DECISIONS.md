@@ -861,3 +861,11 @@ that users never see stay as they are: the GitHub repository, the Supabase `proj
 such as `davra_admin` and the demo password. The owner sets the new domain in Vercel
 (`NEXT_PUBLIC_SITE_URL`), in Supabase Auth (Site URL and redirect URLs) and pastes the renamed email
 templates into the Supabase dashboard.
+
+### D82. One continuous page, no dark band
+
+The landing page's "problem" section was a dark band in both themes, with its own grid, and the topics
+row sat on a cream strip. On the live site the owner saw them as separate pages: the grid did not line
+up at their edges, the magnet dots were cut off there, and the light theme had a black block in the
+middle. Both sections now sit on the page's own paper and follow the theme; sections are separated by
+space only. The footer stays dark.

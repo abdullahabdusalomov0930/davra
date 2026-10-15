@@ -82,7 +82,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
         </>
       )}
 
-      <section aria-labelledby="feed-title" className={showLanding ? "border-t-2 border-foreground" : undefined}>
+      <section aria-labelledby="feed-title">
         <div className="frame px-4 py-14 sm:px-8 lg:px-12">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             {viewer ? (

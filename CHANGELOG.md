@@ -5,6 +5,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Design — One continuous page
+
+#### Fixed
+
+- The home page no longer looks split into separate pages: the "problem" section follows the light or
+  dark theme instead of staying black, and it and the topics row sit on the same squared paper as the
+  rest, so the grid and the magnet dots run through without a seam (DECISIONS.md D82).
+
 ### Rename — Davra is now Davracha
 
 #### Changed

@@ -7,8 +7,9 @@ import { APP_NAME } from "@/lib/config";
 import { SearchPill } from "./search-pill";
 
 /**
- * The night page: why finding good material is hard (three cards with a small picture each and the
- * explanation behind a "+"), then Davracha's answer with a second search field.
+ * Why finding good material is hard (three cards with a small picture each and the explanation behind
+ * a "+"), then Davracha's answer with a second search field. It sits on the same paper as the rest of
+ * the page and follows the theme, so the grid and the magnet dots run through it without a seam.
  */
 export async function ProblemSection() {
   const t = await getTranslations("Home.problem");
@@ -25,7 +26,7 @@ export async function ProblemSection() {
   ] as const;
 
   return (
-    <section aria-labelledby="problem-title" className="dark relative border-y-2 border-ink paper text-foreground">
+    <section aria-labelledby="problem-title" className="relative">
       <div className="frame px-4 py-20 sm:px-8 md:py-28 lg:px-12">
         <div className="max-w-3xl reveal">
           <h2 id="problem-title" className="text-[2.1rem] leading-[1.12] font-extrabold text-balance sm:text-5xl">
@@ -38,7 +39,7 @@ export async function ProblemSection() {
           {cards.map(({ key, visual }) => (
             <li
               key={key}
-              className="relative w-[82%] shrink-0 snap-start rounded-[1.25rem] border-2 border-foreground bg-card p-3 shadow-[5px_5px_0_var(--marker)] md:w-auto"
+              className="relative w-[82%] shrink-0 snap-start rounded-[1.25rem] border-2 border-foreground bg-card p-3 shadow-hard md:w-auto"
             >
               <div className="relative h-60 overflow-hidden rounded-[0.9rem] border border-border paper">{visual}</div>
               <details className="group/details px-2 pt-4 pb-1">
@@ -71,7 +72,6 @@ export async function ProblemSection() {
               label={t("tryLabel")}
               placeholder={tHome("searchPlaceholder")}
               submitLabel={tHome("searchSubmit")}
-              className="shadow-[6px_6px_0_var(--marker)]"
             />
           </div>
         </div>
