@@ -1,0 +1,108 @@
+# Keeps the production project's sign-up and password-reset emails in step with this repository (README
+# "Emails"): the Uzbek subjects from supabase/config.toml and the templates in supabase/templates/. Started
+# by hand from the Actions tab. By default it only reports what production has now (the sender, the site
+# URL, whether each template matches the repository); tick "apply" to write the templates.
+#
+# Uses the repository secrets of the migrations workflow: SUPABASE_ACCESS_TOKEN and SUPABASE_PROJECT_ID.
+# Supabase sends custom templates only through a custom SMTP sender, so connect one first (README).
+name: Auth emails
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Write the templates to production (otherwise only report)
+        type: boolean
+        default: false
+
+concurrency:
+  group: auth-emails
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  emails:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      APPLY: ${{ inputs.apply }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Report and apply
+        shell: python
+        run: |
+          import json, os, sys, tomllib, urllib.error, urllib.request
+
+          project, token = os.environ.get("SUPABASE_PROJECT_ID"), os.environ.get("SUPABASE_ACCESS_TOKEN")
+          if not project or not token:
+              print("::error::Add the SUPABASE_PROJECT_ID and SUPABASE_ACCESS_TOKEN repository secrets.")
+              sys.exit(1)
+          api = f"https://api.supabase.com/v1/projects/{project}/config/auth"
+
+          def call(method, body=None):
+              request = urllib.request.Request(
+                  api,
+                  method=method,
+                  headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+                  data=None if body is None else json.dumps(body).encode(),
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      return json.load(response)
+              except urllib.error.HTTPError as error:
+                  print(f"::error::Supabase answered {error.code}: {error.read().decode(errors='replace')[:300]}")
+                  sys.exit(1)
+
+          # Every [auth.email.template.<name>] in config.toml maps to two auth settings.
+          with open("supabase/config.toml", "rb") as file:
+              templates = tomllib.load(file)["auth"]["email"]["template"]
+          wanted = {}
+          for name, template in templates.items():
+              with open(template["content_path"], encoding="utf-8") as file:
+                  wanted[f"mailer_templates_{name}_content"] = file.read()
+              wanted[f"mailer_subjects_{name}"] = template["subject"]
+
+          lines = []
+          def report(config):
+              # Only these fields are printed; the SMTP password and other secrets never are.
+              lines.clear()
+              lines.append(f"Site URL: {config.get('site_url') or '-'}")
+              if config.get("smtp_host"):
+                  lines.append(f"Sender: {config.get('smtp_sender_name') or '-'} <{config.get('smtp_admin_email') or '-'}>")
+                  lines.append(f"SMTP server: {config['smtp_host']}:{config.get('smtp_port') or '-'}")
+              else:
+                  lines.append("Sender: Supabase's built-in sender (no custom SMTP yet)")
+              lines.append(f"Email limit: {config.get('rate_limit_email_sent') or '-'} per hour")
+              for name in templates:
+                  subject, content = f"mailer_subjects_{name}", f"mailer_templates_{name}_content"
+                  same = (config.get(subject) or "") == wanted[subject] and (
+                      (config.get(content) or "").strip() == wanted[content].strip()
+                  )
+                  lines.append(f"Template '{name}': {'matches the repository' if same else 'differs from the repository'}")
+              for line in lines:
+                  print(line)
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+                  summary.write("\n".join(f"- {line}" for line in lines) + "\n\n")
+
+          current = call("GET")
+          report(current)
+          if not (current.get("site_url") or "").startswith("https://"):
+              print("::warning::The site URL is not an https address; the links in the emails start with it.")
+
+          if os.environ.get("APPLY") != "true":
+              print("Only reported. Run the workflow again with 'apply' ticked to write the templates.")
+              sys.exit(0)
+          if not current.get("smtp_host"):
+              print("::error::Connect a custom SMTP sender first (README \"Emails\"); without one Supabase ignores custom templates.")
+              sys.exit(1)
+
+          call("PATCH", wanted)
+          print("Templates written. Production now has:")
+          report(call("GET"))

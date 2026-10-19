@@ -10,7 +10,7 @@ Full product brief: [claude-code-prompt.md](claude-code-prompt.md) (written unde
 
 **Contents:** [Requirements](#requirements) · [Local setup](#local-setup) · [Demo data](#demo-data) ·
 [Environment variables](#environment-variables) · [Tests](#tests) · [Importing resources](#importing-resources) ·
-[Deploying](#deploying) · [Scheduled jobs](#scheduled-jobs) · [Link checker](#link-checker) ·
+[Deploying](#deploying) · [Emails](#emails) · [Scheduled jobs](#scheduled-jobs) · [Link checker](#link-checker) ·
 [Search engines and sharing](#search-engines-and-sharing) · [Database](#database) · [Scripts](#scripts) ·
 [Project structure](#project-structure)
 
@@ -180,19 +180,10 @@ by row. Links already on Davracha are skipped, so the same file can be imported 
    `http://localhost:3000/**` and `https://<your-domain>/**` to **Redirect URLs**.
 4. Authentication → Providers → Email: keep **Confirm email** enabled and set **Minimum password length**
    to 8 (the forms ask for 8; this makes the server enforce it too).
-5. Before inviting real users, set up a custom SMTP provider (Authentication → Emails → SMTP Settings).
-   Supabase's built-in sender only delivers to members of your Supabase team and only a few emails per
-   hour, so it is enough for testing with your own address but not for students.
-6. Once SMTP is set up (Supabase only allows editing templates then), Authentication → Emails →
-   Templates: paste our Uzbek templates. They link to the app's own pages, where the address is confirmed
-   only when the person presses a button (mail scanners cannot use up the link, other devices work):
-   - **Confirm signup** — subject `Davracha: emailingizni tasdiqlang`, body `supabase/templates/confirmation.html`
-   - **Reset password** — subject `Davracha: parolni tiklash`, body `supabase/templates/recovery.html`
-
-   Until then the default English emails work too, as long as the link is opened in the browser that
-   signed up or asked for the reset (on another device, the address is still confirmed; the person signs in).
-
-7. Apply the schema. This creates the tables, policies, triggers, the starting topics, the URL-shortener
+5. Emails: before inviting real users, set up Davracha's own sender and the Uzbek templates as described
+   in [Emails](#emails). Until then Supabase's default English emails work for testing with your own
+   address.
+6. Apply the schema. This creates the tables, policies, triggers, the starting topics, the URL-shortener
    blocklist and the pg_cron jobs. Davracha stores no uploaded files: a project set up before the security
    addendum still has an `avatars` bucket, which the migration closes; delete it under Storage → avatars →
    Delete bucket.
@@ -241,6 +232,38 @@ by row. Links already on Davracha are skipped, so the same file can be imported 
 6. GitHub → Settings → Code security: enable Dependabot alerts, secret scanning and private
    vulnerability reporting.
 7. Work through the [security checklist](#security-checklist-before-launch).
+
+## Emails
+
+Supabase sends two emails: the sign-up confirmation and the password reset. Out of the box they come
+from "Supabase Auth" in English, reach only members of the Supabase team and only a few an hour. For
+students they come from Davracha's own domain, with our Uzbek templates (`supabase/templates/`). They
+link to the app's own pages, where the address is confirmed only when the person presses a button (mail
+scanners cannot use up the link, other devices work; DECISIONS.md D33).
+
+1. **Sending domain.** Sign up at https://resend.com (free: 100 emails a day, 3,000 a month, one domain)
+   → Domains → Add domain → `davracha.uz`, region Ireland (`eu-west-1`), next to the Frankfurt database.
+   Resend lists a few DNS records (DKIM, and an MX and an SPF record on the `send` subdomain). Add them
+   where the domain's DNS is managed: Vercel → Domains if the domain uses Vercel's nameservers, otherwise
+   the registrar's DNS panel. Also add a `TXT` record named `_dmarc` with `v=DMARC1; p=none;` so
+   mailboxes trust the sender. Wait until Resend shows the domain as **Verified**.
+2. **Connect it to Supabase.** Resend → Settings → Integrations → Supabase → Connect: pick the project and
+   `davracha.uz`, sender name `Davracha`, address `noreply@davracha.uz`. Resend creates an API key and
+   fills Supabase's SMTP settings (Authentication → Emails → SMTP Settings) itself, so the key never
+   passes through GitHub. By hand instead: host `smtp.resend.com`, port `465`, user `resend`, password a
+   Resend API key with sending access.
+3. **Uzbek templates.** GitHub → Actions → **Auth emails** → Run workflow. Without "apply" it only reports
+   what production has: the sender, the site URL (the links in the emails start with it) and whether
+   each template matches the repository. Run it again with **apply** ticked to write the subjects and
+   templates. Do the same whenever a template or a subject in `supabase/config.toml` changes.
+4. Sign up with a new address: the email should come from "Davracha <noreply@davracha.uz>" with the
+   Uzbek text. If it does not arrive, look at Supabase → Logs → Auth and at Resend → Logs.
+
+Resend's free plan stops sending after 100 emails a day; Supabase's own limit is under Authentication →
+Rate Limits. Upgrade the Resend plan before a launch that could bring more sign-ups than that.
+
+Locally the templates are loaded from `supabase/config.toml` when Supabase starts (restart it after
+editing one) and every email lands in Mailpit (http://127.0.0.1:54324).
 
 ## Scheduled jobs
 
