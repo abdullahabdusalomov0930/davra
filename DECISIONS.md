@@ -869,3 +869,18 @@ row sat on a cream strip. On the live site the owner saw them as separate pages:
 up at their edges, the magnet dots were cut off there, and the light theme had a black block in the
 middle. Both sections now sit on the page's own paper and follow the theme; sections are separated by
 space only. The footer stays dark.
+
+### D83. Emails from Davracha's own domain
+
+Sign-up and password-reset emails came from "Supabase Auth" in English: the built-in sender, which also
+reaches only members of the Supabase team and sends only a few emails an hour. They now go through Resend
+from `noreply@davracha.uz` under the name "Davracha" (README "Emails"). Resend is one of the providers
+Supabase's docs list, its free plan (100 a day) fits the launch, and its Supabase integration fills the
+SMTP settings itself, so the API key never passes through GitHub or this repository. The templates were
+redrawn in the "Daftar" look (D78): paper, an ink-bordered card, the highlighter button and the
+four-square logo built from table cells, so it shows without loading images. They use only tables and
+inline styles, no web fonts or images, and say who the email was sent to. Instead of pasting them into
+the dashboard, the `Auth emails` workflow (started by hand) compares production's subjects and templates
+with `supabase/config.toml` and `supabase/templates/` and, when asked, writes them through the Management
+API with the existing access token. It refuses while no custom SMTP is set, because Supabase would not
+use the templates, and it never prints the SMTP password.

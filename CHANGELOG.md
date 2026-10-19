@@ -5,6 +5,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Emails — Sent by Davracha, in its own look
+
+#### Changed
+
+- The sign-up confirmation and password-reset emails were redrawn in the notebook look: the four-square
+  logo, an ink-bordered card, a highlighter button and the address they were sent to. They need no
+  images or web fonts (DECISIONS.md D83).
+
+#### Added
+
+- The `Auth emails` GitHub workflow reports which sender, site URL and templates production uses and,
+  when "apply" is ticked, writes the repository's Uzbek subjects and templates to it.
+- README "Emails": sending from `noreply@davracha.uz` through Resend, with the DNS records and the
+  Supabase integration, instead of Supabase's built-in English sender.
+
 ### Design — One continuous page
 
 #### Fixed

@@ -1,41 +1,210 @@
-<!-- Davracha: sign-up confirmation. Paste into Supabase Dashboard → Authentication → Emails → "Confirm signup". -->
-<div
-  style="
-    margin: 0 auto;
-    max-width: 480px;
-    padding: 24px;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #1f2933;
-    line-height: 1.5;
-  "
->
-  <h1 style="margin: 0 0 16px; font-size: 22px">Emailingizni tasdiqlang</h1>
-  <p style="margin: 0 0 16px">
-    Assalomu alaykum! Davrachada roʻyxatdan oʻtganingiz uchun rahmat. Hisobingizni faollashtirish uchun quyidagi tugmani
-    bosing.
-  </p>
-  <p style="margin: 0 0 24px">
-    <a
-      href="{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email"
-      style="
-        display: inline-block;
-        padding: 12px 20px;
-        border-radius: 8px;
-        background: #0f6e6e;
-        color: #ffffff;
-        text-decoration: none;
-        font-weight: bold;
-      "
-      >Emailni tasdiqlash</a
-    >
-  </p>
-  <p style="margin: 0 0 8px; font-size: 13px; color: #52606d">Tugma ishlamasa, bu havolani brauzerga nusxalang:</p>
-  <p style="margin: 0 0 24px; font-size: 13px; word-break: break-all">
-    <a href="{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email" style="color: #0f6e6e"
-      >{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email</a
-    >
-  </p>
-  <p style="margin: 0; font-size: 13px; color: #52606d">
-    Agar siz roʻyxatdan oʻtmagan boʻlsangiz, bu xatga eʼtibor bermang.
-  </p>
-</div>
+{{/* Davracha: the sign-up confirmation ("Confirm signup"). The Auth emails workflow applies it to production (README
+"Emails"); locally config.toml loads it. Email-safe: tables, inline styles, no images or web fonts. */}}
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
+    <title>Emailingizni tasdiqlang</title>
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #fdfcf7">
+    <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; color: transparent">
+      Bir bosishda hisobingizni faollashtiring.
+    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fdfcf7">
+      <tr>
+        <td
+          style="
+            background-image:
+              linear-gradient(#dce6f2 1px, transparent 1px), linear-gradient(90deg, #dce6f2 1px, transparent 1px);
+            background-size: 28px 28px;
+          "
+        >
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td align="center" style="padding: 36px 16px 40px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="
+                    max-width: 520px;
+                    font-family: -apple-system, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif;
+                  "
+                >
+                  <tr>
+                    <td style="padding: 0 4px 20px">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td style="padding-right: 10px; vertical-align: middle">
+                            <table
+                              role="presentation"
+                              cellpadding="0"
+                              cellspacing="3"
+                              border="0"
+                              bgcolor="#ffffff"
+                              style="background-color: #ffffff; border: 1px solid #e3e3e3; border-radius: 11px"
+                            >
+                              <tr>
+                                <td
+                                  width="13"
+                                  height="13"
+                                  bgcolor="#d9a400"
+                                  style="width: 13px; height: 13px; border-radius: 5px; font-size: 0; line-height: 0"
+                                >
+                                  &nbsp;
+                                </td>
+                                <td
+                                  width="13"
+                                  height="13"
+                                  bgcolor="#f07a3a"
+                                  style="width: 13px; height: 13px; border-radius: 5px; font-size: 0; line-height: 0"
+                                >
+                                  &nbsp;
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  width="13"
+                                  height="13"
+                                  bgcolor="#2e9e6b"
+                                  style="width: 13px; height: 13px; border-radius: 5px; font-size: 0; line-height: 0"
+                                >
+                                  &nbsp;
+                                </td>
+                                <td
+                                  width="13"
+                                  height="13"
+                                  bgcolor="#7b5cf0"
+                                  style="width: 13px; height: 13px; border-radius: 5px; font-size: 0; line-height: 0"
+                                >
+                                  &nbsp;
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                          <td
+                            style="
+                              vertical-align: middle;
+                              font-family: &quot;Arial Black&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif;
+                              font-size: 24px;
+                              font-weight: 900;
+                              letter-spacing: -0.5px;
+                              color: #111111;
+                            "
+                          >
+                            davracha
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      bgcolor="#ffffff"
+                      style="
+                        padding: 30px 28px 26px;
+                        background-color: #ffffff;
+                        border: 2px solid #111111;
+                        border-radius: 16px;
+                        box-shadow: 5px 5px 0 #111111;
+                        color: #111111;
+                      "
+                    >
+                      <p
+                        style="
+                          margin: 0 0 6px;
+                          font-family:
+                            &quot;Segoe Print&quot;, &quot;Chalkboard SE&quot;, &quot;Comic Sans MS&quot;, cursive;
+                          font-size: 17px;
+                          color: #1f4fb8;
+                        "
+                      >
+                        Bir qadam qoldi!
+                      </p>
+                      <h1
+                        style="
+                          margin: 0 0 16px;
+                          font-family: &quot;Arial Black&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif;
+                          font-size: 26px;
+                          font-weight: 900;
+                          line-height: 1.2;
+                          color: #111111;
+                        "
+                      >
+                        Emailingizni <span style="background-color: #ffe45c; padding: 0 4px">tasdiqlang</span>
+                      </h1>
+                      <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.55">
+                        Assalomu alaykum! Davrachaga xush kelibsiz. Roʻyxatdan oʻtishni yakunlash uchun pastdagi tugmani
+                        bosing, soʻng ochilgan sahifada «Emailni tasdiqlash»ni yana bir marta bosing.
+                      </p>
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 26px">
+                        <tr>
+                          <td
+                            bgcolor="#ffe45c"
+                            style="
+                              background-color: #ffe45c;
+                              border: 2px solid #111111;
+                              border-radius: 12px;
+                              box-shadow: 3px 3px 0 #111111;
+                            "
+                          >
+                            <a
+                              href="{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email"
+                              style="
+                                display: inline-block;
+                                padding: 13px 24px;
+                                font-size: 16px;
+                                font-weight: bold;
+                                color: #111111;
+                                text-decoration: none;
+                              "
+                              >Emailni tasdiqlash</a
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                      <p style="margin: 0 0 6px; font-size: 13px; line-height: 1.5; color: #4f4f4f">
+                        Tugma ishlamasa, bu havolani brauzerga nusxalang:
+                      </p>
+                      <p style="margin: 0 0 22px; font-size: 13px; line-height: 1.5; word-break: break-all">
+                        <a
+                          href="{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email"
+                          style="color: #1f4fb8"
+                          >{{ .SiteURL }}/email-tasdiqlash?token_hash={{ .TokenHash }}&amp;type=email</a
+                        >
+                      </p>
+                      <p
+                        style="
+                          margin: 0;
+                          padding-top: 18px;
+                          border-top: 2px dashed #d6d3c4;
+                          font-size: 13px;
+                          line-height: 1.5;
+                          color: #4f4f4f;
+                        "
+                      >
+                        Davrachada roʻyxatdan oʻtmagan boʻlsangiz, bu xatga eʼtibor bermang: hisob faollashmaydi.
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 22px 4px 0; font-size: 12px; line-height: 1.6; color: #4f4f4f">
+                      Bu xat {{ .Email }} manziliga yuborildi.<br />
+                      Davracha — talabalar uchun foydali oʻquv resurslari tarmogʻi.
+                      <a href="{{ .SiteURL }}" style="color: #1f4fb8">{{ .SiteURL }}</a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

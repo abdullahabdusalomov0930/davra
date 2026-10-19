@@ -244,8 +244,8 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
-# Uzbek templates that link to the app's own confirmation pages (token_hash flow). The same
-# templates must be pasted into the cloud project's dashboard (see README).
+# Uzbek templates that link to the app's own confirmation pages (token_hash flow). The Auth emails
+# workflow writes the same subjects and templates to the production project (README "Emails").
 [auth.email.template.confirmation]
 subject = "Davracha: emailingizni tasdiqlang"
 content_path = "./supabase/templates/confirmation.html"
